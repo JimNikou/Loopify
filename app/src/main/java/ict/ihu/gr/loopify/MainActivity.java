@@ -15,7 +15,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.AppCompatActivity;
 
 import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
-//Giannis 
+//Giannis
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
