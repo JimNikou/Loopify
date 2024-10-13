@@ -49,7 +49,7 @@ This project is a collaborative effort from our team of four university students
 ### Clone the Repository:
 ```bash
 git clone https://github.com/jimnikou/Loopify.git
-
+```
 ##Open the Project:
   Launch Android Studio and open the cloned project.
 ##Build the Project:
@@ -57,17 +57,25 @@ git clone https://github.com/jimnikou/Loopify.git
 ##Run the App:
   Connect an Android device or use an emulator, then click the "Run" button in Android Studio.
 
-#🎯 Project Goals
+---
+
+# 🎯 Project Goals
 
 Build a functional music streaming app using Java in Android Studio.
 Integrate the required APIs (The AudioDB API, Last.FM API, and possibly our own API's) to enhance user experience.
 Provide a clean and intuitive user interface with responsive media controls.
 Collaborate effectively as a team, utilizing version control to manage contributions and ensure smooth project development.
 
-#📜 License
+---
+
+# 📜 License
 
 This project is licensed under the MIT License. See the LICENSE file for more information.
 
-#📧 Contact
+---
+
+# 📧 Contact
 
 For any questions or feedback, please feel free to reach out to our team at student.loopify@gmail.com
+
+---
