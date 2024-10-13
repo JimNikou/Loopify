@@ -50,11 +50,14 @@ This project is a collaborative effort from our team of four university students
 ```bash
 git clone https://github.com/JimNikou/Loopify.git
 ```
-##Open the Project:
+### Open the Project:
+
   Launch Android Studio and open the cloned project.
-##Build the Project:
+### Build the Project:
+
   Allow Android Studio to install any necessary dependencies and build the project.
-##Run the App:
+### Run the App:
+
   Connect an Android device or use an emulator, then click the "Run" button in Android Studio.
 
 ---
