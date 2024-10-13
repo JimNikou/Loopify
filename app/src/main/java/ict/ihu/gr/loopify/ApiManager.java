@@ -25,7 +25,7 @@ public class ApiManager {
     private static class GetJsonTask extends AsyncTask<String, Void, String> { // Async task for the retrieval of the json info about the artist and the song
         private final ApiResponseListener listener;
 
-        public GetJsonTask(ApiResponseListener listener) { // Class constructor, declaring up the listener that is MainActivity in this case, because the call was from there
+        public GetJsonTask(ApiResponseListener listener) { // Class constructor, declaring up the listener that is MainActivity in this case, because the call was from there.
             this.listener = listener;
         }
 

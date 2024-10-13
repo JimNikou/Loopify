@@ -1,0 +1,4 @@
+- separated into classes the ApiManager and the MediaPlayerManager
+- basic function of streaming using uploaded mp3 file
+- init commit
+- Initial commit
