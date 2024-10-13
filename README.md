@@ -48,7 +48,7 @@ This project is a collaborative effort from our team of four university students
 
 ### Clone the Repository:
 ```bash
-git clone https://github.com/jimnikou/Loopify.git
+git clone https://github.com/JimNikou/Loopify.git
 ```
 ##Open the Project:
   Launch Android Studio and open the cloned project.
