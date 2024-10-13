@@ -1,0 +1,103 @@
+Index: app/src/main/java/ict/ihu/gr/loopify/MainActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package ict.ihu.gr.loopify;\n\nimport android.os.Bundle;\nimport android.view.View;\nimport android.view.Menu;\n\nimport com.google.android.material.snackbar.Snackbar;\nimport com.google.android.material.navigation.NavigationView;\n\nimport androidx.navigation.NavController;\nimport androidx.navigation.Navigation;\nimport androidx.navigation.ui.AppBarConfiguration;\nimport androidx.navigation.ui.NavigationUI;\nimport androidx.drawerlayout.widget.DrawerLayout;\nimport androidx.appcompat.app.AppCompatActivity;\n\nimport ict.ihu.gr.loopify.databinding.ActivityMainBinding;\n\npublic class MainActivity extends AppCompatActivity {\n\n    private AppBarConfiguration mAppBarConfiguration;\n    private ActivityMainBinding binding;\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n\n        binding = ActivityMainBinding.inflate(getLayoutInflater());\n        setContentView(binding.getRoot());\n\n        setSupportActionBar(binding.appBarMain.toolbar);\n        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {\n            @Override\n            public void onClick(View view) {\n                Snackbar.make(view, \"Replace with your own action\", Snackbar.LENGTH_LONG)\n                        .setAction(\"Action\", null)\n                        .setAnchorView(R.id.fab).show();\n            }\n        });\n        DrawerLayout drawer = binding.drawerLayout;\n        NavigationView navigationView = binding.navView;\n        // Passing each menu ID as a set of Ids because each\n        // menu should be considered as top level destinations.\n        mAppBarConfiguration = new AppBarConfiguration.Builder(\n                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)\n                .setOpenableLayout(drawer)\n                .build();\n        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);\n        NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);\n        NavigationUI.setupWithNavController(navigationView, navController);\n    }\n\n    @Override\n    public boolean onCreateOptionsMenu(Menu menu) {\n        // Inflate the menu; this adds items to the action bar if it is present.\n        getMenuInflater().inflate(R.menu.main, menu);\n        return true;\n    }\n\n    @Override\n    public boolean onSupportNavigateUp() {\n        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);\n        return NavigationUI.navigateUp(navController, mAppBarConfiguration)\n                || super.onSupportNavigateUp();\n    }\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/src/main/java/ict/ihu/gr/loopify/MainActivity.java b/app/src/main/java/ict/ihu/gr/loopify/MainActivity.java
+--- a/app/src/main/java/ict/ihu/gr/loopify/MainActivity.java	(revision a1aed9b6a2800a1ef35270888f7e2ed7752ab50b)
++++ b/app/src/main/java/ict/ihu/gr/loopify/MainActivity.java	(date 1728665899156)
+@@ -63,4 +63,20 @@
+         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
+                 || super.onSupportNavigateUp();
+     }
++
++    @Override
++    protected void onStart() {
++        super.onStart();
++        // We will start writing our code here.
++    }
++
++    private void connected() {
++        // Then we will write some more code here.
++    }
++
++    @Override
++    protected void onStop() {
++        super.onStop();
++        // Aaand we will finish off here.
++    }
+ }
+\ No newline at end of file
+Index: app/build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>plugins {\n    alias(libs.plugins.android.application)\n}\n\nandroid {\n    namespace = \"ict.ihu.gr.loopify\"\n    compileSdk = 34\n\n    defaultConfig {\n        applicationId = \"ict.ihu.gr.loopify\"\n        minSdk = 26\n        targetSdk = 34\n        versionCode = 1\n        versionName = \"1.0\"\n\n        testInstrumentationRunner = \"androidx.test.runner.AndroidJUnitRunner\"\n    }\n\n    buildTypes {\n        release {\n            isMinifyEnabled = false\n            proguardFiles(\n                getDefaultProguardFile(\"proguard-android-optimize.txt\"),\n                \"proguard-rules.pro\"\n            )\n        }\n    }\n    compileOptions {\n        sourceCompatibility = JavaVersion.VERSION_1_8\n        targetCompatibility = JavaVersion.VERSION_1_8\n    }\n    buildFeatures {\n        viewBinding = true\n    }\n}\n\ndependencies {\n\n    implementation(libs.appcompat)\n    implementation(libs.material)\n    implementation(libs.constraintlayout)\n    implementation(libs.lifecycle.livedata.ktx)\n    implementation(libs.lifecycle.viewmodel.ktx)\n    implementation(libs.navigation.fragment)\n    implementation(libs.navigation.ui)\n    testImplementation(libs.junit)\n    androidTestImplementation(libs.ext.junit)\n    androidTestImplementation(libs.espresso.core)\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/build.gradle.kts b/app/build.gradle.kts
+--- a/app/build.gradle.kts	(revision a1aed9b6a2800a1ef35270888f7e2ed7752ab50b)
++++ b/app/build.gradle.kts	(date 1728663549970)
+@@ -1,5 +1,6 @@
+ plugins {
+     alias(libs.plugins.android.application)
++    alias(libs.plugins.google.gms.google.services)
+ }
+ 
+ android {
+@@ -43,6 +44,7 @@
+     implementation(libs.lifecycle.viewmodel.ktx)
+     implementation(libs.navigation.fragment)
+     implementation(libs.navigation.ui)
++    implementation(libs.firebase.firestore)
+     testImplementation(libs.junit)
+     androidTestImplementation(libs.ext.junit)
+     androidTestImplementation(libs.espresso.core)
+Index: gradle/libs.versions.toml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>[versions]\nagp = \"8.7.0\"\njunit = \"4.13.2\"\njunitVersion = \"1.2.1\"\nespressoCore = \"3.6.1\"\nappcompat = \"1.7.0\"\nmaterial = \"1.12.0\"\nconstraintlayout = \"2.1.4\"\nlifecycleLivedataKtx = \"2.8.6\"\nlifecycleViewmodelKtx = \"2.8.6\"\nnavigationFragment = \"2.8.2\"\nnavigationUi = \"2.8.2\"\n\n[libraries]\njunit = { group = \"junit\", name = \"junit\", version.ref = \"junit\" }\next-junit = { group = \"androidx.test.ext\", name = \"junit\", version.ref = \"junitVersion\" }\nespresso-core = { group = \"androidx.test.espresso\", name = \"espresso-core\", version.ref = \"espressoCore\" }\nappcompat = { group = \"androidx.appcompat\", name = \"appcompat\", version.ref = \"appcompat\" }\nmaterial = { group = \"com.google.android.material\", name = \"material\", version.ref = \"material\" }\nconstraintlayout = { group = \"androidx.constraintlayout\", name = \"constraintlayout\", version.ref = \"constraintlayout\" }\nlifecycle-livedata-ktx = { group = \"androidx.lifecycle\", name = \"lifecycle-livedata-ktx\", version.ref = \"lifecycleLivedataKtx\" }\nlifecycle-viewmodel-ktx = { group = \"androidx.lifecycle\", name = \"lifecycle-viewmodel-ktx\", version.ref = \"lifecycleViewmodelKtx\" }\nnavigation-fragment = { group = \"androidx.navigation\", name = \"navigation-fragment\", version.ref = \"navigationFragment\" }\nnavigation-ui = { group = \"androidx.navigation\", name = \"navigation-ui\", version.ref = \"navigationUi\" }\n\n[plugins]\nandroid-application = { id = \"com.android.application\", version.ref = \"agp\" }\n\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/gradle/libs.versions.toml b/gradle/libs.versions.toml
+--- a/gradle/libs.versions.toml	(revision a1aed9b6a2800a1ef35270888f7e2ed7752ab50b)
++++ b/gradle/libs.versions.toml	(date 1728663549850)
+@@ -10,6 +10,8 @@
+ lifecycleViewmodelKtx = "2.8.6"
+ navigationFragment = "2.8.2"
+ navigationUi = "2.8.2"
++googleGmsGoogleServices = "4.4.2"
++firebaseFirestore = "25.1.0"
+ 
+ [libraries]
+ junit = { group = "junit", name = "junit", version.ref = "junit" }
+@@ -22,7 +24,9 @@
+ lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycleViewmodelKtx" }
+ navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
+ navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
++firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
+ 
+ [plugins]
+ android-application = { id = "com.android.application", version.ref = "agp" }
++google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
+ 
+Index: build.gradle.kts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>// Top-level build file where you can add configuration options common to all sub-projects/modules.\nplugins {\n    alias(libs.plugins.android.application) apply false\n}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/build.gradle.kts b/build.gradle.kts
+--- a/build.gradle.kts	(revision a1aed9b6a2800a1ef35270888f7e2ed7752ab50b)
++++ b/build.gradle.kts	(date 1728663549925)
+@@ -1,4 +1,5 @@
+ // Top-level build file where you can add configuration options common to all sub-projects/modules.
+ plugins {
+     alias(libs.plugins.android.application) apply false
++    alias(libs.plugins.google.gms.google.services) apply false
+ }
+\ No newline at end of file
