@@ -7,6 +7,9 @@ import android.view.Menu;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -21,22 +24,39 @@ public class MainActivity extends AppCompatActivity {
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
+        replaceFragment(new MainHomeFragment());
 
         setSupportActionBar(binding.appBarMain.toolbar);
-        binding.appBarMain.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null)
-                        .setAnchorView(R.id.fab).show();
+
+
+        binding.appBarMain.bottomNavigationView.setOnItemSelectedListener(item -> { //code for changing the fragments using the bottom navbar
+
+            int itemId = item.getItemId();
+
+            if (itemId == R.id.home_bot_nav) {
+                replaceFragment(new MainHomeFragment());
+            } else if (itemId == R.id.search_bot_nav) {
+                replaceFragment(new SearchFragment());
+            } else if (itemId == R.id.library_bot_nav) {
+                replaceFragment(new YourLibraryFragment());
+            } else {
+                return false;
             }
+
+            return true;
         });
+
+
+
+
         DrawerLayout drawer = binding.drawerLayout;
         NavigationView navigationView = binding.navView;
         // Passing each menu ID as a set of Ids because each
@@ -56,6 +76,14 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
+
+    private void replaceFragment(Fragment fragment){  //method acting as fragment manager for bottom navbar
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.frame_layout, fragment); // Ensure 'R.id.frame_layout' is correct
+        fragmentTransaction.commit();
+    }
+
 
     @Override
     public boolean onSupportNavigateUp() {
