@@ -42,7 +42,6 @@ dependencies {
     implementation ("com.google.android.exoplayer:exoplayer:2.19.1")
 
 
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)

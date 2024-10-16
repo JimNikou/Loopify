@@ -15,12 +15,27 @@ public class ApiManager {
     private static final String TAG = "ApiManager";
     private final String apiKey = "a38306489162f067667f1b911c8345c5"; // Na to kanoume store ektos public repo!
 
-    public void fetchTrackInfo(String artist, String track, ApiResponseListener listener) {
-        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=" + apiKey +
-                "&artist=" + artist + "&track=" + track + "&format=json";
-
+    public void fetchTrackInfo(String track, String artist, ApiResponseListener listener) {
+        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=" + apiKey + "&artist=" + artist +
+                "&track=" + track + "&format=json";
+//        Log.d(TAG, jsonUrl);
+//        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=artist.getcorrection&artist=micahel jackson&api_key=a38306489162f067667f1b911c8345c5&format=json";
+//        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=a38306489162f067667f1b911c8345c5&artist=cher&track=believe&format=json";
         new GetJsonTask(listener).execute(jsonUrl);
     }
+
+    public void fetchArtistInfo(String artist, ApiResponseListener listener) {
+        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=artist.getInfo&api_key=" + apiKey +
+                "&artist=" + artist + "&format=json";
+        new GetJsonTask(listener).execute(jsonUrl);
+    }
+
+    public void fetchCorrectedArtistInfo(String artist, ApiResponseListener listener) {
+        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=artist.getCorrection&api_key=" + apiKey +
+                "&artist=" + artist + "&format=json";
+        new GetJsonTask(listener).execute(jsonUrl);
+    }
+
 
     private static class GetJsonTask extends AsyncTask<String, Void, String> { // Async task for the retrieval of the json info about the artist and the song
         private final ApiResponseListener listener;
@@ -57,6 +72,7 @@ public class ApiManager {
             } catch (Exception e) {
                 Log.e(TAG, "Error: " + e.getMessage());
             }
+            Log.d(TAG,jsonResponse);
             return jsonResponse;
         }
 
