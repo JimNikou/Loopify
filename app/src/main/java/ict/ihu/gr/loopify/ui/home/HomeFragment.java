@@ -8,25 +8,48 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import ict.ihu.gr.loopify.databinding.FragmentHomeBinding;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        HomeViewModel homeViewModel =
-                new ViewModelProvider(this).get(HomeViewModel.class);
-
+        // Inflate the fragment layout using View Binding
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textHome;
-        homeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        // Call the setGreetingText method to update the greeting
+        setGreetingText();
+
         return root;
+    }
+
+    private void setGreetingText() {
+        // Get the TextView inside the black bar (greeting_text)
+        TextView greetingText = binding.greetingText;
+
+        // Get the current time in hours
+        SimpleDateFormat sdf = new SimpleDateFormat("HH", Locale.getDefault());
+        int currentHour = Integer.parseInt(sdf.format(new Date()));
+
+        // Determine the appropriate greeting message
+        if (currentHour >= 5 && currentHour < 12) {
+            greetingText.setText("Good morning user");
+        } else if (currentHour >= 12 && currentHour < 18) {
+            greetingText.setText("Good afternoon user");
+        } else if (currentHour >= 18 && currentHour <= 23) {
+            greetingText.setText("Good evening user");
+        } else {
+            greetingText.setText("Good night user");
+        }
     }
 
     @Override
