@@ -15,7 +15,7 @@ import com.google.android.material.navigation.NavigationView;
 import org.json.JSONObject;
 
 import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
-
+//TEST TEST TEST TEST TEST TEST TEST TEST TEST
 public class MainActivity extends AppCompatActivity implements ApiManager.ApiResponseListener {
     private MediaPlayerManager mediaPlayerManager;
     private ExoPlayerManager exoPlayerManager;
