@@ -26,10 +26,10 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        // Load the ImageCarouselFragment
+        // Load the ImageCarouselFragment (playlist slider)
         if (savedInstanceState == null) {
-            getChildFragmentManager().beginTransaction() // Use getChildFragmentManager()
-                    .replace(R.id.fragment_container, new ict.ihu.gr.loopify.ui.ImageCarouselFragment()) // Ensure the fragment_container is in your layout
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new ict.ihu.gr.loopify.ui.ImageCarouselFragment())
                     .commit();
         }
 
