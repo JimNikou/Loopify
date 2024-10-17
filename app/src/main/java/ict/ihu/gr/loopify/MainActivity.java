@@ -3,7 +3,6 @@ package ict.ihu.gr.loopify;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
-import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -49,14 +48,16 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 //        resetButton = findViewById(R.id.resetButton);
 
 
-        String artist = "Light";
-        String track = "mosca";
-        String wrong_artist = "Michale Jackson";
+//        String wrong_track = "Baet It";
+//        String artist = "michael jackson";
+        String track = "porcelain";
 
         exoPlayerManager = new ExoPlayerManager(this);
-        new ApiManager().fetchCorrectedArtistInfo(wrong_artist, this);
-        new ApiManager().fetchArtistInfo(artist, this);
-        new ApiManager().fetchTrackInfo(track, artist, this); // When this is finished it sends the jsonResponse to the onResponseReceived func
+        new ApiManager().fetchArtistFromTrack(track,this);
+//        new ApiManager().fetchTADB_Artist_ID(track, artist,this);
+//        new ApiManager().fetchCorrectedTrackInfo(wrong_track, artist, this);
+//        new ApiManager().fetchYtURL("112424", this);
+//        new ApiManager().fetchTrackMBID(track, artist, this); // When this is finished it sends the jsonResponse to the onResponseReceived func
                                                                      // The listener is here because the MainActivity is the one listening
 
         //uncomment if you want to test the functionalities
