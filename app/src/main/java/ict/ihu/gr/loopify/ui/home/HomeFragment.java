@@ -4,18 +4,20 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import ict.ihu.gr.loopify.R;
 import ict.ihu.gr.loopify.databinding.FragmentHomeBinding;
 
 public class HomeFragment extends Fragment {
 
     private FragmentHomeBinding binding;
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         HomeViewModel homeViewModel =
@@ -23,6 +25,13 @@ public class HomeFragment extends Fragment {
 
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        // Load the ImageCarouselFragment
+        if (savedInstanceState == null) {
+            getChildFragmentManager().beginTransaction() // Use getChildFragmentManager()
+                    .replace(R.id.fragment_container, new ict.ihu.gr.loopify.ui.ImageCarouselFragment()) // Ensure the fragment_container is in your layout
+                    .commit();
+        }
 
         return root;
     }
