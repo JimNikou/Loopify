@@ -2,16 +2,20 @@ package ict.ihu.gr.loopify;
 
 import android.os.AsyncTask;
 import android.util.Log;
-
 import androidx.annotation.Nullable;
-
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 
 //Diagram of the calls that need to be made in chronological order for the correct load of a track that the user searched:
@@ -77,6 +81,7 @@ public class ApiManager {
                 String youtubeURL = getYouTubeUrlFromJson(jsonResponse, track);
                 if (youtubeURL != null){
                     Log.d(TAG, "Url from Youtube: " + youtubeURL);
+                    fetchMP3file(youtubeURL, listener);
                 }else{
                     Log.d(TAG, "Url Not found");
                 }
@@ -152,7 +157,38 @@ public class ApiManager {
     }
 
 
-    private static class GetJsonTask extends AsyncTask<String, Void, String> { // Async task for the retrieval of the json info about the artist and the song
+    // function to change when we migrate to Cloudfare
+    public void fetchMP3file(String youtubeURL, ApiResponseListener listener){
+        OkHttpClient client = new OkHttpClient();
+
+        // Create JSON payload
+        String json = "{ \"url\": \"" + youtubeURL + "\" }"; // the served info format our api handles
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+
+        Request request = new Request.Builder()
+                .url("http://192.168.1.3:3000/download") // we will change this to Petros's server ip/Cloudfare directory when we migrate
+                .post(body)
+                .build();
+
+        new Thread(() -> { // occupy a thread to handle the POST of the formated data
+            try {
+                Response response = client.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    String responseData = response.body().string();
+                    listener.onResponseReceived(responseData);
+                } else {
+                    listener.onResponseReceived(null);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                listener.onResponseReceived(null);
+            }
+        }).start();
+    }
+
+
+
+    private static class GetJsonTask extends AsyncTask<String, Void, String> { // async task for the retrieval of the json info about the artist and the song
         private final ApiResponseListener listener;
 
         public GetJsonTask(ApiResponseListener listener) { // class constructor, declaring up the listener that is MainActivity in this case, because the call was from there.
@@ -236,7 +272,7 @@ public class ApiManager {
                 return firstTrack.getString("idArtist");
             }
         } catch (JSONException e) {
-            e.printStackTrace();  // Print the stack trace for debugging
+            e.printStackTrace();
         }
         return null;  // Return null if the idArtist is not found or if there's an error
     }
