@@ -6,40 +6,39 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.os.Build;
 import android.os.IBinder;
 import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-
-import ict.ihu.gr.loopify.R;
 
 public class MusicPlayerService extends Service {
 
     private static final String CHANNEL_ID = "music_player_channel";
     private static final int NOTIFICATION_ID = 1;
 
+    // Single instance of the media player manager
+    private ExoPlayerManager exoPlayerManager;
+
     @Override
     public void onCreate() {
         super.onCreate();
         createNotificationChannel(); // Create notification channel for Android 8.0+
+        exoPlayerManager = new ExoPlayerManager(this); // Initialize ExoPlayerManager
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         String action = intent.getAction();
 
+        // Handle different actions (play, pause, stop)
         if ("PLAY".equals(action)) {
-            playMusic(); // Your play logic here
-            showNotification("Playing");
+            String songUrl = intent.getStringExtra("song_url");
+            playMusic(songUrl); // Pass the URL to play
         } else if ("PAUSE".equals(action)) {
-            pauseMusic(); // Your pause logic here
-            showNotification("Paused");
+            pauseMusic(); // Pause the playback
         } else if ("STOP".equals(action)) {
-            stopMusic(); // Your stop logic here
-            stopSelf();
+            stopMusic(); // Stop the playback and the service
         }
 
-        return START_NOT_STICKY; // Adjust to your needs
+        return START_NOT_STICKY;
     }
 
     @Override
@@ -47,7 +46,26 @@ public class MusicPlayerService extends Service {
         return null; // We don't need binding for this service
     }
 
-    // Helper method to create and show notification
+    // Play the music or resume it if already loaded
+    private void playMusic(String url) {
+        exoPlayerManager.playSong(url); // Call the playSong method from ExoPlayerManager
+        showNotification("Playing"); // Update the notification
+    }
+
+    // Pause the music
+    private void pauseMusic() {
+        exoPlayerManager.pauseSong(); // Pause the playback in ExoPlayerManager
+        showNotification("Paused"); // Update the notification to show paused state
+    }
+
+    // Stop the music and release resources
+    private void stopMusic() {
+        exoPlayerManager.stopSong(); // Stop the playback in ExoPlayerManager
+        stopForeground(true); // Remove the notification and stop the service
+        stopSelf(); // Stop the service itself
+    }
+
+    // Helper method to show notification
     private void showNotification(String status) {
         // PendingIntents for play, pause, stop actions
         PendingIntent playIntent = PendingIntent.getService(
@@ -80,31 +98,25 @@ public class MusicPlayerService extends Service {
     }
 
     private void createNotificationChannel() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "Music Player Channel",
-                    NotificationManager.IMPORTANCE_LOW
-            );
-            channel.setDescription("Channel for music player controls");
+        NotificationChannel channel = new NotificationChannel(
+                CHANNEL_ID,
+                "Music Player Channel",
+                NotificationManager.IMPORTANCE_LOW
+        );
+        channel.setDescription("Channel for music player controls");
 
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) {
-                manager.createNotificationChannel(channel);
-            }
+        NotificationManager manager = getSystemService(NotificationManager.class);
+        if (manager != null) {
+            manager.createNotificationChannel(channel);
         }
     }
 
-    // Placeholder methods for music control
-    private void playMusic() {
-        // Your existing play logic (call MediaPlayerManager or ExoPlayerManager)
-    }
-
-    private void pauseMusic() {
-        // Your existing pause logic (call MediaPlayerManager or ExoPlayerManager)
-    }
-
-    private void stopMusic() {
-        // Your existing stop logic (call MediaPlayerManager or ExoPlayerManager)
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (exoPlayerManager != null) {
+            exoPlayerManager.release(); // Release ExoPlayer resources
+            exoPlayerManager = null;
+        }
     }
 }

@@ -42,10 +42,10 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         mediaPlayerManager = new MediaPlayerManager();
 
         //button declaration
-//        playButton = findViewById(R.id.playButton); //uncomment if you want to test the functionalities
-//        stopButton = findViewById(R.id.stopButton);
-//        pauseButton = findViewById(R.id.pauseButton);
-//        resetButton = findViewById(R.id.resetButton);
+        playButton = findViewById(R.id.playButton); //uncomment if you want to test the functionalities
+        stopButton = findViewById(R.id.stopButton);
+        pauseButton = findViewById(R.id.pauseButton);
+        resetButton = findViewById(R.id.resetButton);
 
 
 //        String wrong_track = "Baet It";
