@@ -1,5 +1,6 @@
 package ict.ihu.gr.loopify;
 
+import ict.ihu.gr.loopify.BuildConfig;
 import android.os.AsyncTask;
 import android.util.Log;
 import androidx.annotation.Nullable;
@@ -16,6 +17,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
 
 
 //Diagram of the calls that need to be made in chronological order for the correct load of a track that the user searched:
@@ -34,8 +38,8 @@ import okhttp3.Response;
 
 public class ApiManager {
     private static final String TAG = "ApiManager";
-    private final String lastFMapiKey = "a38306489162f067667f1b911c8345c5"; // Na ta kanoume store ektos public repo!
-    private final String theaudioDBapiKey = "523532";
+    private final String lastFMapiKey = BuildConfig.LAST_FM_API_KEY;
+    private final String theaudioDBapiKey = BuildConfig.THE_AUDIO_DB_KEY;
 
     /**
      * This function fetches the Artist ID from TheAudioDB API using the provided track and artist name,
@@ -72,8 +76,6 @@ public class ApiManager {
      * @param track The name of the track to find the YouTube URL for.
      */
     public void fetchYtURL(String TADB_Artist_ID, ApiResponseListener listener, String track) { //number 3 in execute order
-//        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=artist.getInfo&api_key=" + lastFMapiKey +
-//                "&artist=" + artist + "&format=json";
         String jsonUrl = "https://www.theaudiodb.com/api/v1/json/" + theaudioDBapiKey + "/mvid.php?i=" + TADB_Artist_ID;
         new GetJsonTask(new ApiResponseListener() {
             @Override
@@ -128,8 +130,6 @@ public class ApiManager {
      * @param listener The callback listener for handling the API response.
      */
     public void fetchArtistInfo(String artist, ApiResponseListener listener) {
-//        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=artist.getInfo&api_key=" + lastFMapiKey +
-//                "&artist=" + artist + "&format=json";
         String jsonUrl = "https://www.theaudiodb.com/api/v1/json/" + theaudioDBapiKey + "/search.php?s=" + artist;
         new GetJsonTask(listener).execute(jsonUrl);
     }
@@ -138,7 +138,6 @@ public class ApiManager {
                 "&artist=" + artist + "&format=json";
         new GetJsonTask(listener).execute(jsonUrl);
     }
-
     public void fetchCorrectedTrackInfo(String track, String artist, ApiResponseListener listener) {
         String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=track.getcorrection&api_key=" + lastFMapiKey + "&artist=" + artist +
                 "&track=" + track + "&format=json";
@@ -150,7 +149,6 @@ public class ApiManager {
         String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=" + lastFMapiKey + "&format=json";
         new GetJsonTask(listener).execute(jsonUrl);
     }
-
     public void fetchTopTrackCharts(ApiResponseListener listener) {
         String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=" + lastFMapiKey + "&format=json";
         new GetJsonTask(listener).execute(jsonUrl);
@@ -164,9 +162,9 @@ public class ApiManager {
         // Create JSON payload
         String json = "{ \"url\": \"" + youtubeURL + "\" }"; // the served info format our api handles
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-
+        String BaseUrl = BuildConfig.BASE_URL;
         Request request = new Request.Builder()
-                .url("http://192.168.1.3:3000/download") // we will change this to Petros's server ip/Cloudfare directory when we migrate
+                .url(BaseUrl) // we will change this to Petros's server ip/Cloudfare directory when we migrate
                 .post(body)
                 .build();
 
@@ -223,7 +221,7 @@ public class ApiManager {
             } catch (Exception e) {
                 Log.e(TAG, "Error: " + e.getMessage());
             }
-            Log.d(TAG,jsonResponse);
+//            Log.d(TAG,jsonResponse);
             return jsonResponse;
         }
 
