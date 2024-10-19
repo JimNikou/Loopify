@@ -40,6 +40,8 @@ dependencies {
     implementation ("com.google.code.gson:gson:2.8.7")
     implementation ("com.arthenica:ffmpeg-kit-full:4.5.LTS")
     implementation ("com.google.android.exoplayer:exoplayer:2.19.1")
+    implementation ("androidx.core:core-ktx:1.7.0")
+    implementation ("androidx.media:media:1.4.3")
 
 
     implementation(libs.appcompat)

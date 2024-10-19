@@ -3,6 +3,7 @@ package ict.ihu.gr.loopify;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -10,9 +11,14 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
-
+import android.content.Intent;
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONObject;
-
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
+import androidx.core.app.NotificationManagerCompat;
 import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity implements ApiManager.ApiResponseListener {
@@ -42,9 +48,9 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         mediaPlayerManager = new MediaPlayerManager();
 
         //button declaration
-//        playButton = findViewById(R.id.playButton); //uncomment if you want to test the functionalities
-//        stopButton = findViewById(R.id.stopButton);
-//        pauseButton = findViewById(R.id.pauseButton);
+        playButton = findViewById(R.id.playButton); //uncomment if you want to test the functionalities
+        stopButton = findViewById(R.id.stopButton);
+        pauseButton = findViewById(R.id.pauseButton);
 //        resetButton = findViewById(R.id.resetButton);
 
 
@@ -61,12 +67,40 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
                                                                      // The listener is here because the MainActivity is the one listening
 
         //uncomment if you want to test the functionalities
-//        playButton.setOnClickListener(v -> exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti mou zitas (Live).mp3?alt=media"));
+        playButton.setOnClickListener(v -> {
+//            exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti%20mou%20zitas%20(Live).mp3?alt=media");
+            startMusicService("PLAY");
+        });
+
+        pauseButton.setOnClickListener(v -> {
+            if (exoPlayerManager != null) {
+                exoPlayerManager.pauseSong();
+            }
+            startMusicService("PAUSE");
+        });
+
 //        stopButton.setOnClickListener(v -> exoPlayerManager.stopSong());
-//        pauseButton.setOnClickListener(v -> {if (exoPlayerManager != null) {exoPlayerManager.pauseSong();}});
 //        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
+
+        createNotificationChannel();
     }
 
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel serviceChannel = new NotificationChannel(
+                    "MEDIA_CHANNEL_ID",
+                    "Media Playback",
+                    NotificationManager.IMPORTANCE_LOW
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(serviceChannel);
+        }
+    }
+    private void startMusicService(String action) {
+        Intent serviceIntent = new Intent(this, MediaPlayerService.class);
+        serviceIntent.setAction(action);
+        startService(serviceIntent); // Start the service with the action
+    }
 
     @Override
     public void onResponseReceived(String jsonResponse) {
@@ -103,6 +137,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        startMusicService("STOP");
         exoPlayerManager.release(); // Release MediaPlayer resources
     }
 }
