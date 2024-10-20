@@ -16,9 +16,15 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.navigation.NavigationView;
-
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import android.content.Intent;
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONObject;
-
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
+import androidx.core.app.NotificationManagerCompat;
 import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
 
 //TEST TEST TEST TEST TEST TEST TEST TEST TEST
@@ -27,8 +33,8 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     private ExoPlayerManager exoPlayerManager;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    private Button playButton, stopButton, pauseButton, resetButton;
 
+    private Button playButton, stopButton, pauseButton, resetButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,15 +42,27 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
+
+        // Create AppBarConfiguration with both BottomNav and Drawer items
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
-                .setOpenableLayout(binding.drawerLayout)
+                R.id.nav_home, R.id.nav_search, R.id.nav_library,  // Bottom navigation items
+                R.id.nav_notification, R.id.nav_settings, R.id.nav_account)  // Drawer items
+                .setOpenableLayout(binding.drawerLayout)  // Associate drawer layout
                 .build();
 
+        // Setup NavController
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+
+        // Link the toolbar with NavController
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+
+        // Link the Navigation Drawer with NavController
         NavigationView navigationView = binding.navView;
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        // Link the BottomNavigationView with NavController
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
         mediaPlayerManager = new MediaPlayerManager();
 
@@ -58,27 +76,60 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
             }
         });
 
-        // Other initializations...
+        //button declaration
+        playButton = findViewById(R.id.playButton); //uncomment if you want to test the functionalities
+        stopButton = findViewById(R.id.stopButton);
+        pauseButton = findViewById(R.id.pauseButton);
+//        resetButton = findViewById(R.id.resetButton);
 
 
+//        String wrong_track = "Baet It";
+//        String artist = "michael jackson";
+        String track = "turn it around";
 
-//        String artist = "Light";
-//        String track = "mosca";
-//        String wrong_artist = "Michale Jackson";
-
-//        exoPlayerManager = new ExoPlayerManager(this);
-//        new ApiManager().fetchCorrectedArtistInfo(wrong_artist, this);
-//        new ApiManager().fetchArtistInfo(artist, this);
-//        new ApiManager().fetchTrackInfo(track, artist, this); // When this is finished it sends the jsonResponse to the onResponseReceived func
-//                                                                     // The listener is here because the MainActivity is the one listening
+        exoPlayerManager = new ExoPlayerManager(this);
+        new ApiManager().fetchArtistFromTrack(track,this);
+//        new ApiManager().fetchTADB_Artist_ID(track, artist,this);
+//        new ApiManager().fetchCorrectedTrackInfo(wrong_track, artist, this);
+//        new ApiManager().fetchYtURL("112424", this);
+//        new ApiManager().fetchTrackMBID(track, artist, this); // When this is finished it sends the jsonResponse to the onResponseReceived func
+                                                                     // The listener is here because the MainActivity is the one listening
+      
 
         //uncomment if you want to test the functionalities
-//        playButton.setOnClickListener(v -> exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti mou zitas (Live).mp3?alt=media"));
+        playButton.setOnClickListener(v -> {
+//            exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti%20mou%20zitas%20(Live).mp3?alt=media");
+            startMusicService("PLAY");
+        });
+
+        pauseButton.setOnClickListener(v -> {
+            if (exoPlayerManager != null) {
+                exoPlayerManager.pauseSong();
+            }
+            startMusicService("PAUSE");
+        });
 //        stopButton.setOnClickListener(v -> exoPlayerManager.stopSong());
-//        pauseButton.setOnClickListener(v -> {if (exoPlayerManager != null) {exoPlayerManager.pauseSong();}});
 //        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
+
+        createNotificationChannel();
     }
 
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel serviceChannel = new NotificationChannel(
+                    "MEDIA_CHANNEL_ID",
+                    "Media Playback",
+                    NotificationManager.IMPORTANCE_LOW
+            );
+            NotificationManager manager = getSystemService(NotificationManager.class);
+            manager.createNotificationChannel(serviceChannel);
+        }
+    }
+    private void startMusicService(String action) {
+        Intent serviceIntent = new Intent(this, MediaPlayerService.class);
+        serviceIntent.setAction(action);
+        startService(serviceIntent); // Start the service with the action
+    }
 
     @Override
     public void onResponseReceived(String jsonResponse) {
@@ -126,6 +177,8 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
             exoPlayerManager.release();
         }
         super.onDestroy();
+        startMusicService("STOP");
+        exoPlayerManager.release(); // Release MediaPlayer resources
     }
 
 }

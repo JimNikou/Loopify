@@ -1,16 +1,16 @@
-package ict.ihu.gr.loopify.ui.slideshow;
+package ict.ihu.gr.loopify.ui.gallery;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class SlideshowViewModel extends ViewModel {
+public class NotificationViewModel extends ViewModel {
 
     private final MutableLiveData<String> mText;
 
-    public SlideshowViewModel() {
+    public NotificationViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is slideshow fragment");
+        mText.setValue("This is notification fragment");
     }
 
     public LiveData<String> getText() {

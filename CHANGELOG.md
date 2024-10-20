@@ -1,4 +1,24 @@
+- feat!: youtube url is now provided by only using the name of the track.
+- Merge branch 'remove_test_buttons'
+- feat: removed buttons that contribute to testing the song api
+- Merge commit '67c832ce73f05db0c8972a45eca8952cbc551e39'
+- fix(api): reduced loading delay using ExoPlayerManager feat(api): added basic return functions to test the current delay
+- feat: Time based greetings
+- merge fix for firebase compatibillity
+- Merge branch 'music-api-configuration'
+- fixed firebase compatibility issues
+- Merge branch 'music-api-configuration'
+- Merge branch 'main' of https://github.com/JimNikou/Loopify
+- commit of uncommited changes before checkout
+- added changelog
 - separated into classes the ApiManager and the MediaPlayerManager
+- Update README.md
+- Updated git link README.md
+- Update README.md
+- Update README.md
+- Update README.md
+- Create README.md
 - basic function of streaming using uploaded mp3 file
+- init commit
 - init commit
 - Initial commit

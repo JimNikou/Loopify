@@ -1,25 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/nav_home">
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_home">  <!-- Home is the start destination -->
 
+    <!-- Bottom Navigation Fragments -->
     <fragment
         android:id="@+id/nav_home"
         android:name="ict.ihu.gr.loopify.ui.home.HomeFragment"
-        android:label="@string/menu_home"
-        tools:layout="@layout/fragment_home" />
+        android:label="Home"/>
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="ict.ihu.gr.loopify.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_search"
+        android:name="ict.ihu.gr.loopify.SearchFragment"
+        android:label="Search"/>
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="ict.ihu.gr.loopify.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_library"
+        android:name="ict.ihu.gr.loopify.YourLibraryFragment"
+        android:label="Your Library"/>
+
+    <!-- Drawer Navigation Fragments (other sections) -->
+    <fragment
+        android:id="@+id/nav_notification"
+        android:name="ict.ihu.gr.loopify.ui.gallery.NotificationFragment"
+        android:label="Notifications"/>
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="ict.ihu.gr.loopify.ui.slideshow.SettingsFragment"
+        android:label="Settings"/>
+    <fragment
+        android:id="@+id/nav_account"
+        android:name="ict.ihu.gr.loopify.AccountFragment"
+        android:label="Account"/>
+
 </navigation>
