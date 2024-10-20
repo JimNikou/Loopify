@@ -3,6 +3,7 @@ package ict.ihu.gr.loopify;
 import android.content.Context;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.Player;
 
 public class ExoPlayerManager {
     private ExoPlayer exoPlayer;
@@ -13,6 +14,14 @@ public class ExoPlayerManager {
         exoPlayer = new ExoPlayer.Builder(context).build();
     }
 
+    // Check if the player is actively playing
+    public boolean isPlaying() {
+        return exoPlayer.isPlaying();
+    }
+
+    public void continuePlaying(){
+        exoPlayer.play();
+    }
     // Prepare and play the song, or resume if already loaded
     public void playSong(String url) {
         if (exoPlayer.isPlaying()) {
@@ -30,6 +39,9 @@ public class ExoPlayerManager {
 
         exoPlayer.play(); // Start or resume the playback
     }
+
+
+
 
     // Pause the song
     public void pauseSong() {
