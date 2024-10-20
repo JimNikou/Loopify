@@ -11,6 +11,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     private ExoPlayerManager exoPlayerManager;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    private Button playButton, stopButton, pauseButton, resetButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,15 +36,27 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
+
+        // Create AppBarConfiguration with both BottomNav and Drawer items
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
-                .setOpenableLayout(binding.drawerLayout)
+                R.id.nav_home, R.id.nav_search, R.id.nav_library,  // Bottom navigation items
+                R.id.nav_notification, R.id.nav_settings, R.id.nav_account)  // Drawer items
+                .setOpenableLayout(binding.drawerLayout)  // Associate drawer layout
                 .build();
 
+        // Setup NavController
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+
+        // Link the toolbar with NavController
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+
+        // Link the Navigation Drawer with NavController
         NavigationView navigationView = binding.navView;
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        // Link the BottomNavigationView with NavController
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
         mediaPlayerManager = new MediaPlayerManager();
 

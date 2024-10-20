@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,8 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import ict.ihu.gr.loopify.ExoPlayerManager;
+import ict.ihu.gr.loopify.MediaPlayerManager;
 import ict.ihu.gr.loopify.R;
 import ict.ihu.gr.loopify.databinding.FragmentHomeBinding;
 
@@ -19,7 +22,11 @@ import java.util.Date;
 import java.util.Locale;
 
 public class HomeFragment extends Fragment {
+    private MediaPlayerManager mediaPlayerManager;
+    private ExoPlayerManager exoPlayerManager;
 
+
+    private Button playButton, stopButton, pauseButton, resetButton;
     private FragmentHomeBinding binding;
 
     @Override
@@ -38,6 +45,19 @@ public class HomeFragment extends Fragment {
 
         // Call the setGreetingText method to update the greeting
         setGreetingText();
+        exoPlayerManager = new ExoPlayerManager(requireContext());
+        playButton = root.findViewById(R.id.playButton); //uncomment if you want to test the functionalities
+        stopButton = root.findViewById(R.id.stopButton);
+        pauseButton = root.findViewById(R.id.pauseButton);
+        resetButton = root.findViewById(R.id.resetButton);
+
+
+        playButton.setOnClickListener(v -> exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti mou zitas (Live).mp3?alt=media"));
+        stopButton.setOnClickListener(v -> exoPlayerManager.stopSong());
+        pauseButton.setOnClickListener(v -> {if (exoPlayerManager != null) {exoPlayerManager.pauseSong();}});
+        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
+
+
 
         return root;
     }
@@ -61,6 +81,9 @@ public class HomeFragment extends Fragment {
             greetingText.setText("Good night user");
         }
     }
+
+
+
 
     @Override
     public void onDestroyView() {
