@@ -1,15 +1,20 @@
 package ict.ihu.gr.loopify;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.content.Intent;
@@ -22,6 +27,7 @@ import android.os.Build;
 import androidx.core.app.NotificationManagerCompat;
 import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
 
+//TEST TEST TEST TEST TEST TEST TEST TEST TEST
 public class MainActivity extends AppCompatActivity implements ApiManager.ApiResponseListener {
     private MediaPlayerManager mediaPlayerManager;
     private ExoPlayerManager exoPlayerManager;
@@ -60,6 +66,16 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
         mediaPlayerManager = new MediaPlayerManager();
 
+        Button openMediaPlayerButton = findViewById(R.id.open_media_player_button);
+        openMediaPlayerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("MainActivity", "Button clicked, trying to load MediaPlayerManager");
+                loadFragment(new MediaPlayerManager());
+                Log.d("MainActivity", "MediaPlayerManager fragment should now be visible.");
+            }
+        });
+
         //button declaration
         playButton = findViewById(R.id.playButton); //uncomment if you want to test the functionalities
         stopButton = findViewById(R.id.stopButton);
@@ -78,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 //        new ApiManager().fetchYtURL("112424", this);
 //        new ApiManager().fetchTrackMBID(track, artist, this); // When this is finished it sends the jsonResponse to the onResponseReceived func
                                                                      // The listener is here because the MainActivity is the one listening
+      
 
         //uncomment if you want to test the functionalities
         playButton.setOnClickListener(v -> {
@@ -119,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         // Extract the song URL and start playing it
         String songUrl = extractSongUrlFromJson(jsonResponse);
         if (songUrl != null) {
-            mediaPlayerManager.playSong(songUrl);
+            mediaPlayerManager.playSong(Uri.parse(songUrl));
         }
     }
 
@@ -131,6 +148,14 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
             Log.e("MainActivity", "Error extracting song URL: " + e.getMessage());
             return null;
         }
+    }
+
+
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override
@@ -148,8 +173,12 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
     @Override
     protected void onDestroy() {
+        if (exoPlayerManager != null) {
+            exoPlayerManager.release();
+        }
         super.onDestroy();
         startMusicService("STOP");
         exoPlayerManager.release(); // Release MediaPlayer resources
     }
+
 }
