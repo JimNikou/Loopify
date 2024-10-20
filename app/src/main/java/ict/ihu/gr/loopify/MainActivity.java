@@ -27,7 +27,7 @@ import android.os.Build;
 import androidx.core.app.NotificationManagerCompat;
 import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
 
-//TEST TEST TEST TEST TEST TEST TEST TEST TEST
+
 public class MainActivity extends AppCompatActivity implements ApiManager.ApiResponseListener {
     private MediaPlayerManager mediaPlayerManager;
     private ExoPlayerManager exoPlayerManager;
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
 //        String wrong_track = "Baet It";
 //        String artist = "michael jackson";
-        String track = "turn it around";
+        String track = "porcelain";
 
         exoPlayerManager = new ExoPlayerManager(this);
         new ApiManager().fetchArtistFromTrack(track,this);
