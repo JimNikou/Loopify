@@ -45,17 +45,17 @@ public class HomeFragment extends Fragment {
 
         // Call the setGreetingText method to update the greeting
         setGreetingText();
-        exoPlayerManager = new ExoPlayerManager(requireContext());
-        playButton = root.findViewById(R.id.playButton); //uncomment if you want to test the functionalities
-        stopButton = root.findViewById(R.id.stopButton);
-        pauseButton = root.findViewById(R.id.pauseButton);
-        resetButton = root.findViewById(R.id.resetButton);
-
-
-        playButton.setOnClickListener(v -> exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti mou zitas (Live).mp3?alt=media"));
-        stopButton.setOnClickListener(v -> exoPlayerManager.stopSong());
-        pauseButton.setOnClickListener(v -> {if (exoPlayerManager != null) {exoPlayerManager.pauseSong();}});
-        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
+//        exoPlayerManager = new ExoPlayerManager(requireContext());
+//        playButton = root.findViewById(R.id.playButton); //uncomment if you want to test the functionalities
+//        stopButton = root.findViewById(R.id.stopButton);
+//        pauseButton = root.findViewById(R.id.pauseButton);
+//        resetButton = root.findViewById(R.id.resetButton);
+//
+//
+//        playButton.setOnClickListener(v -> exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti mou zitas (Live).mp3?alt=media"));
+//        pauseButton.setOnClickListener(v -> {if (exoPlayerManager != null) {exoPlayerManager.pauseSong();}});
+//        stopButton.setOnClickListener(v -> exoPlayerManager.stopSong());
+//        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
 
 
 

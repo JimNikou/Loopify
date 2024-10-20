@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
-
+    private Button playButton, stopButton, pauseButton, resetButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
             }
             startMusicService("PAUSE");
         });
-
 //        stopButton.setOnClickListener(v -> exoPlayerManager.stopSong());
 //        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
 
