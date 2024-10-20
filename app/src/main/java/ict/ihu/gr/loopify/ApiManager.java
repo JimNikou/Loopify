@@ -1,17 +1,25 @@
 package ict.ihu.gr.loopify;
 
+import ict.ihu.gr.loopify.BuildConfig;
 import android.os.AsyncTask;
 import android.util.Log;
-
 import androidx.annotation.Nullable;
-
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
+import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.POST;
 
 
 //Diagram of the calls that need to be made in chronological order for the correct load of a track that the user searched:
@@ -30,8 +38,8 @@ import org.json.JSONObject;
 
 public class ApiManager {
     private static final String TAG = "ApiManager";
-    private final String lastFMapiKey = "a38306489162f067667f1b911c8345c5"; // Na ta kanoume store ektos public repo!
-    private final String theaudioDBapiKey = "523532";
+    private final String lastFMapiKey = BuildConfig.LAST_FM_API_KEY;
+    private final String theaudioDBapiKey = BuildConfig.THE_AUDIO_DB_KEY;
 
     /**
      * This function fetches the Artist ID from TheAudioDB API using the provided track and artist name,
@@ -68,8 +76,6 @@ public class ApiManager {
      * @param track The name of the track to find the YouTube URL for.
      */
     public void fetchYtURL(String TADB_Artist_ID, ApiResponseListener listener, String track) { //number 3 in execute order
-//        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=artist.getInfo&api_key=" + lastFMapiKey +
-//                "&artist=" + artist + "&format=json";
         String jsonUrl = "https://www.theaudiodb.com/api/v1/json/" + theaudioDBapiKey + "/mvid.php?i=" + TADB_Artist_ID;
         new GetJsonTask(new ApiResponseListener() {
             @Override
@@ -77,6 +83,7 @@ public class ApiManager {
                 String youtubeURL = getYouTubeUrlFromJson(jsonResponse, track);
                 if (youtubeURL != null){
                     Log.d(TAG, "Url from Youtube: " + youtubeURL);
+                    fetchMP3file(youtubeURL, listener);
                 }else{
                     Log.d(TAG, "Url Not found");
                 }
@@ -123,8 +130,6 @@ public class ApiManager {
      * @param listener The callback listener for handling the API response.
      */
     public void fetchArtistInfo(String artist, ApiResponseListener listener) {
-//        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=artist.getInfo&api_key=" + lastFMapiKey +
-//                "&artist=" + artist + "&format=json";
         String jsonUrl = "https://www.theaudiodb.com/api/v1/json/" + theaudioDBapiKey + "/search.php?s=" + artist;
         new GetJsonTask(listener).execute(jsonUrl);
     }
@@ -133,7 +138,6 @@ public class ApiManager {
                 "&artist=" + artist + "&format=json";
         new GetJsonTask(listener).execute(jsonUrl);
     }
-
     public void fetchCorrectedTrackInfo(String track, String artist, ApiResponseListener listener) {
         String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=track.getcorrection&api_key=" + lastFMapiKey + "&artist=" + artist +
                 "&track=" + track + "&format=json";
@@ -145,14 +149,44 @@ public class ApiManager {
         String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=" + lastFMapiKey + "&format=json";
         new GetJsonTask(listener).execute(jsonUrl);
     }
-
     public void fetchTopTrackCharts(ApiResponseListener listener) {
         String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=chart.gettoptracks&api_key=" + lastFMapiKey + "&format=json";
         new GetJsonTask(listener).execute(jsonUrl);
     }
 
 
-    private static class GetJsonTask extends AsyncTask<String, Void, String> { // Async task for the retrieval of the json info about the artist and the song
+    // function to change when we migrate to Cloudfare
+    public void fetchMP3file(String youtubeURL, ApiResponseListener listener){
+        OkHttpClient client = new OkHttpClient();
+
+        // Create JSON payload
+        String json = "{ \"url\": \"" + youtubeURL + "\" }"; // the served info format our api handles
+        RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+        String BaseUrl = BuildConfig.BASE_URL;
+        Request request = new Request.Builder()
+                .url(BaseUrl) // we will change this to Petros's server ip/Cloudfare directory when we migrate
+                .post(body)
+                .build();
+
+        new Thread(() -> { // occupy a thread to handle the POST of the formated data
+            try {
+                Response response = client.newCall(request).execute();
+                if (response.isSuccessful()) {
+                    String responseData = response.body().string();
+                    listener.onResponseReceived(responseData);
+                } else {
+                    listener.onResponseReceived(null);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                listener.onResponseReceived(null);
+            }
+        }).start();
+    }
+
+
+
+    private static class GetJsonTask extends AsyncTask<String, Void, String> { // async task for the retrieval of the json info about the artist and the song
         private final ApiResponseListener listener;
 
         public GetJsonTask(ApiResponseListener listener) { // class constructor, declaring up the listener that is MainActivity in this case, because the call was from there.
@@ -187,7 +221,7 @@ public class ApiManager {
             } catch (Exception e) {
                 Log.e(TAG, "Error: " + e.getMessage());
             }
-            Log.d(TAG,jsonResponse);
+//            Log.d(TAG,jsonResponse);
             return jsonResponse;
         }
 
@@ -236,7 +270,7 @@ public class ApiManager {
                 return firstTrack.getString("idArtist");
             }
         } catch (JSONException e) {
-            e.printStackTrace();  // Print the stack trace for debugging
+            e.printStackTrace();
         }
         return null;  // Return null if the idArtist is not found or if there's an error
     }
