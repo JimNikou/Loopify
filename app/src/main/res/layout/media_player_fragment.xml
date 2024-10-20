@@ -1,0 +1,166 @@
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000"
+    tools:context=".MediaPlayerManager">
+
+    <!-- Background VideoView at z-0 (bottom layer) -->
+    <VideoView
+        android:id="@+id/backgroundVideoView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:keepScreenOn="true"
+        android:visibility="visible" />
+
+    <!-- LinearLayout for album art and media controls at z-1 (top layer) -->
+    <LinearLayout
+
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:gravity="center">
+
+
+        <!--  Album Art-->
+        <ImageView
+            android:id="@+id/albumArtImageView"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_fullscreen_media_player_album_image_button" />
+
+        <!-- Song Info -->
+        <TextView
+            android:id="@+id/songTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Song Title"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/artistTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Artist Name"
+            android:textColor="#AAAAAA"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Seek Bar with Time TextViews -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+
+            <!-- Current Time TextView (left of SeekBar) -->
+            <TextView
+                android:id="@+id/currentTimeTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0:00"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:layout_marginEnd="8dp" />
+
+            <!-- SeekBar -->
+            <SeekBar
+                android:id="@+id/seekBar"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:progress="0"
+                android:max="100" />
+
+            <!-- Total Duration TextView (right of SeekBar) -->
+            <TextView
+                android:id="@+id/totalDurationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="4:36"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <!-- Controls (Shuffle, Previous, Play/Pause, Next, Repeat) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="16dp">
+
+            <ImageButton
+                android:id="@+id/shuffleButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:background="?android:selectableItemBackground"
+                android:src="@drawable/ic_fullscreen_media_player_shuffle_button"
+                app:tint="#FFFFFF"
+                android:contentDescription="Shuffle" />
+
+            <ImageButton
+                android:id="@+id/previousButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:src="@drawable/ic_fullscreen_media_player_previous_song_button"
+                android:background="?android:selectableItemBackground"
+                app:tint="#FFFFFF"
+                android:contentDescription="Previous" />
+
+            <ImageButton
+                android:id="@+id/playPauseButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:src="@drawable/ic_fullscreen_media_player_play_button"
+                android:background="?android:selectableItemBackground"
+                app:tint="#FFFFFF"
+                android:contentDescription="Play song" />
+
+            <ImageButton
+                android:id="@+id/stopButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:src="@drawable/ic_fullscreen_media_player_stop_song_button"
+                android:background="?android:selectableItemBackground"
+                app:tint="#FFFFFF"
+                android:contentDescription="Stop song" />
+
+            <ImageButton
+                android:id="@+id/nextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:src="@drawable/ic_fullscreen_media_player_next_song_button"
+                android:background="?android:selectableItemBackground"
+                app:tint="#FFFFFF"
+                android:contentDescription="Next song" />
+
+            <ImageButton
+                android:id="@+id/repeatButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:src="@drawable/ic_fullscreen_media_player_repeat_song_button"
+                android:background="?android:selectableItemBackground"
+                app:tint="#FFFFFF"
+                android:contentDescription="Repeat" />
+        </LinearLayout>
+    </LinearLayout>
+
+</FrameLayout>

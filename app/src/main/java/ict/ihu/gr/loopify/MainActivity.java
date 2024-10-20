@@ -1,20 +1,26 @@
 package ict.ihu.gr.loopify;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+
 import com.google.android.material.navigation.NavigationView;
 
 import org.json.JSONObject;
 
 import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
+
 //TEST TEST TEST TEST TEST TEST TEST TEST TEST
 public class MainActivity extends AppCompatActivity implements ApiManager.ApiResponseListener {
     private MediaPlayerManager mediaPlayerManager;
@@ -42,22 +48,29 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
         mediaPlayerManager = new MediaPlayerManager();
 
-        //button declaration
-//        playButton = findViewById(R.id.playButton); //uncomment if you want to test the functionalities
-//        stopButton = findViewById(R.id.stopButton);
-//        pauseButton = findViewById(R.id.pauseButton);
-//        resetButton = findViewById(R.id.resetButton);
+        Button openMediaPlayerButton = findViewById(R.id.open_media_player_button);
+        openMediaPlayerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d("MainActivity", "Button clicked, trying to load MediaPlayerManager");
+                loadFragment(new MediaPlayerManager());
+                Log.d("MainActivity", "MediaPlayerManager fragment should now be visible.");
+            }
+        });
+
+        // Other initializations...
 
 
-        String artist = "Light";
-        String track = "mosca";
-        String wrong_artist = "Michale Jackson";
 
-        exoPlayerManager = new ExoPlayerManager(this);
-        new ApiManager().fetchCorrectedArtistInfo(wrong_artist, this);
-        new ApiManager().fetchArtistInfo(artist, this);
-        new ApiManager().fetchTrackInfo(track, artist, this); // When this is finished it sends the jsonResponse to the onResponseReceived func
-                                                                     // The listener is here because the MainActivity is the one listening
+//        String artist = "Light";
+//        String track = "mosca";
+//        String wrong_artist = "Michale Jackson";
+
+//        exoPlayerManager = new ExoPlayerManager(this);
+//        new ApiManager().fetchCorrectedArtistInfo(wrong_artist, this);
+//        new ApiManager().fetchArtistInfo(artist, this);
+//        new ApiManager().fetchTrackInfo(track, artist, this); // When this is finished it sends the jsonResponse to the onResponseReceived func
+//                                                                     // The listener is here because the MainActivity is the one listening
 
         //uncomment if you want to test the functionalities
 //        playButton.setOnClickListener(v -> exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti mou zitas (Live).mp3?alt=media"));
@@ -72,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         // Extract the song URL and start playing it
         String songUrl = extractSongUrlFromJson(jsonResponse);
         if (songUrl != null) {
-            mediaPlayerManager.playSong(songUrl);
+            mediaPlayerManager.playSong(Uri.parse(songUrl));
         }
     }
 
@@ -84,6 +97,14 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
             Log.e("MainActivity", "Error extracting song URL: " + e.getMessage());
             return null;
         }
+    }
+
+
+    private void loadFragment(Fragment fragment) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.fragment_container, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
     }
 
     @Override
@@ -101,7 +122,10 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
     @Override
     protected void onDestroy() {
+        if (exoPlayerManager != null) {
+            exoPlayerManager.release();
+        }
         super.onDestroy();
-        exoPlayerManager.release(); // Release MediaPlayer resources
     }
+
 }
