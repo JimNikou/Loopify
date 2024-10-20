@@ -10,21 +10,21 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import ict.ihu.gr.loopify.databinding.FragmentGalleryBinding;
+import ict.ihu.gr.loopify.databinding.FragmentNotificationBinding;
 
-public class GalleryFragment extends Fragment {
+public class NotificationFragment extends Fragment {
 
-    private FragmentGalleryBinding binding;
+    private FragmentNotificationBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        GalleryViewModel galleryViewModel =
-                new ViewModelProvider(this).get(GalleryViewModel.class);
+        NotificationViewModel galleryViewModel =
+                new ViewModelProvider(this).get(NotificationViewModel.class);
 
-        binding = FragmentGalleryBinding.inflate(inflater, container, false);
+        binding = FragmentNotificationBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textGallery;
+        final TextView textView = binding.textNotification;
         galleryViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }

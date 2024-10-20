@@ -10,7 +10,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.navigation.NavigationView;
-
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import org.json.JSONObject;
 
 import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
@@ -29,23 +29,35 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
+
+        // Create AppBarConfiguration with both BottomNav and Drawer items
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_gallery, R.id.nav_slideshow)
-                .setOpenableLayout(binding.drawerLayout)
+                R.id.nav_home, R.id.nav_search, R.id.nav_library,  // Bottom navigation items
+                R.id.nav_notification, R.id.nav_settings, R.id.nav_account)  // Drawer items
+                .setOpenableLayout(binding.drawerLayout)  // Associate drawer layout
                 .build();
 
+        // Setup NavController
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
+
+        // Link the toolbar with NavController
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
+
+        // Link the Navigation Drawer with NavController
         NavigationView navigationView = binding.navView;
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        // Link the BottomNavigationView with NavController
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
         mediaPlayerManager = new MediaPlayerManager();
 
         //button declaration
-//        playButton = findViewById(R.id.playButton); //uncomment if you want to test the functionalities
-//        stopButton = findViewById(R.id.stopButton);
-//        pauseButton = findViewById(R.id.pauseButton);
-//        resetButton = findViewById(R.id.resetButton);
+        playButton = findViewById(R.id.playButton); //uncomment if you want to test the functionalities
+        stopButton = findViewById(R.id.stopButton);
+        pauseButton = findViewById(R.id.pauseButton);
+        resetButton = findViewById(R.id.resetButton);
 
 
 //        String wrong_track = "Baet It";
@@ -61,10 +73,10 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
                                                                      // The listener is here because the MainActivity is the one listening
 
         //uncomment if you want to test the functionalities
-//        playButton.setOnClickListener(v -> exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti mou zitas (Live).mp3?alt=media"));
-//        stopButton.setOnClickListener(v -> exoPlayerManager.stopSong());
-//        pauseButton.setOnClickListener(v -> {if (exoPlayerManager != null) {exoPlayerManager.pauseSong();}});
-//        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
+        playButton.setOnClickListener(v -> exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti mou zitas (Live).mp3?alt=media"));
+        stopButton.setOnClickListener(v -> exoPlayerManager.stopSong());
+        pauseButton.setOnClickListener(v -> {if (exoPlayerManager != null) {exoPlayerManager.pauseSong();}});
+        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
     }
 
 
