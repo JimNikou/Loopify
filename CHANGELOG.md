@@ -1,4 +1,26 @@
+- Merge pull request #17 from JimNikou/4-ui-fullscreen-media-player-layout
+- Merge branch 'main' into 4-ui-fullscreen-media-player-layout
+- feat:fullscreen media player UI complete
+- fix: fixed button listeners after merge, need to get updated to home fragment
+- Merge pull request #16 from JimNikou/bottom-nav-bar
+- Merge branch 'main' into bottom-nav-bar
+- Merge pull request #14 from JimNikou/pendingintent-flag-android12-crash
+- fix: Fixed buttons losing their listener after loading into another fragment
+- Bottom Navigation Bar in the main screen, in order for the user to navigate between the Home screen, the Search screen and the Library screen.
+- fix: fixed crash on Android 12+ by adding FLAG_IMMUTABLE to PendingIntent in MediaPlayerService
+- Merge pull request #9 from JimNikou/embed-our-api-functionality
+- Merge branch 'main' into embed-our-api-functionality
+- Merge pull request #11 from JimNikou/notification-media-player-basic-setup
+- feat/work-in-progress: this commit marks the start of the notification media player, added start/stop capabilities
+- work in progress: moved api keys and URLs to build.gradle.kts to be filtered/removed from public view
+- docs: added guiding comments for the Cloudfare migration
+- fix: added missing import
+- Merge branch 'playlist-sliders'
+- fix: Added missing images and improved code comments
+- feat: Visual representation of playlists in slider
+- docs: added refreshed CHANGELOG.md
 - feat!: youtube url is now provided by only using the name of the track.
+- Initial commit
 - Merge branch 'remove_test_buttons'
 - feat: removed buttons that contribute to testing the song api
 - Merge commit '67c832ce73f05db0c8972a45eca8952cbc551e39'
