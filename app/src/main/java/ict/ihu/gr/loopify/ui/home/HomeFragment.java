@@ -8,7 +8,10 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
+import ict.ihu.gr.loopify.R;
 import ict.ihu.gr.loopify.databinding.FragmentHomeBinding;
 
 import java.text.SimpleDateFormat;
@@ -25,6 +28,13 @@ public class HomeFragment extends Fragment {
         // Inflate the fragment layout using View Binding
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
+
+        // Load the ImageCarouselFragment (playlist slider)
+        if (savedInstanceState == null) {
+            getChildFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, new ict.ihu.gr.loopify.ui.ImageCarouselFragment())
+                    .commit();
+        }
 
         // Call the setGreetingText method to update the greeting
         setGreetingText();
