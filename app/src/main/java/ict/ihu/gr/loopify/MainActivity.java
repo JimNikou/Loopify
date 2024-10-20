@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
 //        String wrong_track = "Baet It";
 //        String artist = "michael jackson";
-        String track = "porcelain";
+        String track = "turn it around";
 
         exoPlayerManager = new ExoPlayerManager(this);
         new ApiManager().fetchArtistFromTrack(track,this);
