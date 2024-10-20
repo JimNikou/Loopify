@@ -64,12 +64,12 @@ public class MediaPlayerService extends Service {
         // Play action
         Intent playIntent = new Intent(this, MediaPlayerService.class);
         playIntent.setAction("PLAY");
-        PendingIntent playPendingIntent = PendingIntent.getService(this, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent playPendingIntent = PendingIntent.getService(this, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         // Pause action
         Intent pauseIntent = new Intent(this, MediaPlayerService.class);
         pauseIntent.setAction("PAUSE");
-        PendingIntent pausePendingIntent = PendingIntent.getService(this, 1, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pausePendingIntent = PendingIntent.getService(this, 1, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         // Choose which action (play or pause) to show based on the isPlaying flag
         NotificationCompat.Action action;
