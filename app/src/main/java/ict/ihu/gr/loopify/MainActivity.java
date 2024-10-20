@@ -20,7 +20,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     private ExoPlayerManager exoPlayerManager;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
-    private Button playButton, stopButton, pauseButton, resetButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +54,10 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         mediaPlayerManager = new MediaPlayerManager();
 
         //button declaration
-        playButton = findViewById(R.id.playButton); //uncomment if you want to test the functionalities
-        stopButton = findViewById(R.id.stopButton);
-        pauseButton = findViewById(R.id.pauseButton);
-        resetButton = findViewById(R.id.resetButton);
+//        playButton = findViewById(R.id.playButton); //uncomment if you want to test the functionalities
+//        stopButton = findViewById(R.id.stopButton);
+//        pauseButton = findViewById(R.id.pauseButton);
+//        resetButton = findViewById(R.id.resetButton);
 
 
 //        String wrong_track = "Baet It";
@@ -73,10 +73,10 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
                                                                      // The listener is here because the MainActivity is the one listening
 
         //uncomment if you want to test the functionalities
-        playButton.setOnClickListener(v -> exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti mou zitas (Live).mp3?alt=media"));
-        stopButton.setOnClickListener(v -> exoPlayerManager.stopSong());
-        pauseButton.setOnClickListener(v -> {if (exoPlayerManager != null) {exoPlayerManager.pauseSong();}});
-        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
+//        playButton.setOnClickListener(v -> exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti mou zitas (Live).mp3?alt=media"));
+//        stopButton.setOnClickListener(v -> exoPlayerManager.stopSong());
+//        pauseButton.setOnClickListener(v -> {if (exoPlayerManager != null) {exoPlayerManager.pauseSong();}});
+//        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
     }
 
 
