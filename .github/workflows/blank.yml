@@ -47,7 +47,7 @@ jobs:
 
       # Step 6: Upload the APK as an artifact
       - name: Upload APK
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
           name: loopify-release.apk
           path: app/build/outputs/apk/release/loopify-release.apk
