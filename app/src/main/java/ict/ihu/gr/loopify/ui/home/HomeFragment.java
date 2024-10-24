@@ -1,5 +1,6 @@
 package ict.ihu.gr.loopify.ui.home;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,9 +63,11 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
+    @SuppressLint("SetTextI18n")
     private void setGreetingText() {
         // Get the TextView inside the black bar (greeting_text)
         TextView greetingText = binding.greetingText;
+
 
         // Get the current time in hours
         SimpleDateFormat sdf = new SimpleDateFormat("HH", Locale.getDefault());
@@ -80,6 +83,8 @@ public class HomeFragment extends Fragment {
         } else {
             greetingText.setText("Good night user");
         }
+
+
     }
 
 

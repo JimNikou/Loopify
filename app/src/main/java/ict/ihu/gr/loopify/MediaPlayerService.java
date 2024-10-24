@@ -76,11 +76,11 @@ public class MediaPlayerService extends Service {
         if (isPlaying) {
             // Show Pause button if music is playing
             action = new NotificationCompat.Action(
-                    R.drawable.pause, "Pause", pausePendingIntent);
+                    R.drawable.pause_svgrepo_com, "Pause", pausePendingIntent);
         } else {
             // Show Play button if music is paused
             action = new NotificationCompat.Action(
-                    R.drawable.play_arrow, "Play", playPendingIntent);
+                    R.drawable.play_svgrepo_com, "Play", playPendingIntent);
         }
 
         // Build the notification
