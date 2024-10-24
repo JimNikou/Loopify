@@ -14,27 +14,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:ignore="ExtraText">
-      
+
     <!-- ConstraintLayout to position the button centrally -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <!-- Media Player Button -->
-        <Button
-            android:id="@+id/open_media_player_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Open Media Player"
-            android:padding="8dp"
-            android:layout_margin="16dp"
-            android:background="?attr/selectableItemBackground"
-            android:textColor="?android:attr/textColorPrimary"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
 
     <FrameLayout
         android:id="@+id/fragment_container"
@@ -64,7 +56,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            app:menu="@menu/bottom_nav_menu"/>
+            app:menu="@menu/bottom_nav_menu"
+            app:itemTextAppearanceActive="@style/BottomNavTextAppearanceInactive"
+            app:itemTextAppearanceInactive="@style/BottomNavTextAppearanceInactive"/>
+
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -75,7 +70,9 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="#2B2D30"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/activity_main_drawer"/>
+        app:itemTextAppearance="@style/NavigationDrawerTextAppearance"
+        app:menu="@menu/activity_main_drawer" />
 </androidx.drawerlayout.widget.DrawerLayout>
