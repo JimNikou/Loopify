@@ -83,9 +83,11 @@ public class ApiManager {
                 String youtubeURL = getYouTubeUrlFromJson(jsonResponse, track);
                 if (youtubeURL != null){
                     Log.d(TAG, "Url from Youtube: " + youtubeURL);
+                    listener.onResponseReceived(youtubeURL);
                     fetchMP3file(youtubeURL, listener);
                 }else{
                     Log.d(TAG, "Url Not found");
+                    listener.onResponseReceived(null);
                 }
             }
         }).execute(jsonUrl);
@@ -110,7 +112,7 @@ public class ApiManager {
 
                 if (matchingArtist != null) {
                     Log.d(TAG, "Matching artist from LastFM found: " + matchingArtist);
-
+                    listener.onResponseReceived(matchingArtist);
                     // once artist is found, call fetchTADB_Artist_ID which is second in the execute order
                     fetchTADB_Artist_ID(track, matchingArtist, listener);
                 } else {
@@ -122,6 +124,238 @@ public class ApiManager {
             }
         }).execute(jsonUrl);
     }
+    /**
+     * This function fetches the album information from LastFM API based on artist and album names.
+     *
+     * @param artist The name of the artist.
+     * @param album The name of the album.
+     * @param listener The callback listener for handling the API response.
+     */
+    public void fetchAlbumInfo(String artist, String album, ApiResponseListener listener) {
+        // Construct the URL with the provided artist and album name
+        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=" + lastFMapiKey +
+                "&artist=" + artist + "&album=" + album + "&format=json";
+
+        // Fetch the album information using GetJsonTask
+        new GetJsonTask(new ApiResponseListener() {
+            @Override
+            public void onResponseReceived(String jsonResponse) {
+                // Parse the response to get the album information
+                String albumInfo = getAlbumTracksFromJson(jsonResponse);
+
+                if (albumInfo != null) {
+                    Log.d(TAG, "Album Info: " + albumInfo);
+                    listener.onResponseReceived(albumInfo);
+                } else {
+                    Log.d(TAG, "Album not found!");
+                    listener.onResponseReceived(null);
+                }
+            }
+        }).execute(jsonUrl);
+    }
+
+    /**
+     * This function parses the JSON response to extract album information.
+     *
+     * @param jsonResponse The JSON response returned by the API.
+     * @return The album information as a formatted string.
+     */
+    @Nullable
+    private String getAlbumTracksFromJson(String jsonResponse) {
+        try {
+            // Parse the JSON object
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            JSONObject albumObject = jsonObject.getJSONObject("album");
+
+            // Extract the album name
+            String albumName = albumObject.getString("name");
+
+            // Extract the artist name
+            String artistName = albumObject.getString("artist");
+
+            // Extract the listeners count
+            String listenersCount = albumObject.getString("listeners");
+
+            // Extract the playcount
+            String playCount = albumObject.getString("playcount");
+
+            // Extract album images (let's use the "extralarge" image)
+            JSONArray imagesArray = albumObject.getJSONArray("image");
+            String imageUrl = "";
+            for (int i = 0; i < imagesArray.length(); i++) {
+                JSONObject imageObject = imagesArray.getJSONObject(i);
+                String size = imageObject.getString("size");
+                if (size.equals("extralarge")) {
+                    imageUrl = imageObject.getString("#text");
+                    break;
+                }
+            }
+
+            // Extract the tracks from the album
+            JSONArray tracksArray = albumObject.getJSONObject("tracks").getJSONArray("track");
+
+            // Build the result string to return
+            StringBuilder result = new StringBuilder();
+            result.append("Album: ").append(albumName).append("\n");
+            result.append("Artist: ").append(artistName).append("\n");
+            result.append("Listeners: ").append(listenersCount).append("\n");
+            result.append("Playcount: ").append(playCount).append("\n");
+            result.append("Album Image: ").append(imageUrl).append("\n\n");
+            result.append("Tracks:\n");
+
+            // Loop through the tracks and append track names to the result
+            for (int i = 0; i < tracksArray.length(); i++) {
+                JSONObject trackObject = tracksArray.getJSONObject(i);
+                String trackName = trackObject.getString("name");
+
+                result.append(i + 1).append(". ").append(trackName).append("\n");
+            }
+
+            return result.toString(); // Return formatted album info with tracks and album image
+
+        } catch (JSONException e) {
+            e.printStackTrace();  // Print error for debugging
+        }
+
+        return null;  // Return null if an error occurred
+    }
+
+    /**
+     * This function fetches information about a specific genre (tag) from LastFM API.
+     *
+     * @param genre The name of the genre (tag) to retrieve information for.
+     * @param listener The callback listener for handling the API response.
+     */
+    public void fetchGenreInfo(String genre, ApiResponseListener listener) {
+        // Construct the URL for the tag.getinfo API call
+        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=tag.getinfo&tag=" + genre +
+                "&api_key=" + lastFMapiKey + "&format=json";
+
+        // Use GetJsonTask to fetch the genre info
+        new GetJsonTask(new ApiResponseListener() {
+            @Override
+            public void onResponseReceived(String jsonResponse) {
+                // Parse the response to get the genre information
+                String genreInfo = getGenreInfoFromJson(jsonResponse);
+
+                if (genreInfo != null) {
+                    Log.d(TAG, "Genre Info: " + genreInfo);
+                    listener.onResponseReceived(genreInfo);
+                } else {
+                    Log.d(TAG, "Genre not found!");
+                    listener.onResponseReceived(null);
+                }
+            }
+        }).execute(jsonUrl);
+    }
+
+    /**
+     * This function parses the JSON response to extract genre information.
+     *
+     * @param jsonResponse The JSON response returned by the API.
+     * @return The genre information as a formatted string.
+     */
+    @Nullable
+    private String getGenreInfoFromJson(String jsonResponse) {
+        try {
+            // Parse the JSON object
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+
+            // Get the "tag" object from the JSON response
+            JSONObject tagObject = jsonObject.getJSONObject("tag");
+
+            // Extract relevant genre details (name, total usage, reach, description, etc.)
+            String genreName = tagObject.getString("name");
+            int totalUsage = tagObject.getInt("total");
+            int reach = tagObject.getInt("reach");
+            String wikiSummary = tagObject.getJSONObject("wiki").getString("summary");
+
+            // Build a result string to return
+            StringBuilder result = new StringBuilder();
+            result.append("Genre: ").append(genreName).append("\n");
+            result.append("Total Usage: ").append(totalUsage).append("\n");
+            result.append("Reach: ").append(reach).append("\n");
+            result.append("Description: ").append(wikiSummary).append("\n");
+
+            return result.toString(); // Return formatted genre info
+
+        } catch (JSONException e) {
+            e.printStackTrace();  // Print error for debugging
+        }
+
+        return null;  // Return null if an error occurred
+    }
+
+    /**
+     * This function fetches similar tracks to a given artist and track using the LastFM API.
+     *
+     * @param artist The name of the artist.
+     * @param track  The name of the track.
+     * @param listener The callback listener for handling the API response.
+     */
+    public void fetchSimilarTracks(String artist, String track, ApiResponseListener listener) {
+        // Construct the URL for the track.getsimilar API call
+        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=track.getsimilar&artist=" + artist +
+                "&track=" + track + "&api_key=" + lastFMapiKey + "&format=json";
+
+        // Use GetJsonTask to fetch the similar tracks info
+        new GetJsonTask(new ApiResponseListener() {
+            @Override
+            public void onResponseReceived(String jsonResponse) {
+                // Parse the response to get the similar tracks and artists
+                String similarTracksInfo = getSimilarTracksFromJson(jsonResponse);
+
+                if (similarTracksInfo != null) {
+                    Log.d(TAG, "Similar Tracks Info: " + similarTracksInfo);
+                    listener.onResponseReceived(similarTracksInfo);
+                } else {
+                    Log.d(TAG, "No similar tracks found!");
+                    listener.onResponseReceived(null);
+                }
+            }
+        }).execute(jsonUrl);
+    }
+
+    /**
+     * This function parses the JSON response to extract similar track names and their respective artists.
+     *
+     * @param jsonResponse The JSON response returned by the API.
+     * @return The similar tracks and artists as a formatted string.
+     */
+    @Nullable
+    private String getSimilarTracksFromJson(String jsonResponse) {
+        try {
+            // Parse the JSON object
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            JSONObject similarTracksObject = jsonObject.getJSONObject("similartracks");
+
+            // Extract the similar tracks array
+            JSONArray tracksArray = similarTracksObject.getJSONArray("track");
+
+            // Build the result string to return
+            StringBuilder result = new StringBuilder();
+            result.append("Similar Tracks:\n");
+
+            // Loop through the tracks and append track names and artist names to the result
+            for (int i = 0; i < tracksArray.length(); i++) {
+                JSONObject trackObject = tracksArray.getJSONObject(i);
+                String trackName = trackObject.getString("name");
+
+                // Get the artist of the similar track
+                String artistName = trackObject.getJSONObject("artist").getString("name");
+
+                result.append(i + 1).append(". ").append(trackName).append(" by ").append(artistName).append("\n");
+            }
+
+            return result.toString();  // Return formatted similar tracks and artist names
+
+        } catch (JSONException e) {
+            e.printStackTrace();  // Print error for debugging
+        }
+
+        return null;  // Return null if an error occurred
+    }
+
 
     /**
      * This function fetches information about the specified artist from TheAudioDB API.

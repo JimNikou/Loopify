@@ -84,14 +84,64 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
 
 //        String wrong_track = "Baet It";
-//        String artist = "michael jackson";
-        String track = "turn it around";
+        String artist = "moby";
+        String track = "porcelain";
 
+        ApiManager apiManager = new ApiManager();
         exoPlayerManager = new ExoPlayerManager(this);
-        new ApiManager().fetchArtistFromTrack(track,this);
-//        new ApiManager().fetchTADB_Artist_ID(track, artist,this);
-//        new ApiManager().fetchCorrectedTrackInfo(wrong_track, artist, this);
-//        new ApiManager().fetchYtURL("112424", this);
+//        new ApiManager().fetchArtistFromTrack(track,this); //get back the artist from a selected track
+//        new ApiManager().fetchTADB_Artist_ID(track, artist,this); //get the artist id for track search
+//        new ApiManager().fetchCorrectedTrackInfo(wrong_track, artist, this); //get corrected artist info
+//        new ApiManager().fetchYtURL("112424", this); //get youtube URL for a specified track with the id
+//        new ApiManager().fetchAlbumInfo("Cher", "Believe", this);
+
+        // OTI EINAI PANW APO AUTO TO COMMENT EINAI DEPRECATED, XRHSIMOPOIEITAI TA KATW CALLS GIA TA API
+
+//        apiManager.fetchArtistFromTrack("porcelain", new ApiManager.ApiResponseListener() {
+//            @Override
+//            public void onResponseReceived(String jsonResponse) {
+//                if(jsonResponse != null){
+//                    Log.d("FetchArtistReturn", jsonResponse);
+//                }else {
+//                    Log.d("FetchArtistReturn", "No artist found");
+//                }
+//            }
+//        });
+//        apiManager.fetchAlbumInfo("Cher", "Believe", new ApiManager.ApiResponseListener() {
+//            @Override
+//            public void onResponseReceived(String jsonResponse) {
+//                if (jsonResponse != null) {
+//                    // Handle the album info (e.g., display it in UI)
+//                    Log.d("AlbumInfo", jsonResponse);
+//                } else {
+//                    Log.d("AlbumInfo", "No album info found");
+//                }
+//            }
+//        });
+//
+//        apiManager.fetchGenreInfo("disco", new ApiManager.ApiResponseListener() {
+//            @Override
+//            public void onResponseReceived(String jsonResponse) {
+//                if (jsonResponse != null) {
+//                    // Handle the genre info (e.g., display it in UI)
+//                    Log.d("GenreInfo", jsonResponse);
+//                } else {
+//                    Log.d("GenreInfo", "No genre info found");
+//                }
+//            }
+//        });
+//
+//        apiManager.fetchSimilarTracks("moby", "porcelain", new ApiManager.ApiResponseListener() {
+//            @Override
+//            public void onResponseReceived(String jsonResponse) {
+//                if (jsonResponse != null){
+//                    Log.d("SimilarTracks", jsonResponse);
+//                }else {
+//                    Log.d("SimilarTracks", "No similar tracks found");
+//                }
+//            }
+//        });
+
 //        new ApiManager().fetchTrackMBID(track, artist, this); // When this is finished it sends the jsonResponse to the onResponseReceived func
                                                                      // The listener is here because the MainActivity is the one listening
       
