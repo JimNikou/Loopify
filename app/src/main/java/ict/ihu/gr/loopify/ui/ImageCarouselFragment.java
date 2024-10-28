@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import ict.ihu.gr.loopify.R;
 
-public class ImageCarouselFragment extends Fragment {
+public class ImageCarouselFragment extends Fragment implements ImageCarouselAdapter.OnImageClickListener{
 
     // RecyclerView object to display the carousel of images
     private RecyclerView recyclerView;
@@ -23,6 +23,7 @@ public class ImageCarouselFragment extends Fragment {
     private int[] imageResources = {
             R.drawable.hiphop_photo,
             R.drawable.house_photo,
+            R.drawable.jazz_photo,
             R.drawable.pop_photo,
             R.drawable.rap_photo,
             R.drawable.rock_photo,
@@ -44,12 +45,45 @@ public class ImageCarouselFragment extends Fragment {
 
         // Create an instance of the custom adapter (ImageCarouselAdapter)
         // and pass the array of image resources to it
-        ict.ihu.gr.loopify.ui.ImageCarouselAdapter adapter = new ict.ihu.gr.loopify.ui.ImageCarouselAdapter(imageResources);
+        ict.ihu.gr.loopify.ui.ImageCarouselAdapter adapter = new ict.ihu.gr.loopify.ui.ImageCarouselAdapter(imageResources, this);
 
         // Attach the adapter to the RecyclerView to display the images
         recyclerView.setAdapter(adapter);
 
         // Return the root view that contains the RecyclerView
         return root;
+    }
+
+    @Override
+    public void onImageClick(int position, int imageResource) {
+        // Get the playlist based on the image position and navigate to the new page
+        String[] playlist = getPlaylistForImage(position);
+
+        // Pass the playlist and selected image to the next fragment
+        Bundle bundle = new Bundle();
+        bundle.putStringArray("playlist", playlist);
+        bundle.putInt("imageResource", imageResource);
+
+        PlaylistFragment playlistFragment = new PlaylistFragment();
+        playlistFragment.setArguments(bundle);
+
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, playlistFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+
+    private String[] getPlaylistForImage(int position) {
+        // Return different playlists based on the image clicked
+        switch (position) {
+            case 0:
+                return new String[]{"Song1", "Song2", "Song3"};
+            case 1:
+                return new String[]{"Song4", "Song5", "Song6"};
+            // Add more cases for other images
+            default:
+                return new String[]{"Song1"};
+        }
     }
 }
