@@ -11,21 +11,21 @@
     <!-- TODO: Remove or change this placeholder text -->
 
     <string name="about_overview">
-        APPLICATION OVERVIEW: Loopify is a simplified music streaming application created as part of a university project. Inspired by popular platforms, it provides core music streaming functionalities, including browsing, searching, and detailed information on artists and albums.
+        Loopify is a simplified music streaming application created as part of a university project. Inspired by popular platforms, it provides core music streaming functionalities, including browsing, searching, and detailed information on artists and albums.
     </string>
 
-    <string name="about_features">MAIN FEATURES: Loopify enables smooth music streaming with Firebase Storage integration, comprehensive artist and album information from The AudioDB and Last.FM APIs, and a user-friendly interface inspired by popular music platforms. Users can easily search for artists, albums, or tracks and enjoy responsive media playback controls, including play, pause, and stop functionality.</string>
+    <string name="about_features">Loopify enables smooth music streaming with Firebase Storage integration, comprehensive artist and album information from The AudioDB and Last.FM APIs, and a user-friendly interface inspired by popular music platforms. Users can easily search for artists, albums, or tracks and enjoy responsive media playback controls, including play, pause, and stop functionality.</string>
 
 
-    <string name="about_mission">OUR GOAL: Loopify aims to provide a seamless and accessible music streaming experience, combining educational and professional goals to enhance users\' enjoyment and engagement with music.</string>
+    <string name="about_mission">Loopify aims to provide a seamless and accessible music streaming experience, combining educational and professional goals to enhance users\' enjoyment and engagement with music.</string>
 
 
 
     <string name="about_version">
-            VERSION: 1.0.0
+            0.0.0
     </string>
 
-    <string name="about_license">LICENCE: MIT License
+    <string name="about_license">MIT License
 
 Copyright © 2024 Loopify
 
@@ -47,6 +47,15 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.</string>
 
+    <string name="overview_title">Overview</string>
+
+    <string name="features_title">Features</string>
+
+    <string name="mission_title">Our Goal</string>
+
+    <string name="licence_title">Licence</string>
+
+    <string name="version_title">Version</string>
 
 
 </resources>
