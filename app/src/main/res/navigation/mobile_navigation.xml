@@ -34,5 +34,8 @@
         android:id="@+id/nav_account"
         android:name="ict.ihu.gr.loopify.AccountFragment"
         android:label="Account"/>
-
+    <fragment
+        android:id="@+id/nav_about"
+        android:name="ict.ihu.gr.loopify.AboutFragment"
+        android:label="About"/>
 </navigation>

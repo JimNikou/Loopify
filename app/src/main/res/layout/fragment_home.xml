@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Play Music"
-        android:textAppearance="@style/NavigationDrawerTextAppearance"
+        android:textAppearance="@style/regular_font_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Stop Music"
-        android:textAppearance="@style/NavigationDrawerTextAppearance"
+        android:textAppearance="@style/regular_font_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/playButton" />
@@ -34,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="Pause"
-        android:textAppearance="@style/NavigationDrawerTextAppearance"
+        android:textAppearance="@style/regular_font_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/stopButton" />
@@ -44,7 +44,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Reset"
-        android:textAppearance="@style/NavigationDrawerTextAppearance"
+        android:textAppearance="@style/regular_font_14"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/pauseButton" />
@@ -65,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:text="TextView"
-        android:textAppearance="@style/NavigationDrawerTextAppearance"
+        android:textAppearance="@style/regular_font_14"
         android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="@+id/greeting_view"
         app:layout_constraintEnd_toEndOf="parent"
@@ -85,7 +85,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        android:textAppearance="@style/NavigationDrawerTextAppearance"/>
+        android:textAppearance="@style/regular_font_14"/>
 
     <FrameLayout
         android:id="@+id/fragment_container"

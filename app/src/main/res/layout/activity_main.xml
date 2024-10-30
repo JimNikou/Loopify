@@ -47,6 +47,7 @@
             android:id="@+id/nav_host_fragment_content_main"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+
             app:navGraph="@navigation/mobile_navigation" /> <!-- Link to your nav graph -->
 
 
@@ -57,8 +58,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             app:menu="@menu/bottom_nav_menu"
-            app:itemTextAppearanceActive="@style/BottomNavTextAppearanceInactive"
-            app:itemTextAppearanceInactive="@style/BottomNavTextAppearanceInactive"/>
+            app:itemTextAppearanceActive="@style/regular_font_12"
+            app:itemTextAppearanceInactive="@style/regular_font_12"/>
 
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
@@ -70,9 +71,8 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="#2B2D30"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_main"
-        app:itemTextAppearance="@style/NavigationDrawerTextAppearance"
+        app:itemTextAppearance="@style/regular_font_14"
         app:menu="@menu/activity_main_drawer" />
 </androidx.drawerlayout.widget.DrawerLayout>
