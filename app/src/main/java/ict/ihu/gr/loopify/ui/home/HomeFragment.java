@@ -1,6 +1,7 @@
 package ict.ihu.gr.loopify.ui.home;
 
 import android.annotation.SuppressLint;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
@@ -67,7 +69,7 @@ public class HomeFragment extends Fragment {
     private void setGreetingText() {
         // Get the TextView inside the black bar (greeting_text)
         TextView greetingText = binding.greetingText;
-
+        Typeface customFont = ResourcesCompat.getFont(getContext(), R.font.pptelegraf_ultrabold);
 
         // Get the current time in hours
         SimpleDateFormat sdf = new SimpleDateFormat("HH", Locale.getDefault());
@@ -75,13 +77,21 @@ public class HomeFragment extends Fragment {
 
         // Determine the appropriate greeting message
         if (currentHour >= 5 && currentHour < 12) {
-            greetingText.setText("Good morning user");
+            greetingText.setText("Good morning Giannis");
+            greetingText.setTextSize(20);
+            greetingText.setTypeface(customFont);
         } else if (currentHour >= 12 && currentHour < 18) {
-            greetingText.setText("Good afternoon user");
+            greetingText.setText("Good afternoon Giannis");
+            greetingText.setTextSize(20);
+            greetingText.setTypeface(customFont);
         } else if (currentHour >= 18 && currentHour <= 23) {
-            greetingText.setText("Good evening user");
+            greetingText.setText("Good evening Giannis");
+            greetingText.setTextSize(20);
+            greetingText.setTypeface(customFont);
         } else {
-            greetingText.setText("Good night user");
+            greetingText.setText("Good night Giannis");
+            greetingText.setTextSize(20);
+            greetingText.setTypeface(customFont);
         }
 
 

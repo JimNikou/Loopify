@@ -26,6 +26,12 @@ import android.app.NotificationManager;
 import android.os.Build;
 import androidx.core.app.NotificationManagerCompat;
 import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 //TEST TEST TEST TEST TEST TEST TEST TEST TEST
 public class MainActivity extends AppCompatActivity implements ApiManager.ApiResponseListener {
@@ -80,8 +86,12 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         playButton = findViewById(R.id.playButton); //uncomment if you want to test the functionalities
         stopButton = findViewById(R.id.stopButton);
         pauseButton = findViewById(R.id.pauseButton);
-//        resetButton = findViewById(R.id.resetButton);
+        resetButton = findViewById(R.id.resetButton);
 
+//        playButton.setVisibility(View.INVISIBLE);
+//        stopButton.setVisibility(View.INVISIBLE);
+//        pauseButton.setVisibility(View.INVISIBLE);
+//        resetButton.setVisibility(View.INVISIBLE);
 
 //        String wrong_track = "Baet It";
         String artist = "moby";
@@ -163,7 +173,11 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
         createNotificationChannel();
     }
-
+    public static String chatGPT(String message){
+        String url = "https://api.openai.com/v1/chat/completions";
+        String apiKey = "";
+        return "";
+    }
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(
