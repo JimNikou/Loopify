@@ -8,8 +8,54 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_gallery">Gallery</string>
-    <string name="menu_slideshow">Slideshow</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="about_overview">
+        Loopify is a simplified music streaming application created as part of a university project. Inspired by popular platforms, it provides core music streaming functionalities, including browsing, searching, and detailed information on artists and albums.
+    </string>
+
+    <string name="about_features">Loopify enables smooth music streaming with Firebase Storage integration, comprehensive artist and album information from The AudioDB and Last.FM APIs, and a user-friendly interface inspired by popular music platforms. Users can easily search for artists, albums, or tracks and enjoy responsive media playback controls, including play, pause, and stop functionality.</string>
+
+
+    <string name="about_mission">Loopify aims to provide a seamless and accessible music streaming experience, combining educational and professional goals to enhance users\' enjoyment and engagement with music.</string>
+
+
+
+    <string name="about_version">
+            0.0.0
+    </string>
+
+    <string name="about_license">MIT License
+
+Copyright © 2024 Loopify
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.</string>
+
+    <string name="overview_title">Overview</string>
+
+    <string name="features_title">Features</string>
+
+    <string name="mission_title">Our Goal</string>
+
+    <string name="licence_title">Licence</string>
+
+    <string name="version_title">Version</string>
+
+
 </resources>

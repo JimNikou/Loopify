@@ -25,12 +25,12 @@
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
         android:text="@string/nav_header_username"
-        android:textAppearance="@style/NavigationDrawerTextAppearance" />
+        android:textAppearance="@style/regular_font_14" />
 
     <TextView
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/nav_header_user_email"
-        android:textAppearance="@style/NavigationDrawerTextAppearance" />
+        android:textAppearance="@style/regular_font_14" />
 </LinearLayout>
