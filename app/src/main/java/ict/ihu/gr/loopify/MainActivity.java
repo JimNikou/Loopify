@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-
+import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -94,18 +94,21 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 //        resetButton.setVisibility(View.INVISIBLE);
 
 //        String wrong_track = "Baet It";
-        String artist = "moby";
-        String track = "beat it";
+//        String artist = "moby";
+        String track = "heartless";
 
         ApiManager apiManager = new ApiManager();
         exoPlayerManager = new ExoPlayerManager(this);
-        new ApiManager().fetchArtistFromTrack(track,this); //get back the artist from a selected track
+//        new ApiManager().fetchArtistFromTrack(track,this); //get back the artist from a selected track
 //        new ApiManager().fetchTADB_Artist_ID(track, artist,this); //get the artist id for track search
 //        new ApiManager().fetchCorrectedTrackInfo(wrong_track, artist, this); //get corrected artist info
 //        new ApiManager().fetchYtURL("112424", this); //get youtube URL for a specified track with the id
 //        new ApiManager().fetchAlbumInfo("Cher", "Believe", this);
 
         // OTI EINAI PANW APO AUTO TO COMMENT EINAI DEPRECATED, XRHSIMOPOIEITAI TA KATW CALLS GIA TA API GIA NA PARETE PISW MIA TIMH TA ALLA EINAI IN SERIES CONNECTED
+
+//        new ApiManager().startTrackServe(track,this); // kanei olh thn diadikasia apo to na brei ton kalitexnh mexri na katebasei to tragoudi (menei na kanei elenxo ean einai)
+                                                        // hdh katebasmeno
 
 //        apiManager.fetchMP3file("https://www.youtube.com/watch?v=Jy1D6caG8nU", new ApiManager.ApiResponseListener() {
 //            @Override
@@ -183,6 +186,58 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
         createNotificationChannel();
     }
+
+    private boolean isTrackServing = false; // Flag to prevent multiple calls
+
+    void runStartTrackServe(String track, ExoPlayerManager exo) {
+        if (isTrackServing) {
+            Log.d("ApiManager", "Track is already being served, ignoring further calls.");
+            return; // Exit if track is already being served
+        }
+
+        isTrackServing = true; // Set the flag to true to prevent further calls
+        ApiManager apiManager = new ApiManager();
+
+        apiManager.startTrackServe(track, new ApiManager.ApiResponseListener() {
+            @Override
+            public void onResponseReceived(String jsonResponse) {
+                if (jsonResponse != null) {
+                    Log.d("ApiManager", jsonResponse);
+                    Log.d("ApiManager", "Streaming started successfully");
+
+                    new ApiManager().fetchSongTitlesFromTxt("http://loopify.ddnsgeek.com:20080/downloads/downloaded_files.txt", new ApiManager.ApiResponseListener() {
+                        @Override
+                        public void onResponseReceived(String response) {
+                            if (response != null) {
+                                Log.d("ApiManager", response); // Log all song titles
+                                String matchedTitle = new ApiManager().findMatchingSong(track, response);
+
+                                Log.d("ApiManager", "Matched song: " + matchedTitle);
+
+                                if (matchedTitle != null) {
+                                    String completeUrl = "http://loopify.ddnsgeek.com:20080/downloads/" + matchedTitle.trim() + ".webm";
+                                    Log.d("ApiManager", "Complete URL: " + completeUrl);
+                                    runOnUiThread(() -> exo.playSong(completeUrl));
+                                } else {
+                                    Log.d("ApiManager", "No matching song found.");
+                                }
+                            } else {
+                                Log.d("ApiManager", "Failed to fetch song titles.");
+                            }
+
+                            isTrackServing = false; // Reset the flag after processing is complete
+                        }
+                    });
+                } else {
+                    Log.d("ApiManager", "Response was null.");
+                    isTrackServing = false; // Reset the flag if the response is null
+                }
+            }
+        });
+    }
+
+
+
     public static String chatGPT(String message){
         String url = "https://api.openai.com/v1/chat/completions";
         String apiKey = "";
