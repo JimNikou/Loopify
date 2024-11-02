@@ -95,18 +95,28 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
 //        String wrong_track = "Baet It";
         String artist = "moby";
-        String track = "porcelain";
+        String track = "beat it";
 
         ApiManager apiManager = new ApiManager();
         exoPlayerManager = new ExoPlayerManager(this);
-//        new ApiManager().fetchArtistFromTrack(track,this); //get back the artist from a selected track
+        new ApiManager().fetchArtistFromTrack(track,this); //get back the artist from a selected track
 //        new ApiManager().fetchTADB_Artist_ID(track, artist,this); //get the artist id for track search
 //        new ApiManager().fetchCorrectedTrackInfo(wrong_track, artist, this); //get corrected artist info
 //        new ApiManager().fetchYtURL("112424", this); //get youtube URL for a specified track with the id
 //        new ApiManager().fetchAlbumInfo("Cher", "Believe", this);
 
-        // OTI EINAI PANW APO AUTO TO COMMENT EINAI DEPRECATED, XRHSIMOPOIEITAI TA KATW CALLS GIA TA API
+        // OTI EINAI PANW APO AUTO TO COMMENT EINAI DEPRECATED, XRHSIMOPOIEITAI TA KATW CALLS GIA TA API GIA NA PARETE PISW MIA TIMH TA ALLA EINAI IN SERIES CONNECTED
 
+//        apiManager.fetchMP3file("https://www.youtube.com/watch?v=Jy1D6caG8nU", new ApiManager.ApiResponseListener() {
+//            @Override
+//            public void onResponseReceived(String jsonResponse) {
+//                if(jsonResponse != null){
+//                    Log.d("mp3song", jsonResponse);
+//                }else {
+//                    Log.d("mp3song", "No artist found");
+//                }
+//            }
+//        });
 //        apiManager.fetchArtistFromTrack("porcelain", new ApiManager.ApiResponseListener() {
 //            @Override
 //            public void onResponseReceived(String jsonResponse) {

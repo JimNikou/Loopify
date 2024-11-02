@@ -390,33 +390,53 @@ public class ApiManager {
 
 
     // function to change when we migrate to Cloudfare
-    public void fetchMP3file(String youtubeURL, ApiResponseListener listener){
+    public void fetchMP3file(String youtubeURL, ApiResponseListener listener) {
+        // Initialize OkHttpClient
         OkHttpClient client = new OkHttpClient();
+        Log.d("mp3song", "OkHttpClient Initialized");
 
         // Create JSON payload
-        String json = "{ \"url\": \"" + youtubeURL + "\" }"; // the served info format our api handles
+        String json = "{ \"url\": \"" + youtubeURL + "\" }";  // Match payload to API requirement
+        Log.d("mp3song", "JSON Payload Created: " + json);
+
+        // Set the server URL
+        String requestUrl = "http://loopify.ddnsgeek.com:20100/download";
+        Log.d("mp3song", "Request URL: " + requestUrl);
+
+        // Create request body with JSON payload
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-        String BaseUrl = BuildConfig.BASE_URL;
+
+        // Build the request
         Request request = new Request.Builder()
-                .url(BaseUrl) // we will change this to Petros's server ip/Cloudfare directory when we migrate
+                .url(requestUrl)
                 .post(body)
+                .header("Content-Type", "application/json")
                 .build();
 
-        new Thread(() -> { // occupy a thread to handle the POST of the formated data
+        // Start a new thread to handle network operations
+        new Thread(() -> {
+            Log.d("mp3song", "Starting network request on a new thread");
+
             try {
+                // Execute the request
                 Response response = client.newCall(request).execute();
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     String responseData = response.body().string();
+                    Log.d("mp3song", "Response Received: " + responseData);
                     listener.onResponseReceived(responseData);
                 } else {
+                    Log.e("mp3song", "Request Failed. Response Code: " + response.code());
                     listener.onResponseReceived(null);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("mp3song", "IOException occurred during request", e);
                 listener.onResponseReceived(null);
             }
         }).start();
     }
+
+
+
 
 
 
