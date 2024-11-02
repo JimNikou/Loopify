@@ -30,7 +30,8 @@ public class MediaPlayerService extends Service {
         if (action != null) {
             switch (action) {
                 case "PLAY":
-                    exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti%20mou%20zitas%20(Live).mp3?alt=media");
+                    String trackName = "Hooverphonic - Mad About You (Live at Koningin Elisabethzaal 2012).mp3";
+                    exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/"+trackName+"?alt=media");
                     isPlaying = true;
                     updateNotification();
                     break;

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background"
+    tools:context=".AboutFragment">
+
+    <!-- ScrollView to enable scrolling -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="150dp"
+            android:paddingHorizontal="10dp">
+
+
+            <TextView
+                android:id="@+id/licence_title0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/overview_title"
+                android:textAppearance="@style/ultrabold_font_20"
+                android:textColor="#FFFFFF"/>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginVertical="4dp"
+                android:background="?android:attr/listDivider" />
+
+
+            <TextView
+                android:id="@+id/licence_text0"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_overview"
+                android:textAppearance="@style/regular_font_16"
+                android:textColor="#FFFFFF"/>
+
+
+            <!-- Divider Line -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginVertical="4dp"
+                android:background="?android:attr/listDivider" />
+
+
+            <TextView
+                android:id="@+id/licence_title1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/mission_title"
+                android:textAppearance="@style/ultrabold_font_20"
+                android:textColor="#FFFFFF"/>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginVertical="4dp"
+                android:background="?android:attr/listDivider" />
+
+
+            <TextView
+                android:id="@+id/licence_text1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_mission"
+                android:textAppearance="@style/regular_font_16"
+                android:textColor="#FFFFFF"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginVertical="4dp"
+                android:background="?android:attr/listDivider" />
+
+
+            <TextView
+                android:id="@+id/licence_title2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/features_title"
+                android:textAppearance="@style/ultrabold_font_20"
+                android:textColor="#FFFFFF"/>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginVertical="4dp"
+                android:background="?android:attr/listDivider" />
+
+
+            <TextView
+                android:id="@+id/licence_text2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_features"
+                android:textAppearance="@style/regular_font_16"
+                android:textColor="#FFFFFF"/>
+
+
+            <!-- Divider Line -->
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginVertical="4dp"
+                android:background="?android:attr/listDivider" />
+
+
+            <TextView
+                android:id="@+id/licence_title3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/licence_title"
+                android:textAppearance="@style/ultrabold_font_20"
+                android:textColor="#FFFFFF"/>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginVertical="4dp"
+                android:background="?android:attr/listDivider" />
+
+
+            <TextView
+                android:id="@+id/licence_text3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_license"
+                android:textAppearance="@style/regular_font_16"
+                android:textColor="#FFFFFF"/>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginVertical="4dp"
+                android:background="?android:attr/listDivider" />
+
+
+            <TextView
+                android:id="@+id/licence_title4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/version_title"
+                android:textAppearance="@style/ultrabold_font_20"
+                android:textColor="#FFFFFF"/>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_marginVertical="4dp"
+                android:background="?android:attr/listDivider" />
+
+
+            <!-- Divider Line -->
+            <TextView
+                android:id="@+id/licence_text4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/about_version"
+                android:textAppearance="@style/regular_font_16"
+                android:textColor="#FFFFFF"/>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</FrameLayout>
