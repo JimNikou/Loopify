@@ -33,7 +33,7 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-//TEST TEST TEST TEST TEST TEST TEST TEST TEST
+//added build script folder
 public class MainActivity extends AppCompatActivity implements ApiManager.ApiResponseListener {
     private MediaPlayerManager mediaPlayerManager;
     private ExoPlayerManager exoPlayerManager;
