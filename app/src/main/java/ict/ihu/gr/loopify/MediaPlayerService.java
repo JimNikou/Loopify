@@ -7,12 +7,14 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.util.Log;
+
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 public class MediaPlayerService extends Service {
 
-    private ExoPlayerManager exoPlayerManager;
+    public ExoPlayerManager exoPlayerManager;
     private boolean isPlaying = false; // Track the state of playback
 
     @Override
@@ -30,7 +32,7 @@ public class MediaPlayerService extends Service {
         if (action != null) {
             switch (action) {
                 case "PLAY":
-                    String trackName = "smooth operator";
+                    String trackName = "black and yellow";
                     new MainActivity().runStartTrackServe(trackName, exoPlayerManager);
                     // me thn apo panw sunarthsh katebainei to tragoudi kai meta prepei v
                     // na brw to onoma tou mesa sto bucket dioti den einai to idio me auto pou epsaxe o user √

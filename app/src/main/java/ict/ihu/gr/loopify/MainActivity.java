@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     private ExoPlayerManager exoPlayerManager;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+    public String songDuration;
 
     private Button playButton, stopButton, pauseButton, resetButton;
     @Override
@@ -192,48 +193,70 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     void runStartTrackServe(String track, ExoPlayerManager exo) {
         if (isTrackServing) {
             Log.d("ApiManager", "Track is already being served, ignoring further calls.");
-            return; // Exit if track is already being served
+            return;
         }
 
         isTrackServing = true; // Set the flag to true to prevent further calls
+
         ApiManager apiManager = new ApiManager();
 
-        apiManager.startTrackServe(track, new ApiManager.ApiResponseListener() {
-            @Override
-            public void onResponseReceived(String jsonResponse) {
-                if (jsonResponse != null) {
-                    Log.d("ApiManager", jsonResponse);
-                    Log.d("ApiManager", "Streaming started successfully");
+        // Step 1: Check if the track is available in downloads
+        checkTrackAvailability(track, apiManager, exo);
+    }
 
-                    new ApiManager().fetchSongTitlesFromTxt("http://loopify.ddnsgeek.com:20080/downloads/downloaded_files.txt", new ApiManager.ApiResponseListener() {
-                        @Override
-                        public void onResponseReceived(String response) {
-                            if (response != null) {
-                                Log.d("ApiManager", response); // Log all song titles
-                                String matchedTitle = new ApiManager().findMatchingSong(track, response);
-
-                                Log.d("ApiManager", "Matched song: " + matchedTitle);
-
-                                if (matchedTitle != null) {
-                                    String completeUrl = "http://loopify.ddnsgeek.com:20080/downloads/" + matchedTitle.trim() + ".webm";
-                                    Log.d("ApiManager", "Complete URL: " + completeUrl);
-                                    runOnUiThread(() -> exo.playSong(completeUrl));
-                                } else {
-                                    Log.d("ApiManager", "No matching song found.");
-                                }
-                            } else {
-                                Log.d("ApiManager", "Failed to fetch song titles.");
-                            }
-
-                            isTrackServing = false; // Reset the flag after processing is complete
-                        }
-                    });
+    private void checkTrackAvailability(String track, ApiManager apiManager, ExoPlayerManager exo) {
+        apiManager.fetchSongTitlesFromTxt("http://loopify.ddnsgeek.com:20080/downloads/downloaded_files.txt", response -> {
+            if (response != null) {
+                String matchedTitle = apiManager.findMatchingSong(track, response);
+                if (matchedTitle != null) {
+                    playTrack(matchedTitle, exo); // Track found, play directly
                 } else {
-                    Log.d("ApiManager", "Response was null.");
-                    isTrackServing = false; // Reset the flag if the response is null
+                    Log.d("ApiManager", "No matching song found in downloads, starting download process.");
+                    startTrackDownload(track, apiManager, exo); // Track not found, proceed to download
                 }
+            } else {
+                Log.d("ApiManager", "Failed to fetch song titles.");
+                isTrackServing = false;
             }
         });
+    }
+
+    private void startTrackDownload(String track, ApiManager apiManager, ExoPlayerManager exo) {
+        apiManager.startTrackServe(track, jsonResponse -> {
+            if (jsonResponse != null) {
+                Log.d("ApiManager", "Streaming started successfully: " + jsonResponse);
+                // After downloading, check again if the track is available
+                apiManager.fetchSongTitlesFromTxt("http://loopify.ddnsgeek.com:20080/downloads/downloaded_files.txt", response -> {
+                    if (response != null) {
+                        String matchedTitle = apiManager.findMatchingSong(track, response);
+                        if (matchedTitle != null) {
+                            playTrack(matchedTitle, exo); // Play the newly downloaded track
+                        } else {
+                            Log.d("ApiManager", "Failed to locate the downloaded song.");
+                        }
+                    } else {
+                        Log.d("ApiManager", "Failed to fetch song titles after download.");
+                    }
+                    isTrackServing = false; // Reset flag after final processing
+                });
+            } else {
+                Log.d("ApiManager", "Download response was null.");
+                isTrackServing = false;
+            }
+        });
+    }
+
+    private void playTrack(String matchedTitle, ExoPlayerManager exo) {
+        String completeUrl = "http://loopify.ddnsgeek.com:20080/downloads/" + matchedTitle.trim() + ".webm";
+        Log.d("ApiManager", "Playing track: " + completeUrl);
+
+        // Run on the UI thread to start playback
+        runOnUiThread(() -> {
+            exo.playSong(completeUrl);
+            exo.setDurationListener(duration -> Log.d("ApiManager", "Song duration: " + duration));
+        });
+
+        isTrackServing = false; // Reset flag after playback begins
     }
 
 

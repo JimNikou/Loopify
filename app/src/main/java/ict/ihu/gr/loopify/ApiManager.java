@@ -547,7 +547,7 @@ public class ApiManager {
             } catch (Exception e) {
                 Log.e(TAG, "Error: " + e.getMessage());
             }
-//            Log.d(TAG,jsonResponse);
+            Log.d(TAG,jsonResponse);
             return jsonResponse;
         }
 
