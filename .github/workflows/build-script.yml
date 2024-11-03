@@ -50,4 +50,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: loopify-release.apk
-          path: app/built_apk/outputs/apk/
+          path: app/built_apk/outputs/apk/test-file
