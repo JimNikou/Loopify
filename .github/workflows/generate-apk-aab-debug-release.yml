@@ -4,9 +4,6 @@ env:
   # The name of the main module repository
   main_project_module: app
 
-  # The name of the Play Store
-  playstore_name: Frogobox ID
-
 on:
 
   push:
