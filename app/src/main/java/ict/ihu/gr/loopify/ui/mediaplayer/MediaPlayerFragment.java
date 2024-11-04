@@ -24,7 +24,7 @@ public class MediaPlayerFragment extends Fragment {
 
     private ImageButton playPauseButton;
     private SeekBar seekBar;
-    private MediaPlayer mediaPlayer;
+    private static MediaPlayer mediaPlayer;  // Singleton MediaPlayer instance
     private VideoView videoView;
     private Handler handler = new Handler();
     private Runnable updateSeekBarRunnable;
@@ -32,6 +32,7 @@ public class MediaPlayerFragment extends Fragment {
     private TextView currentTimeTextView, totalDurationTextView;
     private boolean isUserSeeking = false;  // To track if the user is manually moving the SeekBar
     private boolean isPlaying = false;  // Track the play/pause state
+    private View albumArtImageView;
 
     @Nullable
     @Override
@@ -43,10 +44,11 @@ public class MediaPlayerFragment extends Fragment {
         seekBar = view.findViewById(R.id.seekBar);
         currentTimeTextView = view.findViewById(R.id.currentTimeTextView);
         totalDurationTextView = view.findViewById(R.id.totalDurationTextView);
-        videoView = view.findViewById(R.id.backgroundVideoView);
+//        videoView = view.findViewById(R.id.backgroundVideoView);
+        albumArtImageView = view.findViewById(R.id.albumArtImageView);
 
-        // Setup media player with the audio file from res/raw
-        mediaPlayer = MediaPlayer.create(getContext(), R.raw.sample_audio);  // Assuming sample_audio.mp3 exists
+        // Get singleton MediaPlayer instance
+        mediaPlayer = getMediaPlayerInstance();
 
         // Setup VideoView with background video
         Uri videoUri = Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.raw.background_video);  // Replace with your video
@@ -109,19 +111,32 @@ public class MediaPlayerFragment extends Fragment {
         return view;
     }
 
+    // Singleton method to create/get MediaPlayer instance
+    private static MediaPlayer getMediaPlayerInstance() {
+        if (mediaPlayer == null) {
+            mediaPlayer = MediaPlayer.create(null, R.raw.sample_audio);  // Assuming sample_audio.mp3 exists in res/raw
+        }
+        return mediaPlayer;
+    }
+
     // Function to start media (both audio and video)
     private void startMedia() {
         mediaPlayer.start();  // Start audio playback
-        videoView.start();  // Start video playback
+        videoView.setVisibility(View.VISIBLE);  // Show the VideoView
+        albumArtImageView.setVisibility(View.GONE);  // Hide the album art
+//        videoView.start();  // Start video playback
         playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_pause_button);  // Change to pause icon
         isPlaying = true;
         updateSeekBar();  // Start updating the SeekBar
     }
 
+
     // Function to pause media (both audio and video)
     private void pauseMedia() {
         mediaPlayer.pause();  // Pause audio playback
         videoView.pause();  // Pause video playback
+//        videoView.setVisibility(View.GONE);  // Hide the VideoView if needed
+        albumArtImageView.setVisibility(View.VISIBLE);  // Show the album art
         playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_play_button);  // Change to play icon
         isPlaying = false;
     }
@@ -155,3 +170,4 @@ public class MediaPlayerFragment extends Fragment {
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(milliseconds)));
     }
 }
+

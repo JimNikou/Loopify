@@ -7,14 +7,6 @@
     android:background="#000"
     tools:context=".MediaPlayerManager">
 
-    <!-- Background VideoView at z-0 (bottom layer) -->
-    <VideoView
-        android:id="@+id/backgroundVideoView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        android:keepScreenOn="true"
-        android:visibility="visible" />
 
     <!-- LinearLayout for album art and media controls at z-1 (top layer) -->
     <LinearLayout
@@ -26,6 +18,17 @@
         android:padding="16dp"
         android:gravity="center">
 
+
+
+        <!-- Background VideoView at z-0 (bottom layer) -->
+<!--        <VideoView-->
+<!--            android:id="@+id/backgroundVideoView"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:keepScreenOn="true"-->
+<!--            android:scaleType="centerCrop"-->
+<!--            android:visibility="visible" />-->
 
         <!--  Album Art-->
         <ImageView
