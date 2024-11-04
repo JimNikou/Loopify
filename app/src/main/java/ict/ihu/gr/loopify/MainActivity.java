@@ -6,7 +6,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-
+import java.util.List;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     private ExoPlayerManager exoPlayerManager;
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
+    public String songDuration;
 
     private Button playButton, stopButton, pauseButton, resetButton;
     @Override
@@ -94,18 +95,21 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 //        resetButton.setVisibility(View.INVISIBLE);
 
 //        String wrong_track = "Baet It";
-        String artist = "moby";
-        String track = "beat it";
+//        String artist = "moby";
+        String track = "heartless";
 
         ApiManager apiManager = new ApiManager();
         exoPlayerManager = new ExoPlayerManager(this);
-        new ApiManager().fetchArtistFromTrack(track,this); //get back the artist from a selected track
+//        new ApiManager().fetchArtistFromTrack(track,this); //get back the artist from a selected track
 //        new ApiManager().fetchTADB_Artist_ID(track, artist,this); //get the artist id for track search
 //        new ApiManager().fetchCorrectedTrackInfo(wrong_track, artist, this); //get corrected artist info
 //        new ApiManager().fetchYtURL("112424", this); //get youtube URL for a specified track with the id
 //        new ApiManager().fetchAlbumInfo("Cher", "Believe", this);
 
         // OTI EINAI PANW APO AUTO TO COMMENT EINAI DEPRECATED, XRHSIMOPOIEITAI TA KATW CALLS GIA TA API GIA NA PARETE PISW MIA TIMH TA ALLA EINAI IN SERIES CONNECTED
+
+//        new ApiManager().startTrackServe(track,this); // kanei olh thn diadikasia apo to na brei ton kalitexnh mexri na katebasei to tragoudi (menei na kanei elenxo ean einai)
+                                                        // hdh katebasmeno
 
 //        apiManager.fetchMP3file("https://www.youtube.com/watch?v=Jy1D6caG8nU", new ApiManager.ApiResponseListener() {
 //            @Override
@@ -183,6 +187,80 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
         createNotificationChannel();
     }
+
+    private boolean isTrackServing = false; // Flag to prevent multiple calls
+
+    void runStartTrackServe(String track, ExoPlayerManager exo) {
+        if (isTrackServing) {
+            Log.d("ApiManager", "Track is already being served, ignoring further calls.");
+            return;
+        }
+
+        isTrackServing = true; // Set the flag to true to prevent further calls
+
+        ApiManager apiManager = new ApiManager();
+
+        // Step 1: Check if the track is available in downloads
+        checkTrackAvailability(track, apiManager, exo);
+    }
+
+    private void checkTrackAvailability(String track, ApiManager apiManager, ExoPlayerManager exo) {
+        apiManager.fetchSongTitlesFromTxt("http://loopify.ddnsgeek.com:20080/downloads/downloaded_files.txt", response -> {
+            if (response != null) {
+                String matchedTitle = apiManager.findMatchingSong(track, response);
+                if (matchedTitle != null) {
+                    playTrack(matchedTitle, exo); // Track found, play directly
+                } else {
+                    Log.d("ApiManager", "No matching song found in downloads, starting download process.");
+                    startTrackDownload(track, apiManager, exo); // Track not found, proceed to download
+                }
+            } else {
+                Log.d("ApiManager", "Failed to fetch song titles.");
+                isTrackServing = false;
+            }
+        });
+    }
+
+    private void startTrackDownload(String track, ApiManager apiManager, ExoPlayerManager exo) {
+        apiManager.startTrackServe(track, jsonResponse -> {
+            if (jsonResponse != null) {
+                Log.d("ApiManager", "Streaming started successfully: " + jsonResponse);
+                // After downloading, check again if the track is available
+                apiManager.fetchSongTitlesFromTxt("http://loopify.ddnsgeek.com:20080/downloads/downloaded_files.txt", response -> {
+                    if (response != null) {
+                        String matchedTitle = apiManager.findMatchingSong(track, response);
+                        if (matchedTitle != null) {
+                            playTrack(matchedTitle, exo); // Play the newly downloaded track
+                        } else {
+                            Log.d("ApiManager", "Failed to locate the downloaded song.");
+                        }
+                    } else {
+                        Log.d("ApiManager", "Failed to fetch song titles after download.");
+                    }
+                    isTrackServing = false; // Reset flag after final processing
+                });
+            } else {
+                Log.d("ApiManager", "Download response was null.");
+                isTrackServing = false;
+            }
+        });
+    }
+
+    private void playTrack(String matchedTitle, ExoPlayerManager exo) {
+        String completeUrl = "http://loopify.ddnsgeek.com:20080/downloads/" + matchedTitle.trim() + ".webm";
+        Log.d("ApiManager", "Playing track: " + completeUrl);
+
+        // Run on the UI thread to start playback
+        runOnUiThread(() -> {
+            exo.playSong(completeUrl);
+            exo.setDurationListener(duration -> Log.d("ApiManager", "Song duration: " + duration));
+        });
+
+        isTrackServing = false; // Reset flag after playback begins
+    }
+
+
+
     public static String chatGPT(String message){
         String url = "https://api.openai.com/v1/chat/completions";
         String apiKey = "";

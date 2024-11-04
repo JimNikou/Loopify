@@ -4,14 +4,72 @@ import android.content.Context;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
+import android.util.Log;
+import com.google.android.exoplayer2.C;
 
 public class ExoPlayerManager {
     private ExoPlayer exoPlayer;
     private boolean isMediaLoaded = false; // To check if the media has been loaded
+    private DurationListener durationListener;
+    private long storedDuration = C.TIME_UNSET;
 
     // Initialize ExoPlayer with the application context
     public ExoPlayerManager(Context context) {
         exoPlayer = new ExoPlayer.Builder(context).build();
+
+        // a listener to get duration when media is prepared
+        exoPlayer.addListener(new Player.Listener() {
+            @Override
+            public void onPlaybackStateChanged(int playbackState) {
+                if (playbackState == Player.STATE_READY) {
+                    isMediaLoaded = true;
+                    storedDuration = exoPlayer.getDuration();
+
+                    // Trigger listener if set, and log the duration
+                    if (durationListener != null) {
+                        durationListener.onDurationReady(formatDuration(storedDuration));
+                    }
+//                    Log.d("ExoPlayerManager", "Song Duration: " + formatDuration(storedDuration));
+                }
+            }
+        });
+    }
+
+    // Define a listener interface to be notified when duration is ready
+    public interface DurationListener {
+        void onDurationReady(String duration);
+    }
+    public String getStoredDuration() {
+        return formatDuration(storedDuration);
+    }
+    private String formatDuration(long durationMs) {
+        if (durationMs == C.TIME_UNSET) {
+            return "Duration not available";
+        } else {
+            long minutes = (durationMs / 1000) / 60;
+            long seconds = (durationMs / 1000) % 60;
+            return String.format("%d:%02d", minutes, seconds);
+        }
+    }
+
+    public void setDurationListener(DurationListener listener) {
+        this.durationListener = listener;
+    }
+    // Method to get the duration of the currently loaded song
+    public String getSongDuration() {
+        if (isMediaLoaded) {
+            long durationMs = exoPlayer.getDuration();
+            if (durationMs == C.TIME_UNSET) {  // Corrected here
+                return "Duration not available";
+            } else {
+                // Convert milliseconds to minutes and seconds
+                long minutes = (durationMs / 1000) / 60;
+                long seconds = (durationMs / 1000) % 60;
+                return String.format("%d:%02d", minutes, seconds); // Format as "minutes:seconds"
+            }
+        } else {
+            return "No media loaded";
+        }
     }
 
     // Check if the player is actively playing
@@ -34,6 +92,19 @@ public class ExoPlayerManager {
             MediaItem mediaItem = MediaItem.fromUri(url);
             exoPlayer.setMediaItem(mediaItem);
             exoPlayer.prepare(); // Prepare the player (loads and buffers the media)
+
+            exoPlayer.addListener(new Player.Listener() {
+                @Override
+                public void onPlaybackStateChanged(int playbackState) {
+                    if (playbackState == Player.STATE_READY) {  // Media is ready to play
+                        isMediaLoaded = true; // Update loaded state
+                        if (durationListener != null) {
+                            String duration = getSongDuration();
+                            durationListener.onDurationReady(duration);
+                        }
+                    }
+                }
+            });
             isMediaLoaded = true;
         }
 
