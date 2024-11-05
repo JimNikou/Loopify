@@ -29,6 +29,7 @@ public class MediaPlayerManager extends Fragment {
 
         // ImageButton for play/pause functionality
         ImageButton playPauseButton = view.findViewById(R.id.playPauseButton);
+
         playPauseButton.setOnClickListener(v -> {
             if (isPlaying) {
                 pauseSong();
@@ -47,7 +48,8 @@ public class MediaPlayerManager extends Fragment {
             stopSong();
             Toast.makeText(getContext(), "Song stopped.", Toast.LENGTH_SHORT).show();
         });
-
+        view.bringToFront();
+        view.setElevation(10);  // Set a high elevation for layering on top (adjust as needed)
         return view;
     }
 
