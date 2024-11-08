@@ -12,6 +12,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -405,7 +406,11 @@ public class ApiManager {
      */
     public void fetchMP3file(String youtubeURL, ApiResponseListener listener) {
         // Initialize OkHttpClient
-        OkHttpClient client = new OkHttpClient();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS) // Connection timeout
+                .readTimeout(60, TimeUnit.SECONDS)    // Read timeout
+                .writeTimeout(60, TimeUnit.SECONDS)   // Write timeout
+                .build();
         Log.d(TAG, "OkHttpClient Initialized");
 
         // Create JSON payload
@@ -655,6 +660,10 @@ public class ApiManager {
         fetchArtistFromTrack(track,listener);
     }
 
+    private long trackDuration;
+    public long getTrackDuration(){
+        return trackDuration;
+    }
     public String findMatchingSong(String userInput, String allTitles) {
         // Normalize the user input for better matching
         String normalizedInput = userInput.trim().toLowerCase();
@@ -662,6 +671,7 @@ public class ApiManager {
         // Split the allTitles string into an array of individual titles
         String[] titlesArray = allTitles.split("\n");
         String bestMatch = null;
+        trackDuration = -1; // Variable to store duration in milliseconds
 
         for (String title : titlesArray) {
             // Normalize the title for comparison
@@ -669,13 +679,34 @@ public class ApiManager {
 
             // Check if the normalized user input is contained within the normalized title
             if (normalizedTitle.contains(normalizedInput)) {
-                bestMatch = title; // Keep track of the best match found
-                break; // Exit loop on first match found
+                bestMatch = title; // Store the matched title
+
+                // Check if the title contains a duration at the end (e.g., "\210000")
+                int backslashIndex = bestMatch.lastIndexOf('\\');
+                if (backslashIndex != -1) {
+                    // Extract the part after the backslash
+                    String durationString = bestMatch.substring(backslashIndex + 1);
+
+                    try {
+                        // Parse the duration in milliseconds
+                        trackDuration = Long.parseLong(durationString);
+                        Log.d("ApiManager","Track Duration: " + trackDuration + " ms");
+
+                        // Remove the backslash and duration from the title
+                        bestMatch = bestMatch.substring(0, backslashIndex);
+                    } catch (NumberFormatException e) {
+                        Log.d("ApiManager", "Failed to parse duration: " + durationString);
+                    }
+                }
+
+                break; // Exit loop after first match
             }
         }
 
-        return bestMatch; // Return the best matching title or null if not found
+        // Return the best matching title without the appended duration
+        return bestMatch;
     }
+
 
 
 }
