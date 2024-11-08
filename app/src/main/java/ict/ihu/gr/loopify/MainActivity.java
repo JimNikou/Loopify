@@ -24,8 +24,12 @@ import org.json.JSONObject;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.os.Build;
+import android.widget.EditText;
+
 import androidx.core.app.NotificationManagerCompat;
 import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
+import ict.ihu.gr.loopify.ui.home.HomeFragment;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -88,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         stopButton = findViewById(R.id.stopButton);
         pauseButton = findViewById(R.id.pauseButton);
         resetButton = findViewById(R.id.resetButton);
+
 
 //        playButton.setVisibility(View.INVISIBLE);
 //        stopButton.setVisibility(View.INVISIBLE);
@@ -190,84 +195,6 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         createNotificationChannel();
     }
 
-    private boolean isTrackServing = false; // Flag to prevent multiple calls
-
-    void runStartTrackServe(String track, ExoPlayerManager exo) {
-        if (isTrackServing) {
-            Log.d("ApiManager", "Track is already being served, ignoring further calls.");
-            return;
-        }
-
-        isTrackServing = true; // Set the flag to true to prevent further calls
-
-        ApiManager apiManager = new ApiManager();
-
-        // Step 1: Check if the track is available in downloads
-        checkTrackAvailability(track, apiManager, exo);
-    }
-
-    private void checkTrackAvailability(String track, ApiManager apiManager, ExoPlayerManager exo) {
-        apiManager.fetchSongTitlesFromTxt("http://loopify.ddnsgeek.com:20080/downloads/downloaded_files.txt", response -> {
-            if (response != null) {
-                String matchedTitle = apiManager.findMatchingSong(track, response);
-                Log.d("ApiManager", "Got time: " + apiManager.getTrackDuration()); //use apiManager.getTrackDuration() to get the track duration using the apiManager parameter
-                if (matchedTitle != null) {
-                    playTrack(matchedTitle, exo); // Track found, play directly
-                } else {
-                    Log.d("ApiManager", "No matching song found in downloads, starting download process.");
-                    startTrackDownload(track, apiManager, exo); // Track not found, proceed to download
-                }
-            } else {
-                Log.d("ApiManager", "Failed to fetch song titles.");
-                isTrackServing = false;
-            }
-        });
-    }
-
-    private void startTrackDownload(String track, ApiManager apiManager, ExoPlayerManager exo) {
-        apiManager.startTrackServe(track, jsonResponse -> {
-            if (jsonResponse != null) {
-                Log.d("ApiManager", "Streaming started successfully: " + jsonResponse);
-                // After downloading, check again if the track is available
-                apiManager.fetchSongTitlesFromTxt("http://loopify.ddnsgeek.com:20080/downloads/downloaded_files.txt", response -> {
-                    if (response != null) {
-                        String matchedTitle = apiManager.findMatchingSong(track, response);
-                        if (matchedTitle != null) {
-                            playTrack(matchedTitle, exo); // Play the newly downloaded track
-                        } else {
-                            Log.d("ApiManager", "Failed to locate the downloaded song.");
-                        }
-                    } else {
-                        Log.d("ApiManager", "Failed to fetch song titles after download.");
-                    }
-                    isTrackServing = false; // Reset flag after final processing
-                });
-            } else {
-                Log.d("ApiManager", "Download response was null.");
-                isTrackServing = false;
-            }
-        });
-    }
-
-    private void playTrack(String matchedTitle, ExoPlayerManager exo) {
-        String completeUrl = "http://loopify.ddnsgeek.com:20080/downloads/" + matchedTitle.trim() + ".mp3";
-        Log.d("ApiManager", "Playing track: " + completeUrl);
-
-        // Run on the UI thread to start playback
-        runOnUiThread(() -> {
-            exo.playSong(completeUrl);
-        });
-
-        isTrackServing = false; // Reset flag after playback begins
-    }
-
-
-
-    public static String chatGPT(String message){
-        String url = "https://api.openai.com/v1/chat/completions";
-        String apiKey = "";
-        return "";
-    }
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(
@@ -279,7 +206,9 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
             manager.createNotificationChannel(serviceChannel);
         }
     }
-    private void startMusicService(String action) {
+
+
+    public void startMusicService(String action) {
         Intent serviceIntent = new Intent(this, MediaPlayerService.class);
         serviceIntent.setAction(action);
         startService(serviceIntent); // Start the service with the action
