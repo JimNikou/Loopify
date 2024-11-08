@@ -32,14 +32,8 @@ public class MediaPlayerService extends Service {
         if (action != null) {
             switch (action) {
                 case "PLAY":
-                    String trackName = "black and yellow";
+                    String trackName = "flashing lights";
                     new MainActivity().runStartTrackServe(trackName, exoPlayerManager);
-                    // me thn apo panw sunarthsh katebainei to tragoudi kai meta prepei v
-                    // na brw to onoma tou mesa sto bucket dioti den einai to idio me auto pou epsaxe o user √
-                    // epeita prepei afou brw to onoma kai exei teleiwsei olh auth h diadikasia, tote kai mono tote na √
-                    // xekinhsei na paizei to tragoudi. Prepei epishs na ginetai elenxos prin to download ean to tragoudi --
-                    // uparxei hdh kai na skiparei ta alla steps kai na erxetai na paixei miafora me to link tou tragoudiou
-//                    exoPlayerManager.playSong("http://loopify.ddnsgeek.com:20080/downloads/P.I.M.P..webm");
                     isPlaying = true;
                     updateNotification();
                     break;

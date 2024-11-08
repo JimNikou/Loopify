@@ -182,7 +182,9 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
             }
             startMusicService("PAUSE");
         });
-//        stopButton.setOnClickListener(v -> exoPlayerManager.stopSong());
+        stopButton.setOnClickListener(v -> {
+            exoPlayerManager.stopSong();
+        });
 //        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
 
         createNotificationChannel();
@@ -208,6 +210,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         apiManager.fetchSongTitlesFromTxt("http://loopify.ddnsgeek.com:20080/downloads/downloaded_files.txt", response -> {
             if (response != null) {
                 String matchedTitle = apiManager.findMatchingSong(track, response);
+                Log.d("ApiManager", "Got time: " + apiManager.getTrackDuration()); //use apiManager.getTrackDuration() to get the track duration using the apiManager parameter
                 if (matchedTitle != null) {
                     playTrack(matchedTitle, exo); // Track found, play directly
                 } else {
@@ -247,13 +250,12 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     }
 
     private void playTrack(String matchedTitle, ExoPlayerManager exo) {
-        String completeUrl = "http://loopify.ddnsgeek.com:20080/downloads/" + matchedTitle.trim() + ".webm";
+        String completeUrl = "http://loopify.ddnsgeek.com:20080/downloads/" + matchedTitle.trim() + ".mp3";
         Log.d("ApiManager", "Playing track: " + completeUrl);
 
         // Run on the UI thread to start playback
         runOnUiThread(() -> {
             exo.playSong(completeUrl);
-            exo.setDurationListener(duration -> Log.d("ApiManager", "Song duration: " + duration));
         });
 
         isTrackServing = false; // Reset flag after playback begins
