@@ -20,36 +20,27 @@ public class MediaPlayerManager extends Fragment {
     private MediaPlayer mediaPlayer;
     private static final String TAG = "MediaPlayerManager";
     private boolean isPlaying = false;
+    private ImageButton playPauseButton;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.media_player_fragment, container, false);
 
-        // ImageButton for play/pause functionality
-        ImageButton playPauseButton = view.findViewById(R.id.playPauseButton);
+        playPauseButton = view.findViewById(R.id.playPauseButton);
+        ImageButton stopButton = view.findViewById(R.id.stopButton);
 
         playPauseButton.setOnClickListener(v -> {
             if (isPlaying) {
                 pauseSong();
-                Toast.makeText(getContext(), "Song paused.", Toast.LENGTH_SHORT).show();
             } else {
-                // Example local file in raw folder, or replace with your URL
                 Uri songUri = Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.raw.sample_audio);
                 playSong(songUri);
-                Toast.makeText(getContext(), "Playing song...", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // ImageButton for stopping the song
-        ImageButton stopButton = view.findViewById(R.id.stopButton);
-        stopButton.setOnClickListener(v -> {
-            stopSong();
-            Toast.makeText(getContext(), "Song stopped.", Toast.LENGTH_SHORT).show();
-        });
-        view.bringToFront();
-        view.setElevation(10);  // Set a high elevation for layering on top (adjust as needed)
+        stopButton.setOnClickListener(v -> stopSong());
+
         return view;
     }
 
@@ -58,35 +49,47 @@ public class MediaPlayerManager extends Fragment {
             if (mediaPlayer == null) {
                 mediaPlayer = new MediaPlayer();
             } else {
-                mediaPlayer.reset(); // Reset the player if it's already initialized
+                mediaPlayer.reset();
             }
 
-            mediaPlayer.setDataSource(getContext(), songUri); // Set the data source as a URI
-            mediaPlayer.prepareAsync(); // Prepare asynchronously
+            mediaPlayer.setDataSource(getContext(), songUri);
+            mediaPlayer.prepareAsync();
 
             mediaPlayer.setOnPreparedListener(mp -> {
-                mediaPlayer.start(); // Start playback when the player is ready
-                isPlaying = true; // Update the state
+                mediaPlayer.start();
+                isPlaying = true;
+                updatePlayPauseIcon();
+                Toast.makeText(getContext(), "Playing song...", Toast.LENGTH_SHORT).show();
             });
 
-            mediaPlayer.setOnCompletionListener(mp -> release()); // Release resources when the song is complete
+            mediaPlayer.setOnCompletionListener(mp -> {
+                isPlaying = false;
+                updatePlayPauseIcon();
+                release();
+                Toast.makeText(getContext(), "Song ended.", Toast.LENGTH_SHORT).show();
+            });
         } catch (IOException e) {
             Log.e(TAG, "Error playing song: " + e.getMessage());
+            Toast.makeText(getContext(), "Error playing song", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void pauseSong() {
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
-            isPlaying = false; // Update the state
+            isPlaying = false;
+            updatePlayPauseIcon();
+            Toast.makeText(getContext(), "Song paused.", Toast.LENGTH_SHORT).show();
         }
     }
 
     public void stopSong() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+        if (mediaPlayer != null) {
             mediaPlayer.stop();
-            mediaPlayer.reset(); // Reset after stopping
-            isPlaying = false; // Update the state
+            mediaPlayer.reset();
+            isPlaying = false;
+            updatePlayPauseIcon();
+            Toast.makeText(getContext(), "Song stopped.", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -94,7 +97,25 @@ public class MediaPlayerManager extends Fragment {
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
-            isPlaying = false; // Reset the state
+            isPlaying = false;
+            updatePlayPauseIcon();
+        }
+    }
+
+    private void updatePlayPauseIcon() {
+        // Update the icon based on the isPlaying state
+        if (isPlaying) {
+            playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_pause_button); // Set to pause icon
+        } else {
+            playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_play_button); // Set to play icon
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (isPlaying) {
+            pauseSong(); // Pause if the fragment is no longer visible
         }
     }
 
