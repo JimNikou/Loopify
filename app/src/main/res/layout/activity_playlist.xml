@@ -35,16 +35,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/selected_image"
-        android:layout_above="@id/bottomNavView" />
-
-    <!-- Bottom Navigation View -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        app:itemTextAppearanceActive="@style/regular_font_12"
-        app:itemTextAppearanceInactive="@style/regular_font_12"
-        app:menu="@menu/bottom_nav_menu" />
+         />
 
 </RelativeLayout>
