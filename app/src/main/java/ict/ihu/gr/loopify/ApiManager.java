@@ -9,6 +9,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -389,37 +396,127 @@ public class ApiManager {
     }
 
 
-    // function to change when we migrate to Cloudfare
-    public void fetchMP3file(String youtubeURL, ApiResponseListener listener){
-        OkHttpClient client = new OkHttpClient();
+    /**
+     * This method sends a POST request to retrieve an MP3 file URL from a specified YouTube video URL.
+     * It constructs a JSON payload with the YouTube URL and handles the network request in a background thread.
+     * The server's response, either the MP3 file URL or an error response, is returned via the provided listener.
+     *
+     * @param youtubeURL The URL of the YouTube video to be processed for MP3 file retrieval.
+     * @param listener   The callback listener to handle the response, either the MP3 file URL or null if unsuccessful.
+     */
+    public void fetchMP3file(String youtubeURL, ApiResponseListener listener) {
+        // Initialize OkHttpClient
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(60, TimeUnit.SECONDS) // Connection timeout
+                .readTimeout(60, TimeUnit.SECONDS)    // Read timeout
+                .writeTimeout(60, TimeUnit.SECONDS)   // Write timeout
+                .build();
+        Log.d(TAG, "OkHttpClient Initialized");
 
         // Create JSON payload
-        String json = "{ \"url\": \"" + youtubeURL + "\" }"; // the served info format our api handles
+        String json = "{ \"url\": \"" + youtubeURL + "\" }";  // Match payload to API requirement
+        Log.d(TAG, "JSON Payload Created: " + json);
+
+        // Set the server URL
+        String requestUrl = "http://loopify.ddnsgeek.com:20100/download";
+        Log.d(TAG, "Request URL: " + requestUrl);
+
+        // Create request body with JSON payload
         RequestBody body = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-        String BaseUrl = BuildConfig.BASE_URL;
+
+        // Build the request
         Request request = new Request.Builder()
-                .url(BaseUrl) // we will change this to Petros's server ip/Cloudfare directory when we migrate
+                .url(requestUrl)
                 .post(body)
+                .header("Content-Type", "application/json")
                 .build();
 
-        new Thread(() -> { // occupy a thread to handle the POST of the formated data
+        // Start a new thread to handle network operations
+        new Thread(() -> {
+            Log.d(TAG, "Starting network request on a new thread");
+
             try {
+                // Execute the request
                 Response response = client.newCall(request).execute();
-                if (response.isSuccessful()) {
+                if (response.isSuccessful() && response.body() != null) {
                     String responseData = response.body().string();
+                    Log.d(TAG, "Response Received: " + responseData);
                     listener.onResponseReceived(responseData);
                 } else {
+                    Log.e(TAG, "Request Failed. Response Code: " + response.code());
                     listener.onResponseReceived(null);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "IOException occurred during request", e);
                 listener.onResponseReceived(null);
             }
         }).start();
     }
 
 
+    public void fetchSongTitlesFromTxt(String url, ApiResponseListener listener) {
+        OkHttpClient client = new OkHttpClient();
 
+        // Start a new thread for network operations
+        new Thread(() -> {
+            try {
+                Request request = new Request.Builder()
+                        .url(url)
+                        .build();
+
+                Response response = client.newCall(request).execute();
+                if (response.isSuccessful() && response.body() != null) {
+                    // Read response body as a string
+                    String responseData = response.body().string();
+
+                    // Split the response into individual song titles
+                    String[] titlesArray = responseData.split("\n");
+                    StringBuilder titlesBuilder = new StringBuilder();
+
+                    for (String title : titlesArray) {
+                        titlesBuilder.append(title.trim()).append("\n"); // Append each title to the StringBuilder
+                    }
+
+                    // Notify the listener with the concatenated string of titles
+                    listener.onResponseReceived(titlesBuilder.toString().trim());
+                } else {
+                    listener.onResponseReceived(null); // Handle failure
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                listener.onResponseReceived(null); // Handle exception
+            }
+        }).start();
+    }
+
+
+
+    // Helper method to parse HTML and extract song names
+    private List<String> parseSongListFromHtml(String html) {
+        List<String> songNames = new ArrayList<>();
+
+        // Parse links that end in .mp3 or .webm
+        Pattern pattern = Pattern.compile("href=\"([^\"]+\\.(mp3|webm))\"");
+        Matcher matcher = pattern.matcher(html);
+
+        while (matcher.find()) {
+            String songName = matcher.group(1);  // Extract song file name
+            songNames.add(songName);
+        }
+
+        return songNames;
+    }
+
+
+
+
+    /**
+     * AsyncTask to retrieve JSON data from a specified URL in the background.
+     * It opens an HTTP connection, handles timeouts, and reads the response data as a JSON string.
+     * The response data is passed back to the calling activity or fragment via the provided listener.
+     *
+     * @param 'listener' A callback interface for handling the JSON response in the calling activity or fragment.
+     */
     private static class GetJsonTask extends AsyncTask<String, Void, String> { // async task for the retrieval of the json info about the artist and the song
         private final ApiResponseListener listener;
 
@@ -455,7 +552,7 @@ public class ApiManager {
             } catch (Exception e) {
                 Log.e(TAG, "Error: " + e.getMessage());
             }
-//            Log.d(TAG,jsonResponse);
+            Log.d(TAG,jsonResponse);
             return jsonResponse;
         }
 
@@ -470,6 +567,14 @@ public class ApiManager {
     }
 
 
+    /**
+     * Parses a JSON response from LastFM to find and return the name of the first matching artist.
+     * The method navigates through the JSON structure to locate the artist’s name within the
+     * "trackmatches" object in the "results" section.
+     *
+     * @param jsonResponse The JSON response string from LastFM containing potential artist matches.
+     * @return The name of the first matching artist, or null if no match is found or an error occurs.
+     */
     @Nullable
     private String findFirstMatchingArtistFromLastFM(String jsonResponse) {
         // parse the JSON response and extract the artist's name from the trackmatches object
@@ -488,6 +593,15 @@ public class ApiManager {
         return null; // return null if no artist was found
     }
 
+
+    /**
+     * Extracts the artist ID from a JSON response containing an array of tracks.
+     * This method parses the JSON string to locate and return the "idArtist" value
+     * from the first track object in the "track" array.
+     *
+     * @param jsonString The JSON string response to be parsed.
+     * @return The artist's ID from the first track in the array, or null if no ID is found or if an error occurs.
+     */
     @Nullable
     private static String getIdArtistFromJson(String jsonString) {
         try {
@@ -509,6 +623,15 @@ public class ApiManager {
         return null;  // Return null if the idArtist is not found or if there's an error
     }
 
+    /**
+     * Searches through a JSON response to locate the YouTube URL of a specified track.
+     * This method iterates through an array of music videos ("mvids") and checks each video's track name
+     * against the provided trackName. When a match is found, the URL of the music video is returned.
+     *
+     * @param jsonString The JSON string containing an array of music videos.
+     * @param trackName  The name of the track for which the YouTube URL is requested.
+     * @return The URL of the music video if a matching track name is found, or null if not found or on error.
+     */
     @Nullable
     public static String getYouTubeUrlFromJson(String jsonString, String trackName) {
         try {
@@ -531,4 +654,59 @@ public class ApiManager {
         }
         return null;  // Return null if the track is not found or if there's an error
     }
+
+
+    public void startTrackServe(String track, ApiResponseListener listener){
+        fetchArtistFromTrack(track,listener);
+    }
+
+    private long trackDuration;
+    public long getTrackDuration(){
+        return trackDuration;
+    }
+    public String findMatchingSong(String userInput, String allTitles) {
+        // Normalize the user input for better matching
+        String normalizedInput = userInput.trim().toLowerCase();
+
+        // Split the allTitles string into an array of individual titles
+        String[] titlesArray = allTitles.split("\n");
+        String bestMatch = null;
+        trackDuration = -1; // Variable to store duration in milliseconds
+
+        for (String title : titlesArray) {
+            // Normalize the title for comparison
+            String normalizedTitle = title.trim().toLowerCase();
+
+            // Check if the normalized user input is contained within the normalized title
+            if (normalizedTitle.contains(normalizedInput)) {
+                bestMatch = title; // Store the matched title
+
+                // Check if the title contains a duration at the end (e.g., "\210000")
+                int backslashIndex = bestMatch.lastIndexOf('\\');
+                if (backslashIndex != -1) {
+                    // Extract the part after the backslash
+                    String durationString = bestMatch.substring(backslashIndex + 1);
+
+                    try {
+                        // Parse the duration in milliseconds
+                        trackDuration = Long.parseLong(durationString);
+                        Log.d("ApiManager","Track Duration: " + trackDuration + " ms");
+
+                        // Remove the backslash and duration from the title
+                        bestMatch = bestMatch.substring(0, backslashIndex);
+                    } catch (NumberFormatException e) {
+                        Log.d("ApiManager", "Failed to parse duration: " + durationString);
+                    }
+                }
+
+                break; // Exit loop after first match
+            }
+        }
+
+        // Return the best matching title without the appended duration
+        return bestMatch;
+    }
+
+
+
 }
