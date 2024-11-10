@@ -19,12 +19,12 @@
 
     <string name="about_mission">Loopify aims to provide a seamless and accessible music streaming experience, combining educational and professional goals to enhance users\' enjoyment and engagement with music.</string>
 
-
+    <string name="default_web_client_id">651998808661-vl8r1capbo3k80ujqeq6692gtrcp2ba7.apps.googleusercontent.com</string>
 
     <string name="about_version">
             0.0.0
     </string>
-
+    <string name="client_id">651998808661-uj3qfrb4ueul2n04v34a28e00gq6n3nl.apps.googleusercontent.com</string>
     <string name="about_license">MIT License
 
 Copyright © 2024 Loopify
