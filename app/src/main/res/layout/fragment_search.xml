@@ -18,14 +18,14 @@
 
     <Button
         android:id="@+id/testbutton"
-        android:layout_width="wrap_content"
+        android:layout_width="227dp"
         android:layout_height="wrap_content"
         android:layout_below="@+id/searchBar"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="154dp"
+        android:layout_marginStart="92dp"
         android:layout_marginTop="52dp"
-        android:layout_marginEnd="163dp"
+        android:layout_marginEnd="92dp"
         android:onClick="test"
-        android:text="Button" />
+        android:text="Search and Play track" />
 </RelativeLayout>

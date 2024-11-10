@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Logo ImageView at the top center -->
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp"
+        android:src="@mipmap/loopify_logo_round" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:fontFamily="@font/pptelegraf_ultrabold"
+        android:text="Loopify"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="25sp"
+        android:textStyle="bold"></TextView>
+
+    <!-- Top zone for email/password login -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Display Name Field -->
+        <EditText
+            android:id="@+id/displayNameField"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="12dp"
+            android:background="#FFFFFF"
+            android:backgroundTint="#000000"
+            android:elevation="2dp"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:hint="Display Name"
+            android:padding="12dp"
+            android:textColor="#333333"
+            android:textColorHint="#B0BEC5" />
+
+        <!-- Email Field -->
+        <EditText
+            android:id="@+id/emailField"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="12dp"
+            android:background="#FFFFFF"
+            android:backgroundTint="#000000"
+            android:elevation="2dp"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:padding="12dp"
+            android:textColor="#333333"
+            android:textColorHint="#B0BEC5" />
+
+        <!-- Password Field -->
+        <EditText
+            android:id="@+id/passwordField"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginBottom="24dp"
+            android:background="#FFFFFF"
+            android:backgroundTint="#000000"
+            android:elevation="2dp"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:padding="12dp"
+            android:textColor="#333333"
+            android:textColorHint="#B0BEC5" />
+
+        <!-- Login Button -->
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#c144d6"
+            android:elevation="2dp"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:text="Login"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+
+        <!-- Sign-Up Button -->
+        <Button
+            android:id="@+id/signupButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="12dp"
+            android:backgroundTint="#C181D6"
+            android:elevation="2dp"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:text="Sign Up"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- Divider line with text in the center -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="24dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="#B0BEC5" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            android:fontFamily="sans-serif-light"
+            android:text=" or "
+            android:textColor="#B0BEC5" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_weight="1"
+            android:background="#B0BEC5" />
+    </LinearLayout>
+
+    <!-- Google Sign-In Button Zone -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="120dp"
+        android:gravity="center"> <!-- Margin to lift the button from the bottom -->
+
+        <!--        <com.google.android.gms.common.SignInButton-->
+        <!--            android:id="@+id/googleSignInButton"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="50dp"-->
+        <!--            android:backgroundTint="#c144d6"-->
+        <!--            android:textColor="#FFFFFF"-->
+        <!--            android:layout_marginTop="8dp" />-->
+
+        <Button
+            android:id="@+id/googleSignInButton"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#ffffff"
+            android:drawableStart="@drawable/google_icon"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:text="Sign in with Google"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+</LinearLayout>

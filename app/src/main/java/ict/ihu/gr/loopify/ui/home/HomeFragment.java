@@ -1,8 +1,12 @@
 package ict.ihu.gr.loopify.ui.home;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +17,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import ict.ihu.gr.loopify.ExoPlayerManager;
 import ict.ihu.gr.loopify.MainActivity;
@@ -31,8 +39,6 @@ import java.util.Locale;
 public class HomeFragment extends Fragment {
     private MediaPlayerManager mediaPlayerManager;
     private ExoPlayerManager exoPlayerManager;
-
-
     private Button playButton, stopButton, pauseButton, resetButton, testButton;
 
 
@@ -58,10 +64,10 @@ public class HomeFragment extends Fragment {
 
 
 //        exoPlayerManager = new ExoPlayerManager(requireContext());
-        playButton = root.findViewById(R.id.playButton); //uncomment if you want to test the functionalities
-        stopButton = root.findViewById(R.id.stopButton);
-        pauseButton = root.findViewById(R.id.pauseButton);
-        resetButton = root.findViewById(R.id.resetButton);
+//        playButton = root.findViewById(R.id.playButton); //uncomment if you want to test the functionalities
+//        stopButton = root.findViewById(R.id.stopButton);
+//        pauseButton = root.findViewById(R.id.pauseButton);
+//        resetButton = root.findViewById(R.id.resetButton);
 //
 //
 //        playButton.setOnClickListener(v -> exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti mou zitas (Live).mp3?alt=media"));
@@ -69,12 +75,43 @@ public class HomeFragment extends Fragment {
 //        stopButton.setOnClickListener(v -> exoPlayerManager.stopSong());
 //        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
 
+        mAuthListener = firebaseAuth -> {
+            FirebaseUser user = firebaseAuth.getCurrentUser();
+            if (user != null) {
+                // User is signed in, now we can set the greeting text
+                setGreetingText();
+            }
+        };
         return root;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Add the AuthStateListener
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        // Remove the AuthStateListener to prevent memory leaks
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
+
+    private FirebaseAuth mAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
 
     @SuppressLint("SetTextI18n")
-    private void setGreetingText() {
+    public void setGreetingText() {
         // Get the TextView inside the black bar (greeting_text)
         TextView greetingText = binding.greetingText;
         Typeface customFont = ResourcesCompat.getFont(getContext(), R.font.pptelegraf_ultrabold);
@@ -82,22 +119,35 @@ public class HomeFragment extends Fragment {
         // Get the current time in hours
         SimpleDateFormat sdf = new SimpleDateFormat("HH", Locale.getDefault());
         int currentHour = Integer.parseInt(sdf.format(new Date()));
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            // Check if the displayName is available
+            if (user.getDisplayName() == null || user.getDisplayName().isEmpty()) {
+                // If displayName is not available, retry after a short delay
+                new Handler().postDelayed(this::setGreetingText, 500);  // Retry every 2 seconds
+                return; // Exit the method to wait for displayName
+            }
 
-        // Determine the appropriate greeting message
-        if (currentHour >= 5 && currentHour < 12) {
-            greetingText.setText("Good morning Giannis");
-            greetingText.setTextSize(20);
-            greetingText.setTypeface(customFont);
-        } else if (currentHour >= 12 && currentHour < 18) {
-            greetingText.setText("Good afternoon Giannis");
-            greetingText.setTextSize(20);
-            greetingText.setTypeface(customFont);
-        } else if (currentHour >= 18 && currentHour <= 23) {
-            greetingText.setText("Good evening Giannis");
+            // Get the displayName
+            String displayName = user.getDisplayName();
+
+            // Determine the appropriate greeting message
+            if (currentHour >= 5 && currentHour < 12) {
+                greetingText.setText("Good Morning, " + displayName);
+            } else if (currentHour >= 12 && currentHour < 18) {
+                greetingText.setText("Good Afternoon, " + displayName);
+            } else if (currentHour >= 18 && currentHour <= 23) {
+                greetingText.setText("Good Evening, " + displayName);
+            } else {
+                greetingText.setText("Good Night, " + displayName);
+            }
+
+            // Set the font and text size
             greetingText.setTextSize(20);
             greetingText.setTypeface(customFont);
         } else {
-            greetingText.setText("Good night Giannis");
+            // If no user is signed in, show a generic greeting (optional)
+            greetingText.setText("Welcome to Loopify!");
             greetingText.setTextSize(20);
             greetingText.setTypeface(customFont);
         }
