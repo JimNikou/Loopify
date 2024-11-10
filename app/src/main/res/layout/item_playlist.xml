@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="8dp"
-    android:gravity="center_vertical"> <!-- Ensures entire layout is vertically centered -->
+    android:layout_margin="5dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/rounded_background"> <!-- Set the rounded background -->
 
     <!-- Image for Song -->
     <ImageView
@@ -19,25 +19,24 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center_vertical">
+        android:orientation="vertical"
+        android:gravity="center_vertical">
 
-    <!-- Song Name -->
-    <TextView
-        android:id="@+id/song_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:textColor="@android:color/white"
-        android:textStyle="bold" />
+        <!-- Song Name -->
+        <TextView
+            android:id="@+id/song_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
 
-    <!-- Artist Name -->
-    <TextView
-        android:id="@+id/artist_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="14sp"
-        android:textColor="@android:color/darker_gray" />
-</LinearLayout>
-
+        <!-- Artist Name -->
+        <TextView
+            android:id="@+id/artist_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray" />
     </LinearLayout>
+</LinearLayout>
