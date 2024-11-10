@@ -60,7 +60,9 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.android.gms:play-services-auth:21.2.0")
     implementation ("com.github.bumptech.glide:glide:4.16.0")
+    implementation("com.google.firebase:firebase-firestore")
 
+    
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
