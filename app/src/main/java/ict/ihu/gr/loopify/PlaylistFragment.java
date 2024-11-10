@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import ict.ihu.gr.loopify.R;
+import ict.ihu.gr.loopify.ui.PlaylistAdapter;
 
 public class PlaylistFragment extends Fragment {
 
@@ -20,18 +21,24 @@ public class PlaylistFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_playlist, container, false);
 
+        // Retrieve image resource passed via fragment arguments
         int imageResource = getArguments() != null ? getArguments().getInt("imageResource") : R.drawable.hiphop_photo;
         ImageView imageView = root.findViewById(R.id.selected_image);
         imageView.setImageResource(imageResource);
 
+        // Sample data for songs and artists
         String[] songs = {"Song 1", "Song 2", "Song 3"};
         String[] artists = {"Artist 1", "Artist 2", "Artist 3"};
 
+        // Sample image resources for each song
+        int[] imageResources = {R.drawable.background, R.drawable.background, R.drawable.background};  // Example images
+
         RecyclerView recyclerView = root.findViewById(R.id.playlist_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        ict.ihu.gr.loopify.ui.PlaylistAdapter adapter = new ict.ihu.gr.loopify.ui.PlaylistAdapter(songs, artists);
+        PlaylistAdapter adapter = new PlaylistAdapter(songs, artists, imageResources); // Pass image resources here
         recyclerView.setAdapter(adapter);
 
+        // Set up the back button
         Button backButton = root.findViewById(R.id.back_button);
         backButton.setOnClickListener(v -> requireActivity().getSupportFragmentManager().popBackStack());
 
