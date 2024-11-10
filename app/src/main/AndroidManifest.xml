@@ -39,6 +39,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ui.PlaylistActivity"
+            android:theme="@style/Theme.Loopify.NoActionBar"/>
+
         <service android:name=".MediaPlayerService" />
     </application>
 

@@ -1,0 +1,42 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_margin="5dp"
+    android:gravity="center_vertical"
+    android:background="@drawable/rounded_background"> <!-- Set the rounded background -->
+
+    <!-- Image for Song -->
+    <ImageView
+        android:id="@+id/song_image"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:layout_marginEnd="16dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/background" />
+
+    <!-- Container for Song Name and Artist Name (stacked vertically) -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center_vertical">
+
+        <!-- Song Name -->
+        <TextView
+            android:id="@+id/song_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <!-- Artist Name -->
+        <TextView
+            android:id="@+id/artist_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:textColor="@android:color/darker_gray" />
+    </LinearLayout>
+</LinearLayout>
