@@ -12,7 +12,12 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import ict.ihu.gr.loopify.R;
+import ict.ihu.gr.loopify.Track;
+import ict.ihu.gr.loopify.TrackManager;
 import ict.ihu.gr.loopify.ui.PlaylistAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlaylistFragment extends Fragment {
 
@@ -21,22 +26,44 @@ public class PlaylistFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_playlist, container, false);
 
-        // Retrieve image resource passed via fragment arguments
-        int imageResource = getArguments() != null ? getArguments().getInt("imageResource") : R.drawable.hiphop_photo;
+        // Retrieve image resource and genre passed via fragment arguments
+        int imageResource = getArguments() != null ? getArguments().getInt("imageResource") : R.drawable.background;
+        String genre = getArguments() != null ? getArguments().getString("genre") : "";
+
         ImageView imageView = root.findViewById(R.id.selected_image);
         imageView.setImageResource(imageResource);
 
-        // Sample data for songs and artists
-        String[] songs = {"Song 1", "Song 2", "Song 3"};
-        String[] artists = {"Artist 1", "Artist 2", "Artist 3"};
-
-        // Sample image resources for each song
-        int[] imageResources = {R.drawable.background, R.drawable.background, R.drawable.background};  // Example images
-
         RecyclerView recyclerView = root.findViewById(R.id.playlist_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        PlaylistAdapter adapter = new PlaylistAdapter(songs, artists, imageResources); // Pass image resources here
-        recyclerView.setAdapter(adapter);
+
+        // Initialize TrackManager
+        TrackManager trackManager = new TrackManager();
+
+        // Fetch tracks for the genre
+        trackManager.fetchTracksForAllGenres(new ict.ihu.gr.loopify.ApiManager(), (fetchedGenre, tracks) -> {
+            if (genre.equals(fetchedGenre)) {
+                // Prepare data for the adapter
+                List<String> songNames = new ArrayList<>();
+                List<String> artistNames = new ArrayList<>();
+                List<Integer> imageResources = new ArrayList<>();
+
+                for (Track track : tracks) {
+                    songNames.add(track.getName());
+                    artistNames.add(track.getArtist().getName());
+                    imageResources.add(R.drawable.background); // Replace with actual image resource logic
+                }
+
+                // Set up adapter with fetched data
+                getActivity().runOnUiThread(() -> {
+                    PlaylistAdapter adapter = new PlaylistAdapter(
+                            songNames.toArray(new String[0]),
+                            artistNames.toArray(new String[0]),
+                            imageResources.toArray(new String[0])  // Pass image URLs as String[]
+                    );
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+                    recyclerView.setAdapter(adapter);
+                });
+            }
+        });
 
         // Set up the back button
         Button backButton = root.findViewById(R.id.back_button);

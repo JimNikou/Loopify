@@ -62,6 +62,14 @@ dependencies {
     implementation ("com.github.bumptech.glide:glide:4.16.0")
     implementation("com.google.firebase:firebase-firestore")
 
+    implementation("com.google.code.gson:gson:2.11.0")
+
+    // Add Glide dependency
+    implementation("com.github.bumptech.glide:glide:4.12.0")
+
+    // Add annotation processor for Glide
+    annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
+
     
     implementation(libs.appcompat)
     implementation(libs.material)
