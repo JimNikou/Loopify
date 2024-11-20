@@ -1,12 +1,17 @@
 package ict.ihu.gr.loopify;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-import java.util.List;
+import android.widget.FrameLayout;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -15,29 +20,13 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import android.content.Intent;
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
+import com.google.android.material.navigation.NavigationView;
+
 import org.json.JSONObject;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.os.Build;
-import android.widget.EditText;
 
-import androidx.core.app.NotificationManagerCompat;
 import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
-import ict.ihu.gr.loopify.ui.home.HomeFragment;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-//TEST TEST TEST TEST TEST TEST TEST TEST TEST
 public class MainActivity extends AppCompatActivity implements ApiManager.ApiResponseListener {
     private MediaPlayerManager mediaPlayerManager;
     private ExoPlayerManager exoPlayerManager;
@@ -46,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     public String songDuration;
 
     private Button playButton, stopButton, pauseButton, resetButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,199 +44,137 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
         setSupportActionBar(binding.appBarMain.toolbar);
 
-        // Create AppBarConfiguration with both BottomNav and Drawer items
+        // Configure AppBar with Drawer and BottomNav items
         mAppBarConfiguration = new AppBarConfiguration.Builder(
-                R.id.nav_home, R.id.nav_search, R.id.nav_library,  // Bottom navigation items
-                R.id.nav_notification, R.id.nav_settings, R.id.nav_account)  // Drawer items
-                .setOpenableLayout(binding.drawerLayout)  // Associate drawer layout
+                R.id.nav_home, R.id.nav_search, R.id.nav_library,
+                R.id.nav_notification, R.id.nav_settings, R.id.nav_account)
+                .setOpenableLayout(binding.drawerLayout)
                 .build();
 
         // Setup NavController
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-
-        // Link the toolbar with NavController
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
 
-        // Link the Navigation Drawer with NavController
+        // Link Navigation Drawer and BottomNav with NavController
         NavigationView navigationView = binding.navView;
         NavigationUI.setupWithNavController(navigationView, navController);
-
-        // Link the BottomNavigationView with NavController
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
         mediaPlayerManager = new MediaPlayerManager();
 
+        // Setup "Open Media Player" button click to load the media player fragment
         Button openMediaPlayerButton = findViewById(R.id.open_media_player_button);
-        openMediaPlayerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("MainActivity", "Button clicked, trying to load MediaPlayerManager");
-                loadFragment(new MediaPlayerManager());
-                Log.d("MainActivity", "MediaPlayerManager fragment should now be visible.");
-            }
+        openMediaPlayerButton.setOnClickListener(v -> {
+            Log.d("MainActivity", "Button clicked, trying to load MediaPlayerManager");
+            loadFragment(new MediaPlayerManager());
+            Log.d("MainActivity", "MediaPlayerManager fragment should now be visible.");
         });
 
-        //button declaration
-        playButton = findViewById(R.id.playButton); //uncomment if you want to test the functionalities
+        // Button setup for additional media controls (if needed)
+        playButton = findViewById(R.id.playButton);
         stopButton = findViewById(R.id.stopButton);
         pauseButton = findViewById(R.id.pauseButton);
         resetButton = findViewById(R.id.resetButton);
 
-
-//        playButton.setVisibility(View.INVISIBLE);
-//        stopButton.setVisibility(View.INVISIBLE);
-//        pauseButton.setVisibility(View.INVISIBLE);
-//        resetButton.setVisibility(View.INVISIBLE);
-
-//        String wrong_track = "Baet It";
-//        String artist = "moby";
-        String track = "heartless";
-
-        ApiManager apiManager = new ApiManager();
-        exoPlayerManager = new ExoPlayerManager(this);
-//        new ApiManager().fetchArtistFromTrack(track,this); //get back the artist from a selected track
-//        new ApiManager().fetchTADB_Artist_ID(track, artist,this); //get the artist id for track search
-//        new ApiManager().fetchCorrectedTrackInfo(wrong_track, artist, this); //get corrected artist info
-//        new ApiManager().fetchYtURL("112424", this); //get youtube URL for a specified track with the id
-//        new ApiManager().fetchAlbumInfo("Cher", "Believe", this);
-
-        // OTI EINAI PANW APO AUTO TO COMMENT EINAI DEPRECATED, XRHSIMOPOIEITAI TA KATW CALLS GIA TA API GIA NA PARETE PISW MIA TIMH TA ALLA EINAI IN SERIES CONNECTED
-
-//        new ApiManager().startTrackServe(track,this); // kanei olh thn diadikasia apo to na brei ton kalitexnh mexri na katebasei to tragoudi (menei na kanei elenxo ean einai)
-                                                        // hdh katebasmeno
-
-//        apiManager.fetchMP3file("https://www.youtube.com/watch?v=Jy1D6caG8nU", new ApiManager.ApiResponseListener() {
-//            @Override
-//            public void onResponseReceived(String jsonResponse) {
-//                if(jsonResponse != null){
-//                    Log.d("mp3song", jsonResponse);
-//                }else {
-//                    Log.d("mp3song", "No artist found");
-//                }
-//            }
-//        });
-//        apiManager.fetchArtistFromTrack("porcelain", new ApiManager.ApiResponseListener() {
-//            @Override
-//            public void onResponseReceived(String jsonResponse) {
-//                if(jsonResponse != null){
-//                    Log.d("FetchArtistReturn", jsonResponse);
-//                }else {
-//                    Log.d("FetchArtistReturn", "No artist found");
-//                }
-//            }
-//        });
-//        apiManager.fetchAlbumInfo("Cher", "Believe", new ApiManager.ApiResponseListener() {
-//            @Override
-//            public void onResponseReceived(String jsonResponse) {
-//                if (jsonResponse != null) {
-//                    // Handle the album info (e.g., display it in UI)
-//                    Log.d("AlbumInfo", jsonResponse);
-//                } else {
-//                    Log.d("AlbumInfo", "No album info found");
-//                }
-//            }
-//        });
-//
-//        apiManager.fetchGenreInfo("disco", new ApiManager.ApiResponseListener() {
-//            @Override
-//            public void onResponseReceived(String jsonResponse) {
-//                if (jsonResponse != null) {
-//                    // Handle the genre info (e.g., display it in UI)
-//                    Log.d("GenreInfo", jsonResponse);
-//                } else {
-//                    Log.d("GenreInfo", "No genre info found");
-//                }
-//            }
-//        });
-//
-//        apiManager.fetchSimilarTracks("moby", "porcelain", new ApiManager.ApiResponseListener() {
-//            @Override
-//            public void onResponseReceived(String jsonResponse) {
-//                if (jsonResponse != null){
-//                    Log.d("SimilarTracks", jsonResponse);
-//                }else {
-//                    Log.d("SimilarTracks", "No similar tracks found");
-//                }
-//            }
-//        });
-
-//        new ApiManager().fetchTrackMBID(track, artist, this); // When this is finished it sends the jsonResponse to the onResponseReceived func
-                                                                     // The listener is here because the MainActivity is the one listening
-      
-
-        //uncomment if you want to test the functionalities
-        playButton.setOnClickListener(v -> {
-//            exoPlayerManager.playSong("https://firebasestorage.googleapis.com/v0/b/loopify-ebe8e.appspot.com/o/Ti%20mou%20zitas%20(Live).mp3?alt=media");
-            startMusicService("PLAY");
-        });
-
+        // Example of controlling playback (uncomment if needed)
+        playButton.setOnClickListener(v -> startMusicService("PLAY"));
         pauseButton.setOnClickListener(v -> {
-            if (exoPlayerManager != null) {
-                exoPlayerManager.pauseSong();
-            }
+            if (exoPlayerManager != null) exoPlayerManager.pauseSong();
             startMusicService("PAUSE");
         });
         stopButton.setOnClickListener(v -> {
             exoPlayerManager.stopSong();
         });
-//        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
 
         createNotificationChannel();
     }
 
+    // Create notification channel for media playback
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel serviceChannel = new NotificationChannel(
-                    "MEDIA_CHANNEL_ID",
-                    "Media Playback",
-                    NotificationManager.IMPORTANCE_LOW
-            );
+                    "MEDIA_CHANNEL_ID", "Media Playback", NotificationManager.IMPORTANCE_LOW);
             NotificationManager manager = getSystemService(NotificationManager.class);
             manager.createNotificationChannel(serviceChannel);
         }
     }
 
-
+    // Method to start the media service with an action
     public void startMusicService(String action) {
         Intent serviceIntent = new Intent(this, MediaPlayerService.class);
         serviceIntent.setAction(action);
-        startService(serviceIntent); // Start the service with the action
+        startService(serviceIntent);
     }
 
+    // Handle API response (if needed)
     @Override
     public void onResponseReceived(String jsonResponse) {
-        // Extract the song URL and start playing it
         String songUrl = extractSongUrlFromJson(jsonResponse);
         if (songUrl != null) {
             mediaPlayerManager.playSong(Uri.parse(songUrl));
         }
     }
 
+    // Helper method to extract song URL from JSON
     private String extractSongUrlFromJson(String jsonResponse) {
         try {
             JSONObject jsonObject = new JSONObject(jsonResponse);
-            return jsonObject.getJSONObject("track").getString("url"); // Adjust as needed for the actual URL
+            return jsonObject.getJSONObject("track").getString("url");
         } catch (Exception e) {
             Log.e("MainActivity", "Error extracting song URL: " + e.getMessage());
             return null;
         }
     }
 
-
+    // Method to load the MediaPlayerManager fragment as a full-screen overlay
     private void loadFragment(Fragment fragment) {
+        FrameLayout fragmentContainer = findViewById(R.id.fragment_container_MediaPlayerFragment);
+        fragmentContainer.setVisibility(View.VISIBLE);
+        fragmentContainer.setBackgroundColor(getResources().getColor(android.R.color.black));
+
+        // Hide other views to simulate full-screen effect
+        findViewById(R.id.nav_host_fragment_content_main).setVisibility(View.GONE);
+        findViewById(R.id.bottomNavView).setVisibility(View.GONE);
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
+//        transaction.setCustomAnimations(
+//                R.anim.slide_in_up,  // Enter animation
+//                R.anim.fade_out,     // Exit animation
+//                R.anim.fade_in,      // Pop enter animation
+//                R.anim.slide_out_down // Pop exit animation
+//        );
+        transaction.replace(R.id.fragment_container_MediaPlayerFragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
+    // Handle back press to close the media player fragment and restore layout
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+
+            // Restore visibility of main content and bottom navigation
+            findViewById(R.id.nav_host_fragment_content_main).setVisibility(View.VISIBLE);
+            findViewById(R.id.bottomNavView).setVisibility(View.VISIBLE);
+
+            // Hide the fragment container to avoid overlaying the restored content
+            findViewById(R.id.fragment_container_MediaPlayerFragment).setVisibility(View.GONE);
+            findViewById(R.id.fragment_container_MediaPlayerFragment).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    // Handle menu creation
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
 
+    // Support navigate up in NavController
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -261,7 +189,6 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         }
         super.onDestroy();
         startMusicService("STOP");
-        exoPlayerManager.release(); // Release MediaPlayer resources
+        exoPlayerManager.release();
     }
-
 }

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ public class MediaPlayerManager extends Fragment {
     private static final String TAG = "MediaPlayerManager";
     private boolean isPlaying = false;
     private ImageButton playPauseButton;
+    private SeekBar seekBar;
 
     @Nullable
     @Override
@@ -38,8 +40,22 @@ public class MediaPlayerManager extends Fragment {
                 playSong(songUri);
             }
         });
-
+        seekBar = view.findViewById(R.id.seekBar);
         stopButton.setOnClickListener(v -> stopSong());
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (fromUser && mediaPlayer != null) {
+                    mediaPlayer.seekTo(progress);
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {}
+        });
 
         return view;
     }
