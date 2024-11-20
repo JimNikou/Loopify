@@ -102,7 +102,7 @@ public class YourLibraryFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 TrackHandler trackHandler = new TrackHandler();
-                trackHandler.addSongToLiked("Smooth Operator"); // add a liked song to the database
+                trackHandler.addSongToLiked("Test song name"); // add a liked song to the database
 //                trackHandler.removeSongFromLiked("Despacito");
                 trackHandler.getAllLikedSongs(); // get back all songs that are stored in the database
             }
