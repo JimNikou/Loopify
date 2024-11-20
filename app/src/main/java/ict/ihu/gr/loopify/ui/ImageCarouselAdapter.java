@@ -36,10 +36,11 @@ public class ImageCarouselAdapter extends RecyclerView.Adapter<ImageCarouselAdap
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
         holder.imageView.setImageResource(imageResources[position]);
-        holder.artistNameTextView.setText(artistNames[0] + " ," + artistNames[1] + " ," + artistNames[2]);
+        holder.artistNameTextView.setText(artistNames[position]);
 
         holder.imageView.setOnClickListener(v -> clickListener.onImageClick(position, imageResources[position]));
     }
+
 
     @Override
     public int getItemCount() {

@@ -343,18 +343,95 @@ public class ApiManager {
             StringBuilder result = new StringBuilder();
             result.append("Similar Tracks:\n");
 
-            // Loop through the tracks and append track names and artist names to the result
+            // Loop through the tracks and append track names, artist names, and image URLs to the result
             for (int i = 0; i < tracksArray.length(); i++) {
                 JSONObject trackObject = tracksArray.getJSONObject(i);
                 String trackName = trackObject.getString("name");
 
-                // Get the artist of the similar track
+                // Get the artist name of the similar track
                 String artistName = trackObject.getJSONObject("artist").getString("name");
 
-                result.append(i + 1).append(". ").append(trackName).append(" by ").append(artistName).append("\n");
+                // Get the first available image URL (assuming first image object is the required size)
+                JSONArray imagesArray = trackObject.getJSONArray("image");
+                String imageUrl = "";
+                if (imagesArray.length() > 0) {
+                    imageUrl = imagesArray.getJSONObject(0).getString("#text");
+                }
+
+                // Append the details to the result
+                result.append(i + 1).append(". ")
+                        .append(trackName).append(" by ").append(artistName)
+                        .append(" (Image: ").append(imageUrl).append(")\n");
             }
 
-            return result.toString();  // Return formatted similar tracks and artist names
+            return result.toString();  // Return formatted similar tracks with artist names and image URLs
+
+        } catch (JSONException e) {
+            e.printStackTrace();  // Print error for debugging
+        }
+
+        return null;  // Return null if an error occurred
+    }
+
+    public void fetchSimilarTracksRAW(String artist, String track, ApiResponseListener listener) {
+        // Construct the URL for the track.getsimilar API call
+        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=track.getsimilar&artist=" + artist +
+                "&track=" + track + "&api_key=" + lastFMapiKey + "&format=json";
+
+        // Use GetJsonTask to fetch the similar tracks info
+        new GetJsonTask(new ApiResponseListener() {
+            @Override
+            public void onResponseReceived(String jsonResponse) {
+                // Parse the response to get the similar tracks and artists
+                JSONArray similarTracksInfo = getSimilarTracksFromJsonRAW(jsonResponse);
+                if (similarTracksInfo != null) {
+                    Log.d(TAG, "Similar Tracks Info: " + similarTracksInfo);
+                    listener.onResponseReceived(String.valueOf(similarTracksInfo));
+                } else {
+                    Log.d(TAG, "No similar tracks found!");
+                    listener.onResponseReceived(null);
+                }
+            }
+        }).execute(jsonUrl);
+    }
+
+    @Nullable
+    private JSONArray getSimilarTracksFromJsonRAW(String jsonResponse) {
+        try {
+            // Parse the JSON object
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            JSONObject similarTracksObject = jsonObject.getJSONObject("similartracks");
+
+            // Extract the similar tracks array
+            JSONArray tracksArray = similarTracksObject.getJSONArray("track");
+//
+//            // Build the result string to return
+//            StringBuilder result = new StringBuilder();
+//            result.append("Similar Tracks:\n");
+//
+//            // Loop through the tracks and append track names, artist names, and image URLs to the result
+//            for (int i = 0; i < tracksArray.length(); i++) {
+//                JSONObject trackObject = tracksArray.getJSONObject(i);
+//                String trackName = trackObject.getString("name");
+//
+//                // Get the artist name of the similar track
+//                String artistName = trackObject.getJSONObject("artist").getString("name");
+//
+//                // Get the first available image URL (assuming first image object is the required size)
+//                JSONArray imagesArray = trackObject.getJSONArray("image");
+//                String imageUrl = "";
+//                if (imagesArray.length() > 0) {
+//                    imageUrl = imagesArray.getJSONObject(0).getString("#text");
+//                }
+//
+//                // Append the details to the result
+//                result.append(i + 1).append(". ")
+//                        .append(trackName).append(" by ").append(artistName)
+//                        .append(" (Image: ").append(imageUrl).append(")\n");
+//            }
+//
+//            return result.toString();  // Return formatted similar tracks with artist names and image URLs
+            return tracksArray;
 
         } catch (JSONException e) {
             e.printStackTrace();  // Print error for debugging

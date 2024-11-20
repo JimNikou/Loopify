@@ -17,10 +17,12 @@
 
     <!-- Container for Song Name and Artist Name (stacked vertically) -->
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:layout_weight="1"
+        > <!-- Use weight to distribute space -->
 
         <!-- Song Name -->
         <TextView
@@ -29,7 +31,10 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:textColor="@android:color/white"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:maxLines="1"
+            android:ellipsize="end" />
 
         <!-- Artist Name -->
         <TextView
@@ -37,6 +42,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="14sp"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="@android:color/darker_gray"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:maxLines="1"
+            android:ellipsize="end" />
     </LinearLayout>
+
+    <!-- 3 Dots Icon -->
+    <TextView
+        android:id="@+id/song_options"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:textStyle="bold"
+        android:fontFamily="@font/pptelegraf_regular"
+        android:text="⋮"
+        android:gravity="end"
+        android:paddingRight="20dp"/> <!-- Align the text to the right -->
+
 </LinearLayout>
