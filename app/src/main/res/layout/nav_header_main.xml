@@ -21,6 +21,7 @@
         app:srcCompat="@mipmap/loopify_logo_white_round" />
 
     <TextView
+        android:id="@+id/displayNameTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="@dimen/nav_header_vertical_spacing"
@@ -28,7 +29,7 @@
         android:textAppearance="@style/regular_font_14" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/emailTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/nav_header_user_email"

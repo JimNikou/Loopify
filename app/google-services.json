@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "651998808661",
+    "project_id": "loopify-ebe8e",
+    "storage_bucket": "loopify-ebe8e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:651998808661:android:753a247a5111e434eca2dc",
+        "android_client_info": {
+          "package_name": "ict.ihu.gr.loopify"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "651998808661-vl8r1capbo3k80ujqeq6692gtrcp2ba7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ict.ihu.gr.loopify",
+            "certificate_hash": "bea125c3ffbc710e8c0d0f2080a367540c3fcb7b"
+          }
+        },
+        {
+          "client_id": "651998808661-uj3qfrb4ueul2n04v34a28e00gq6n3nl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCd810iujUy3GunkxdB14txHzFxb50W77s"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "651998808661-uj3qfrb4ueul2n04v34a28e00gq6n3nl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
