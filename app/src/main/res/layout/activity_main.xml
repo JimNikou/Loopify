@@ -45,7 +45,7 @@
 
         <!-- Fragment Container as top-level overlay for MediaPlayerFragment -->
         <FrameLayout
-            android:id="@+id/fragment_container"
+            android:id="@+id/fragment_MediaPlayerFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:visibility="gone"

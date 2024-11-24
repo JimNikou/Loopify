@@ -14,6 +14,7 @@ import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -510,9 +511,24 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     }
 
 
+    // Method to load the MediaPlayerManager fragment as a full-screen overlay
     private void loadFragment(Fragment fragment) {
+        FrameLayout fragmentContainer = findViewById(R.id.fragment_MediaPlayerFragment);
+        fragmentContainer.setVisibility(View.VISIBLE);
+        fragmentContainer.setBackgroundColor(getResources().getColor(android.R.color.black));
+
+        // Hide other views to simulate full-screen effect
+        findViewById(R.id.nav_host_fragment_content_main).setVisibility(View.GONE);
+        findViewById(R.id.bottomNavView).setVisibility(View.GONE);
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
+//        transaction.setCustomAnimations(
+//                R.anim.slide_in_up,  // Enter animation
+//                R.anim.fade_out,     // Exit animation
+//                R.anim.fade_in,      // Pop enter animation
+//                R.anim.slide_out_down // Pop exit animation
+//        );
+        transaction.replace(R.id.fragment_MediaPlayerFragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
