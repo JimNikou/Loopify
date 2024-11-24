@@ -533,6 +533,23 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         transaction.commit();
     }
 
+    // Handle back press to close the media player fragment and restore layout
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+
+            // Restore visibility of main content and bottom navigation
+            findViewById(R.id.nav_host_fragment_content_main).setVisibility(View.VISIBLE);
+            findViewById(R.id.bottomNavView).setVisibility(View.VISIBLE);
+
+            // Hide the fragment container to avoid overlaying the restored content
+            findViewById(R.id.fragment_MediaPlayerFragment).setVisibility(View.GONE);
+            findViewById(R.id.fragment_MediaPlayerFragment).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        } else {
+            super.onBackPressed();
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
