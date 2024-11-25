@@ -1,4 +1,4 @@
-package ict.ihu.gr.loopify.ui.settings;
+package ict.ihu.gr.loopify.ui.slideshow;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

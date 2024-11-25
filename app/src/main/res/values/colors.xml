@@ -8,8 +8,4 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
-    <color name="deep_pink">#c144d6</color>
-    <color name="light_pink">#C181D6</color>
-    <color name="light_pink_vibrant">#FF48FF</color>
-
 </resources>

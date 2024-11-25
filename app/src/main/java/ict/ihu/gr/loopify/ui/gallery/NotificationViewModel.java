@@ -1,4 +1,4 @@
-package ict.ihu.gr.loopify.ui.notification;
+package ict.ihu.gr.loopify.ui.gallery;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

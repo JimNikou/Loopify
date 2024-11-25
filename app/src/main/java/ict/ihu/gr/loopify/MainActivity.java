@@ -1,17 +1,11 @@
 package ict.ihu.gr.loopify;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-
-import android.content.SharedPreferences;
-import android.content.res.Configuration;
-import android.os.Bundle;
-
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -38,7 +32,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Locale;
 
 //TEST TEST TEST TEST TEST TEST TEST TEST TEST
 public class MainActivity extends AppCompatActivity implements ApiManager.ApiResponseListener {
@@ -47,17 +40,10 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     private AppBarConfiguration mAppBarConfiguration;
     private ActivityMainBinding binding;
 
-    private static final String APP_SETTINGS = "AppSettings";
-    private static final String APP_LANGUAGE_KEY = "App_Language";
-
     private Button playButton, stopButton, pauseButton, resetButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-        // Apply the saved language
-        applySavedLanguage();
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
@@ -258,18 +244,5 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         startMusicService("STOP");
         exoPlayerManager.release(); // Release MediaPlayer resources
     }
-
-    private void applySavedLanguage() {
-        SharedPreferences preferences = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE);
-        String languageCode = preferences.getString(APP_LANGUAGE_KEY, "en"); // Default to English
-
-        Locale locale = new Locale(languageCode);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.setLocale(locale);
-        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-
-    } //Language Changing Method
-
 
 }
