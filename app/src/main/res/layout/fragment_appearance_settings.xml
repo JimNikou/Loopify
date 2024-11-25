@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/appearance_sett_linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="8dp"
+    android:background="@color/transparent"
+    tools:context=".AppearanceSettingsFragment">
+
+    <!-- Back Button -->
+    <Button
+        android:id="@+id/back_button_appearance"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_margin="16dp"
+        android:text="@string/back"
+        android:textAppearance="@style/regular_font_18"
+        app:icon="@drawable/alt_arrow_left_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconSize="30dp" />
+
+    <!-- Radio Group for Theme Selection -->
+    <RadioGroup
+        android:id="@+id/theme_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"
+        android:padding="8dp"
+        > <!-- Optional custom background -->
+
+        <!-- Default Theme Option -->
+        <RadioButton
+            android:id="@+id/radio_theme_default"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/theme_option_default"
+            android:textAppearance="@style/regular_font_18"
+            android:checked="true" />
+
+        <!-- Aquamarine Theme Option -->
+        <RadioButton
+            android:id="@+id/radio_theme_aquamarine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/theme_option_aquamarine"
+            android:textAppearance="@style/regular_font_18" />
+
+        <!-- Beige Theme Option -->
+        <RadioButton
+            android:id="@+id/radio_theme_beige"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/theme_option_beige"
+            android:textAppearance="@style/regular_font_18" />
+
+        <!-- Gold Theme Option -->
+        <RadioButton
+            android:id="@+id/radio_theme_gold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/theme_option_gold"
+            android:textAppearance="@style/regular_font_18" />
+
+        <!-- Ink Theme Option -->
+        <RadioButton
+            android:id="@+id/radio_theme_ink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@string/theme_option_ink"
+            android:textAppearance="@style/regular_font_18" />
+
+    </RadioGroup>
+
+</LinearLayout>

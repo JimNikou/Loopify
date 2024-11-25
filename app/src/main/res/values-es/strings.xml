@@ -1,0 +1,150 @@
+<resources>
+    <string name="app_name">Loopify</string>
+    <string name="navigation_drawer_open">Abrir el menú de navegación</string>
+    <string name="navigation_drawer_close">Cerrar el menú de navegación</string>
+    <string name="nav_header_username">Giannis</string>
+    <string name="nav_header_user_email">giannis@gmail.com</string>
+    <string name="nav_header_desc">Encabezado de navegación</string>
+    <string name="action_settings">Configuración</string>
+
+    <string name="menu_home">Inicio</string>
+
+    <string name="language_change_toast">La aplicación se está reiniciando</string>
+
+    <string name="about_overview">
+        Loopify es una aplicación de transmisión de música simplificada creada como parte de un proyecto universitario. Inspirada en plataformas populares, ofrece funciones básicas de transmisión de música, incluyendo exploración, búsqueda y detalles sobre artistas y álbumes.
+    </string>
+
+    <string name="about_features">Loopify permite una transmisión fluida de música con integración de Firebase Storage, información completa de artistas y álbumes de las APIs de The AudioDB y Last.FM, y una interfaz fácil de usar inspirada en plataformas de música populares. Los usuarios pueden buscar fácilmente artistas, álbumes o canciones y disfrutar de controles de reproducción receptivos, como reproducir, pausar y detener.</string>
+
+    <string name="about_mission">Loopify tiene como objetivo proporcionar una experiencia de transmisión de música accesible y fluida, combinando objetivos educativos y profesionales para mejorar el disfrute y el compromiso de los usuarios con la música.</string>
+
+    <string name="about_version">
+        0.0.0
+    </string>
+
+    <string name="about_license">Licencia MIT
+
+Copyright © 2024 Loopify
+
+Por la presente se otorga permiso, de forma gratuita, a cualquier persona que obtenga una copia
+de este software y los archivos de documentación asociados (el "Software"), para usar,
+copiar, modificar, fusionar, publicar, distribuir, sublicenciar y/o vender copias
+del Software, y permitir a las personas a las que se proporcione el Software hacerlo,
+con sujeción a las siguientes condiciones:
+
+El aviso de copyright anterior y este permiso se incluirán en todas las
+copias o partes sustanciales del Software.
+
+EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O
+IMPLÍCITA, INCLUYENDO PERO NO LIMITADO A LAS GARANTÍAS DE COMERCIABILIDAD,
+IDONEIDAD PARA UN PROPÓSITO PARTICULAR Y NO INFRACCIÓN. EN NINGÚN CASO LOS
+AUTORES O TITULARES DE DERECHOS DE AUTOR SERÁN RESPONSABLES POR CUALQUIER RECLAMACIÓN, DAÑO U
+OTRA RESPONSABILIDAD, YA SEA EN UN CONTRATO, AGRAVIO O DE OTRA MANERA, QUE SURJA DE
+O EN CONEXIÓN CON EL SOFTWARE O SU USO U OTRO TIPO DE GESTIÓN EN EL SOFTWARE.
+    </string>
+
+    <string name="overview_title">Resumen</string>
+
+    <string name="features_title">Funciones</string>
+
+    <string name="mission_title">Nuestro Objetivo</string>
+
+    <string name="licence_title">Licencia</string>
+
+    <string name="version_title">Versión</string>
+    <string name="general">General</string>
+    <string name="audio">Audio</string>
+    <string name="notifications_and_alerts">Notificaciones y Alertas</string>
+    <string name="library">Biblioteca</string>
+    <string name="account">Cuenta</string>
+    <string name="appearance">Apariencia</string>
+    <string name="storage_and_data">Almacenamiento y Datos</string>
+    <string name="content_preferences">Preferencias de Contenido</string>
+    <string name="logout">Cerrar Sesión</string>
+    <string name="change_user">Cambiar Usuario</string>
+    <string name="add_user">Agregar Usuario</string>
+    <string name="remove_user">Eliminar Usuario</string>
+    <string name="hello_blank_fragment">Hola fragmento vacío</string>
+    <string name="back">Atrás</string>
+    <string name="theme_option_aquamarine">Aguamarina</string>
+    <string name="theme_option_beige">Beige</string>
+    <string name="theme_option_gold">Oro</string>
+    <string name="theme_option_ink">Tinta</string>
+    <string name="theme_option_default">Predeterminado</string>
+    <string name="language">Idioma</string>
+    <string name="crossfade_songs">Fundir canciones</string>
+    <string name="seconds_format">%d segundos</string>
+    <string name="mono_audio">Audio Mono</string>
+
+    <string name="messages_header">Mensajes</string>
+    <string name="sync_header">Sincronización</string>
+
+    <string name="signature_title">Tu firma</string>
+    <string name="reply_title">Acción de respuesta predeterminada</string>
+
+    <string name="sync_title">Sincronizar correo periódicamente</string>
+    <string name="attachment_title">Descargar archivos adjuntos entrantes</string>
+    <string name="attachment_summary_on">Descargar automáticamente archivos adjuntos de correos entrantes</string>
+    <string name="attachment_summary_off">Solo descargar archivos adjuntos manualmente</string>
+    <string name="reset_settings">Restablecer Configuración</string>
+    <string name="help">Ayuda</string>
+    <string name="privacy_settings">Configuración de Privacidad</string>
+    <string name="account_name">Nombre de Usuario</string>
+    <string name="account_email">Correo Electrónico</string>
+    <string name="share_listening_activity">Compartir Actividad de Escucha</string>
+    <string name="subscription_information">Información de Suscripción</string>
+    <string name="renewal_date">Fecha de Renovación</string>
+    <string name="explicit_content_filter">Filtro de Contenido Explícito</string>
+    <string name="allow_explicit_content">Permitir Contenido Explícito</string>
+    <string name="duplicate_song_detection">Detección de Canciones Duplicadas</string>
+    <string name="enable_duplicate_detection">Habilitar Detección de Duplicados</string>
+    <string name="favorite_songs">Canciones Favoritas</string>
+    <string name="highlight_favorites">Resaltar Favoritas</string>
+    <string name="recently_played_history">Historial de Reproducciones Recientes</string>
+    <string name="enable_recently_played">Habilitar Reproducciones Recientes</string>
+    <string name="custom_sorting">Orden Personalizado</string>
+    <string name="show_recently_added">Mostrar Recientemente Añadidos</string>
+    <string name="recently_added">Recientemente Añadidos</string>
+    <string name="logout_confirmation">Cerrar Sesión</string>
+    <string name="playback_notifications">Notificaciones de Reproducción</string>
+    <string name="new_releases">Nuevos Lanzamientos</string>
+    <string name="app_updates">Actualizaciones de la Aplicación</string>
+    <string name="profile_information">Información de Perfil</string>
+    <string name="subscription_status">Estado de Suscripción</string>
+    <string name="show_equalizer">Mostrar Ecualizador</string>
+    <string name="enter_email">Introducir Correo</string>
+    <string name="enter_name">Introducir Nombre</string>
+    <string name="log_back_in_msg">Tus datos de almacenamiento estarán seguros, pero tendrás que iniciar sesión de nuevo.</string>
+    <string name="play_music">Reproducir Música</string>
+    <string name="stop_music">Detener Música</string>
+    <string name="pause">Pausar</string>
+    <string name="reset">Reiniciar</string>
+    <string name="open_media_player">Abrir Reproductor Multimedia</string>
+    <string name="select_language">Seleccionar Idioma</string>
+    <string name="english">🇬🇧Inglés</string>
+    <string name="greek">🇬🇷Griego</string>
+    <string name="spanish">🇪🇸Español</string>
+    <string name="search">Buscar</string>
+    <string name="your_library">Tu Biblioteca</string>
+    <string name="notifications">Notificaciones</string>
+    <string name="about">Acerca de</string>
+    <string name="settings">Configuración</string>
+
+    <string name="greeting_morning">Buenos días %1$s</string>
+    <string name="greeting_afternoon">Buenas tardes %1$s</string>
+    <string name="greeting_evening">Buenas noches %1$s</string>
+    <string name="greeting_night">Buenas noches %1$s</string>
+    <string name="enable_auto_download">Habilitar Descarga Automática</string>
+    <string name="auto_download">Descarga Αutomática</string>
+    <string name="storage_info_details">Información de Almacenamiento Detalles</string>
+    <string name="storage_info">Información de Almacenamiento</string>
+    <string name="data_usage_limit">Límite de Uso de Datos</string>
+    <string name="data_usage">Uso de Datos</string>
+    <string name="backup_data_button">Copia de Segur. de Datos</string>
+    <string name="backup">Copias de Seguridad</string>
+    <string name="manage_downloads_button">Administrar Descargas</string>
+    <string name="clear_cache_button">Borrar</string>
+    <string name="clear_cache">Borrar Caché</string>
+    <string name="select_preset">Seleccionar Ajuste Preestablecido</string>
+</resources>

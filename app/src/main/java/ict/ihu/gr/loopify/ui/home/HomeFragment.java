@@ -1,6 +1,8 @@
 package ict.ihu.gr.loopify.ui.home;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -37,7 +39,38 @@ public class HomeFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         // Inflate the fragment layout using View Binding
         binding = FragmentHomeBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
+        View root = binding.getRoot();  // Get the root view for this fragment
+
+        // Load the saved theme
+        SharedPreferences preferences = requireContext().getSharedPreferences("app_settings", Context.MODE_PRIVATE);
+        String theme = preferences.getString("app_theme", "default");
+
+        // Set the background based on the theme
+        int backgroundResource;
+        switch (theme) {
+            case "aquamarine":
+                backgroundResource = R.drawable.background_aquamarine;
+                break;
+            case "beige":
+                backgroundResource = R.drawable.background_beige;
+                break;
+            case "gold":
+                backgroundResource = R.drawable.background_gold;
+                break;
+            case "ink":
+                backgroundResource = R.drawable.background_ink;
+                break;
+            default:
+                backgroundResource = R.drawable.background;
+        }
+
+        // Set the background resource to the root view or any specific view you want
+        root.setBackgroundResource(backgroundResource);  // Use root view here
+
+
+
+
+
 
         // Load the ImageCarouselFragment (playlist slider)
         if (savedInstanceState == null) {
@@ -75,27 +108,27 @@ public class HomeFragment extends Fragment {
         SimpleDateFormat sdf = new SimpleDateFormat("HH", Locale.getDefault());
         int currentHour = Integer.parseInt(sdf.format(new Date()));
 
+        // Get the user's name (replace "Giannis" with dynamic data if available)
+        String userName = "Giannis";
+
         // Determine the appropriate greeting message
+        String greeting;
         if (currentHour >= 5 && currentHour < 12) {
-            greetingText.setText("Good morning Giannis");
-            greetingText.setTextSize(20);
-            greetingText.setTypeface(customFont);
+            greeting = getString(R.string.greeting_morning, userName);
         } else if (currentHour >= 12 && currentHour < 18) {
-            greetingText.setText("Good afternoon Giannis");
-            greetingText.setTextSize(20);
-            greetingText.setTypeface(customFont);
+            greeting = getString(R.string.greeting_afternoon, userName);
         } else if (currentHour >= 18 && currentHour <= 23) {
-            greetingText.setText("Good evening Giannis");
-            greetingText.setTextSize(20);
-            greetingText.setTypeface(customFont);
+            greeting = getString(R.string.greeting_evening, userName);
         } else {
-            greetingText.setText("Good night Giannis");
-            greetingText.setTextSize(20);
-            greetingText.setTypeface(customFont);
+            greeting = getString(R.string.greeting_night, userName);
         }
 
-
+        // Apply the greeting message
+        greetingText.setText(greeting);
+        greetingText.setTextSize(20);
+        greetingText.setTypeface(customFont);
     }
+
 
 
 

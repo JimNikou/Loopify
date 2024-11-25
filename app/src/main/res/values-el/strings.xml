@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Loopify</string>
+    <string name="navigation_drawer_open">Άνοιγμα πλαϊνού μενού</string>
+    <string name="navigation_drawer_close">Κλείσιμο πλαϊνού μενού</string>
+    <string name="nav_header_username">Giannis</string>
+    <string name="nav_header_user_email">giannis@gmail.com</string>
+    <string name="nav_header_desc">Επικεφαλίδα Πλοήγησης</string>
+    <string name="action_settings">Ρυθμίσεις</string>
+
+    <string name="menu_home">Αρχική</string>
+
+    <string name="language_change_toast">Επανεκκίνηση της Εφαρμογής</string>
+
+    <string name="about_overview">
+        Το Loopify είναι μια απλοποιημένη εφαρμογή streaming μουσικής, που δημιουργήθηκε ως μέρος πανεπιστημιακού έργου. Εμπνευσμένο από δημοφιλείς πλατφόρμες, προσφέρει βασικές λειτουργίες όπως περιήγηση, αναζήτηση και πληροφορίες για καλλιτέχνες και άλμπουμ.
+    </string>
+
+    <string name="about_features">
+        Το Loopify προσφέρει ομαλό streaming μουσικής με ενσωμάτωση στο Firebase Storage, λεπτομερείς πληροφορίες καλλιτεχνών και άλμπουμ από τα APIs The AudioDB και Last.FM, και φιλικό περιβάλλον χρήστη εμπνευσμένο από δημοφιλείς μουσικές πλατφόρμες. Οι χρήστες μπορούν εύκολα να αναζητήσουν καλλιτέχνες, άλμπουμ ή τραγούδια και να απολαύσουν χειριστήρια αναπαραγωγής όπως αναπαραγωγή, παύση και διακοπή.
+    </string>
+
+    <string name="about_mission">
+        Το Loopify έχει στόχο να παρέχει μια απρόσκοπτη και προσβάσιμη εμπειρία streaming μουσικής, συνδυάζοντας εκπαιδευτικούς και επαγγελματικούς στόχους για να ενισχύσει την απόλαυση και την αλληλεπίδραση με τη μουσική.
+    </string>
+
+    <string name="about_version">0.0.0</string>
+
+    <string name="about_license">Άδεια MIT
+
+Copyright © 2024 Loopify
+
+Επιτρέπεται χωρίς χρέωση σε οποιονδήποτε αποκτήσει ένα αντίγραφο αυτού του λογισμικού και των συναφών αρχείων τεκμηρίωσης ("Λογισμικό") να χρησιμοποιεί, αντιγράφει, τροποποιεί, δημοσιεύει, διανέμει, χορηγεί άδειες, ή να πωλεί αντίγραφα του Λογισμικού χωρίς περιορισμούς, σύμφωνα με τους παρακάτω όρους.
+
+Η παραπάνω σημείωση πνευματικών δικαιωμάτων και η παρούσα άδεια πρέπει να περιλαμβάνονται σε όλα τα αντίγραφα ή τα κύρια μέρη του Λογισμικού.
+
+Το Λογισμικό παρέχεται "ΩΣ ΕΧΕΙ", ΧΩΡΙΣ ΕΓΓΥΗΣΕΙΣ οποιουδήποτε είδους, ρητές ή συνεπαγόμενες.</string>
+
+    <string name="overview_title">Επισκόπηση</string>
+    <string name="features_title">Χαρακτηριστικά</string>
+    <string name="mission_title">Στόχος</string>
+    <string name="licence_title">Άδεια</string>
+    <string name="version_title">Έκδοση</string>
+    <string name="general">Γενικά</string>
+    <string name="audio">Ήχος</string>
+    <string name="notifications_and_alerts">Ειδοποιήσεις</string>
+    <string name="library">Βιβλιοθήκη</string>
+    <string name="account">Λογαριασμός</string>
+    <string name="appearance">Εμφάνιση</string>
+    <string name="storage_and_data">Χώρος αποθήκευσης &amp; Δεδομένα</string>
+    <string name="content_preferences">Προτιμήσεις Περιεχομένου</string>
+    <string name="logout">Αποσύνδεση</string>
+    <string name="change_user">Αλλαγή χρήστη</string>
+    <string name="add_user">Προσθήκη χρήστη</string>
+    <string name="remove_user">Αφαίρεση χρήστη</string>
+    <string name="hello_blank_fragment">Γεια σου κενό απόσπασμα</string>
+    <string name="back">Πίσω</string>
+    <string name="theme_option_aquamarine">Ακουαμαρίνα</string>
+    <string name="theme_option_beige">Μπεζ</string>
+    <string name="theme_option_gold">Χρυσό</string>
+    <string name="theme_option_ink">Μελάνι</string>
+    <string name="theme_option_default">Προεπιλογή</string>
+    <string name="language">Γλώσσα</string>
+    <string name="crossfade_songs">Ομαλή Μετάβαση Τραγουδιών</string>
+    <string name="seconds_format">%d δευτερόλεπτα</string>
+    <string name="mono_audio">Μονοφωνικός ήχος</string>
+    <string name="messages_header">Μηνύματα</string>
+    <string name="sync_header">Συγχρονισμός</string>
+    <string name="signature_title">Υπογραφή</string>
+    <string name="reply_title">Προεπιλεγμένη Απάντηση</string>
+    <string name="sync_title">Περιοδικός Συγχρονισμός email</string>
+    <string name="attachment_title">Λήψη Συνημμένων</string>
+    <string name="reset_settings">Επαναφορά Ρυθμίσεων</string>
+    <string name="help">Βοήθεια</string>
+    <string name="privacy_settings">Ρυθμίσεις Απορρήτου</string>
+    <string name="account_name">Όνομα Χρήστη</string>
+    <string name="account_email">Email</string>
+    <string name="recently_added">Προστέθηκαν Πρόσφατα</string>
+    <string name="search">Αναζήτηση</string>
+    <string name="your_library">Η Βιβλιοθήκη Σου</string>
+    <string name="notifications">Ειδοποιήσεις</string>
+    <string name="about">Σχετικά</string>
+    <string name="settings">Ρυθμίσεις</string>
+    <string name="logout_confirmation">Αποσύνδεση</string>
+    <string name="playback_notifications">Ειδοποιήσεις Αναπαραγωγής</string>
+    <string name="new_releases">Νέες Κυκλοφορίες</string>
+    <string name="app_updates">Ενημερώσεις Εφαρμογής</string>
+    <string name="profile_information">Πληροφορίες Προφίλ</string>
+    <string name="subscription_status">Κατάσταση Συνδρομής</string>
+    <string name="show_equalizer">Εμφάνιση Ισοσταθμιστή</string>
+    <string name="enter_email">Εισαγωγή Email</string>
+    <string name="enter_name">Εισαγωγή Ονόματος Χρήστη</string>
+    <string name="log_back_in_msg">Τα δεδομένα αποθήκευσής σας θα είναι ασφαλή, αλλά θα πρέπει να συνδεθείτε ξανά.</string>
+    <string name="play_music">Αναπαραγωγή Μουσικής</string>
+    <string name="stop_music">Διακοπή Μουσικής</string>
+    <string name="pause">Παύση</string>
+    <string name="reset">Επαναφορά</string>
+    <string name="open_media_player">Άνοιγμα Media Player</string>
+    <string name="select_language">Επιλογή Γλώσσας</string>
+    <string name="english">🇬🇧Αγγλικά</string>
+    <string name="greek">🇬🇷Ελληνικά</string>
+    <string name="spanish">🇪🇸Ισπανικά</string>
+    <string name="share_listening_activity">Κοινοποίηση Δραστηριότητας Ακρόασης</string>
+    <string name="subscription_information">Πληροφορίες Συνδρομής</string>
+    <string name="renewal_date">Ημερομηνία Ανανέωσης</string>
+    <string name="explicit_content_filter">Φίλτρο Ακατάλληλου Περιεχομένου</string>
+    <string name="allow_explicit_content">Επιτρέψτε Ακατάλληλο Περιεχόμενο</string>
+    <string name="duplicate_song_detection">Εντοπισμός Διπλών Τραγουδιών</string>
+    <string name="enable_duplicate_detection">Ενεργοποίηση Εντοπισμού Διπλών</string>
+    <string name="favorite_songs">Αγαπημένα Τραγούδια</string>
+    <string name="highlight_favorites">Επισήμανση Αγαπημένων</string>
+    <string name="recently_played_history">Ιστορικό Πρόσφατης Αναπαραγωγής</string>
+    <string name="enable_recently_played">Ενεργοποίηση Πρόσφατης Αναπαραγωγής</string>
+    <string name="custom_sorting">Προσαρμοσμένη Ταξινόμηση</string>
+    <string name="show_recently_added">Εμφάνιση Πρόσφατα Προστιθέμενων</string>
+    <string name="attachment_summary_off">Λήψη συνημμένων μόνο όταν ζητηθεί χειροκίνητα</string>
+    <string name="attachment_summary_on">Αυτόματη λήψη συνημμένων για εισερχόμενα email</string>
+
+    <string name="greeting_morning">Καλημέρα %1$s</string>
+    <string name="greeting_afternoon">Καλό απόγευμα %1$s</string>
+    <string name="greeting_evening">Καλησπέρα %1$s</string>
+    <string name="greeting_night">Καληνύχτα %1$s</string>
+    <string name="enable_auto_download">Ενεργοποίηση Αυτόματης Λήψης</string>
+    <string name="auto_download">Αυτόματη Λήψη</string>
+    <string name="storage_info_details">Λεπτομέρειες Πληροφοριών Αποθήκευσης</string>
+    <string name="storage_info">Πληροφορίες Αποθήκευσης</string>
+    <string name="data_usage_limit">Όριο Χρήσης Δεδομένων</string>
+    <string name="data_usage">Χρήση Δεδομένων</string>
+    <string name="backup_data_button">Δημιουργία Αντιγ. Ασφ. Δεδομένων</string>
+    <string name="backup">Αντίγραφο Ασφαλείας</string>
+    <string name="manage_downloads_button">Διαχείρηση Λήψεων</string>
+    <string name="clear_cache_button">Διαγραφή</string>
+    <string name="clear_cache">Διαγραφή Προσωρινής Μνήμης</string>
+    <string name="select_preset">Επιλέξτε Προεπιλογή</string>
+</resources>

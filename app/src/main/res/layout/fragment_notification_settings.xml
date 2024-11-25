@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_gravity="center"
+    android:scrollbars="vertical">
+
+    <!-- Back Button -->
+    <Button
+        android:id="@+id/back_button_notif"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="start|top"
+        android:layout_margin="16dp"
+        android:layoutDirection="inherit"
+        android:text="@string/back"
+        android:textAppearance="@style/regular_font_18"
+        app:icon="@drawable/alt_arrow_left_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconSize="30dp" />
+
+    <!-- Playback Notifications Switch -->
+    <TextView
+        android:id="@+id/playback_notifications_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/playback_notifications"
+        android:textAppearance="@style/ultrabold_font_16"
+        android:textColor="@color/light_pink" />
+
+    <Switch
+        android:id="@+id/playback_notifications_switch"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:thumbTint="@color/deep_pink"
+        android:trackTint="@color/switch_track_tint"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <!-- New Releases Notifications Switch -->
+    <TextView
+        android:id="@+id/new_releases_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/new_releases"
+        android:textAppearance="@style/ultrabold_font_16"
+        android:textColor="@color/light_pink" />
+
+    <Switch
+        android:id="@+id/new_releases_switch"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:thumbTint="@color/deep_pink"
+        android:trackTint="@color/switch_track_tint"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <!-- App Updates Notifications Switch -->
+    <TextView
+        android:id="@+id/app_updates_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/app_updates"
+        android:textAppearance="@style/ultrabold_font_16"
+        android:textColor="@color/light_pink" />
+
+    <Switch
+        android:id="@+id/app_updates_switch"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:thumbTint="@color/deep_pink"
+        android:trackTint="@color/switch_track_tint"
+        tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+</LinearLayout>

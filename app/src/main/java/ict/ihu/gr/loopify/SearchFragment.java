@@ -1,5 +1,7 @@
 package ict.ihu.gr.loopify;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -15,12 +17,9 @@ import android.view.ViewGroup;
  */
 public class SearchFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -36,7 +35,6 @@ public class SearchFragment extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment SearchFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static SearchFragment newInstance(String param1, String param2) {
         SearchFragment fragment = new SearchFragment();
         Bundle args = new Bundle();
@@ -59,6 +57,34 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        View root = inflater.inflate(R.layout.fragment_search, container, false);
+
+        // Load the saved theme
+        SharedPreferences preferences = requireContext().getSharedPreferences("app_settings", Context.MODE_PRIVATE);
+        String theme = preferences.getString("app_theme", "default");
+
+        // Set the background based on the theme
+        int backgroundResource;
+        switch (theme) {
+            case "aquamarine":
+                backgroundResource = R.drawable.background_aquamarine;
+                break;
+            case "beige":
+                backgroundResource = R.drawable.background_beige;
+                break;
+            case "gold":
+                backgroundResource = R.drawable.background_gold;
+                break;
+            case "ink":
+                backgroundResource = R.drawable.background_ink;
+                break;
+            default:
+                backgroundResource = R.drawable.background;
+        }
+
+        // Set the background resource to the root view
+        root.setBackgroundResource(backgroundResource);
+
+        return root;
     }
 }

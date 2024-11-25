@@ -1,0 +1,139 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:scrollbars="vertical"
+    tools:context=".StorageDataSettingsFragment">
+
+    <!-- Back Button -->
+    <Button
+        android:id="@+id/back_button_storage_data"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_gravity="start|top"
+        android:layout_margin="16dp"
+        android:layoutDirection="inherit"
+        android:text="@string/back"
+        android:textAppearance="@style/regular_font_18"
+        app:icon="@drawable/alt_arrow_left_svgrepo_com"
+        app:iconGravity="textStart"
+        app:iconSize="30dp" />
+
+    <!-- Clear Cache Section -->
+    <TextView
+        android:id="@+id/clear_cache_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/clear_cache"
+        android:textAppearance="@style/ultrabold_font_16"
+        android:textColor="@color/light_pink" />
+
+    <Button
+        android:id="@+id/clear_cache_button"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_button"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical|start"
+        android:paddingStart="16dp"
+        android:text="@string/clear_cache_button"
+        android:textAppearance="@style/regular_font_16"
+        app:icon="@drawable/trash_bin_minimalistic_svgrepo_com"
+        app:iconSize="30dp"
+        tools:ignore="RtlSymmetry" />
+
+    <!-- Manage Downloads Section -->
+
+    <!-- Backup Data Section -->
+    <TextView
+        android:id="@+id/backup_data_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/backup"
+        android:textAppearance="@style/ultrabold_font_16"
+        android:textColor="@color/light_pink" />
+
+    <Button
+        android:id="@+id/backup_data_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_button"
+        android:drawablePadding="8dp"
+        android:gravity="center_vertical|start"
+        android:paddingStart="16dp"
+        android:text="@string/backup_data_button"
+        android:textAppearance="@style/regular_font_16"
+        app:icon="@drawable/cloud_download_svgrepo_com"
+        app:iconSize="30dp"
+        tools:ignore="RtlSymmetry" />
+
+    <!-- Data Usage Section -->
+    <TextView
+        android:id="@+id/data_usage_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/data_usage"
+        android:textAppearance="@style/ultrabold_font_16"
+        android:textColor="@color/light_pink" />
+
+    <Switch
+        android:id="@+id/data_usage_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/data_usage_limit"
+        android:thumbTint="@color/deep_pink"
+        android:trackTint="@color/switch_track_tint" />
+
+    <!-- Storage Info Section -->
+    <TextView
+        android:id="@+id/storage_info_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/storage_info"
+        android:textAppearance="@style/ultrabold_font_16"
+        android:textColor="@color/light_pink" />
+
+    <TextView
+        android:id="@+id/storage_info_value"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/storage_info_details"
+        android:textAppearance="@style/regular_font_14"
+        android:textSize="16sp" />
+
+    <!-- Auto Download Section -->
+    <TextView
+        android:id="@+id/auto_download_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/auto_download"
+        android:textAppearance="@style/ultrabold_font_16"
+        android:textColor="@color/light_pink" />
+
+    <Switch
+        android:id="@+id/auto_download_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/enable_auto_download"
+        android:thumbTint="@color/deep_pink"
+        android:trackTint="@color/switch_track_tint" />
+
+</LinearLayout>
