@@ -1,6 +1,5 @@
 name: CI / APK Build
 
-# Trigger the workflow on pushes to the "main" branch or manually
 on:
   push:
     branches:
@@ -44,7 +43,7 @@ jobs:
           VERSION=$(cat version.txt)
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      # Increment version if tag already exists
+      # Increment version if needed
       - name: Increment version if needed
         id: increment_version
         run: |
@@ -61,7 +60,7 @@ jobs:
           echo "$NEW_VERSION" > version.txt
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
-      # Commit version.txt and create a tag
+      # Commit version.txt and create new tag
       - name: Commit and create new tag
         run: |
           git config --global user.name 'GitHub Actions'
@@ -71,8 +70,8 @@ jobs:
           git add version.txt
           git commit -m "Bump version to ${{ env.NEW_VERSION }}"
 
-          # Create and push the new tag
-          git tag -a "v${{ env.NEW_VERSION }}" -m "Release version ${{ env.NEW_VERSION }}"
+          # Create and push the new tag with 'v' prefix
+          git tag -a "v${{ env.NEW_VERSION }}" -m "Release version v${{ env.NEW_VERSION }}"
           git push origin main
           git push origin "v${{ env.NEW_VERSION }}"
 
@@ -80,7 +79,8 @@ jobs:
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
-          name: v${{ env.NEW_VERSION }}
+          tag_name: "v${{ env.NEW_VERSION }}"  # Include the 'v' prefix
+          name: "v${{ env.NEW_VERSION }}"     # Name the release with the same tag
           files: |
             app/build/outputs/apk/release/app-release-unsigned.apk
             CHANGELOG.mb
