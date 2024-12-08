@@ -61,7 +61,7 @@ jobs:
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       # Commit version.txt and create new tag
-      - name: Commit and create new tag
+      - name: Commit version.txt and create new tag
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
@@ -75,6 +75,25 @@ jobs:
           git push origin main
           git push origin "v${{ env.NEW_VERSION }}"
 
+      # Create changelog (CHANGELOG.mb)
+      - name: Create changelog
+        run: |
+          echo "## Changelog" > CHANGELOG.mb
+          echo "### Version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
+          echo "" >> CHANGELOG.mb
+          echo "This is the changelog for version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
+
+      # Commit updated CHANGELOG.mb to the main branch
+      - name: Commit and push CHANGELOG.mb
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+
+          # Commit the updated CHANGELOG.mb
+          git add CHANGELOG.mb
+          git commit -m "Update CHANGELOG.mb for version ${{ env.NEW_VERSION }}"
+          git push origin main
+
       # Create GitHub release
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -86,14 +105,6 @@ jobs:
             CHANGELOG.mb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      # Create changelog (CHANGELOG.mb)
-      - name: Create changelog
-        run: |
-          echo "## Changelog" > CHANGELOG.mb
-          echo "### Version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
-          echo "" >> CHANGELOG.mb
-          echo "This is the changelog for version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
 
       # Upload version.txt as an artifact
       - name: Upload version.txt
