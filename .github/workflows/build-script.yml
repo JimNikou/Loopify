@@ -45,28 +45,31 @@ jobs:
           echo "Current version: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      # Increment version number
-      - name: Increment version
+      # Increment version number dynamically
+      - name: Increment version and handle existing tags
         id: increment_version
         run: |
-          # Get the current version number from the version.txt file
-          VERSION=$(cat version.txt)
-          
-          # Extract the major, minor, and patch version numbers
-          IFS='.' read -r major minor patch <<< "$VERSION"
-          
-          # Increment the patch number
-          patch=$((patch + 1))
+          # Fetch tags
+          git fetch --tags
 
-          # Create the new version string
-          new_version="$major.$minor.$patch"
-          
-          # Update the version.txt file with the new version
-          echo $new_version > version.txt
-          
+          # Read the current version
+          VERSION=$(cat version.txt)
+          IFS='.' read -r major minor patch <<< "$VERSION"
+
+          # Increment version if necessary
+          while git ls-remote --tags origin | grep -q "refs/tags/v$major.$minor.$patch"; do
+            patch=$((patch + 1))  # Increment patch number
+          done
+
+          # New version
+          NEW_VERSION="$major.$minor.$patch"
+
+          # Update version.txt
+          echo "$NEW_VERSION" > version.txt
+
           # Output the new version
-          echo "New version: $new_version"
-          echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
+          echo "New version: $NEW_VERSION"
+          echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
       # Create changelog file (CHANGELOG.mb)
       - name: Create changelog (CHANGELOG.mb)
@@ -76,10 +79,8 @@ jobs:
           echo "" >> CHANGELOG.mb
           echo "This is the changelog for version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
 
-      # Commit version.txt and create new tag
+      # Commit updated version.txt and create a new tag
       - name: Commit version.txt and create new tag
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
@@ -88,10 +89,8 @@ jobs:
           git add version.txt
           git commit -m "Bump version to ${{ env.NEW_VERSION }}"
 
-          # Create a new tag for the release
+          # Create and push the new tag
           git tag -a "v${{ env.NEW_VERSION }}" -m "Release version ${{ env.NEW_VERSION }}"
-
-          # Push the commit and tag to the repository
           git push origin main
           git push origin "v${{ env.NEW_VERSION }}"
 
@@ -105,7 +104,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Upload the version.txt as an artifact (optional)
+      # Upload version.txt as an artifact
       - name: Upload version.txt
         uses: actions/upload-artifact@v4
         with:
