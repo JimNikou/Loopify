@@ -8,6 +8,8 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+
 
     <application
         android:allowBackup="true"
@@ -42,7 +44,11 @@
         <activity android:name=".PlaylistActivity"
             android:theme="@style/Theme.Loopify.NoActionBar"/>
 
-        <service android:name=".MediaPlayerService" />
+        <service
+            android:name=".MediaPlayerService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+
     </application>
 
 </manifest>

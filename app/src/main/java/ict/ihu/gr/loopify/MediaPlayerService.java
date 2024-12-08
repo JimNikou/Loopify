@@ -32,37 +32,55 @@ public class MediaPlayerService extends Service {
     @SuppressLint("ForegroundServiceType")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String action = intent.getAction();
+        // Validate intent and action
+        if (intent == null || intent.getAction() == null) {
+            stopSelf();
+            return START_NOT_STICKY;
+        }
 
-        if (action != null) {
-            switch (action) {
-                case "PLAY":
-                    String trackName = SearchFragment.getInstance().getData();
-                    // Check if a different song is requested to avoid re-triggering the same one
+        // Create and display the notification
+        startForeground(1, getNotification());
+
+        // Handle actions like PLAY, PAUSE, STOP
+        String action = intent.getAction();
+        switch (action) {
+            case "PLAY":
+                String trackName = intent.getStringExtra("TRACK_NAME");
+                if (trackName != null) {
+                    Log.d("MediaPlayerService", "PLAY action received for track: " + trackName);
+
                     if (!trackName.equals(currentTrack)) {
                         currentTrack = trackName;
                         stopCurrentTrack();  // Stop any currently playing track
-                        runStartTrackServe(currentTrack, exoPlayerManager);
-                    }else{
+                        runStartTrackServe(currentTrack, exoPlayerManager); // Begin playback
+                    } else {
                         exoPlayerManager.continuePlaying();
+                        Log.d("MediaPlayerService", "Resumed playing: " + currentTrack);
                     }
                     isPlaying = true;
-                    updateNotification();
-                    break;
-                case "PAUSE":
-                    exoPlayerManager.pauseSong();
-                    isPlaying = false;
-                    updateNotification();
-                    break;
-                case "STOP":
-                    stopSelf();
-                    return START_NOT_STICKY;
-            }
+                } else {
+                    Log.e("MediaPlayerService", "TRACK_NAME extra is missing in the PLAY action");
+                }
+                updateNotification();
+                break;
+
+            case "PAUSE":
+                exoPlayerManager.pauseSong();
+                isPlaying = false;
+                Log.d("MediaPlayerService", "Playback paused");
+                updateNotification();
+                break;
+
+            case "STOP":
+                Log.d("MediaPlayerService", "Stopping service");
+                stopSelf();
+                return START_NOT_STICKY;
         }
 
-        startForeground(1, getNotification());
         return START_STICKY;
     }
+
+
 
     private void stopCurrentTrack() {
         if (exoPlayerManager != null && isPlaying) {
