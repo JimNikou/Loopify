@@ -76,12 +76,18 @@ jobs:
           git push origin "v${{ env.NEW_VERSION }}"
 
       # Create changelog (CHANGELOG.mb)
-      - name: Create changelog
+      # Create detailed changelog (CHANGELOG.mb)
+      - name: Create detailed changelog
         run: |
           echo "## Changelog" > CHANGELOG.mb
           echo "### Version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
           echo "" >> CHANGELOG.mb
-          echo "This is the changelog for version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
+      
+          # Get the last 10 commits and format them
+          git log --oneline --no-merges --pretty=format:"- %s" >> CHANGELOG.mb
+          echo "" >> CHANGELOG.mb
+          echo "End of Changelog for version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
+
 
       # Commit updated CHANGELOG.mb to the main branch
       - name: Commit and push CHANGELOG.mb
