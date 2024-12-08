@@ -21,14 +21,14 @@
 
 
         <!-- Background VideoView at z-0 (bottom layer) -->
-<!--        <VideoView-->
-<!--            android:id="@+id/backgroundVideoView"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:layout_height="match_parent"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:keepScreenOn="true"-->
-<!--            android:scaleType="centerCrop"-->
-<!--            android:visibility="visible" />-->
+        <!--        <VideoView-->
+        <!--            android:id="@+id/backgroundVideoView"-->
+        <!--            android:layout_width="match_parent"-->
+        <!--            android:layout_height="match_parent"-->
+        <!--            android:layout_gravity="center"-->
+        <!--            android:keepScreenOn="true"-->
+        <!--            android:scaleType="centerCrop"-->
+        <!--            android:visibility="visible" />-->
 
         <!--  Album Art-->
         <ImageView
@@ -103,7 +103,7 @@
             android:orientation="horizontal"
             android:gravity="center"
             android:layout_marginTop="16dp">
-
+            <!---->
             <ImageButton
                 android:id="@+id/shuffleButton"
                 android:layout_width="wrap_content"

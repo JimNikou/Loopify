@@ -29,12 +29,81 @@
         android:layout_marginBottom="8dp"
         android:layout_marginTop="10dp" />
 
-    <!-- RecyclerView for playlist items -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/playlist_recycler_view"
+    <!-- Horizontal Row with Icons, positioned below the selected image -->
+    <LinearLayout
+        android:id="@+id/options_row"
+        android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/selected_image"
-         />
+    android:layout_marginBottom="16dp"
+        android:layout_marginTop="15dp"
+    android:weightSum="2"
+        android:paddingRight="50px"
+        android:paddingLeft="50px">
 
-</RelativeLayout>
+    <!-- Left Side Icons: Verified, Download, 3 Dots -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="start">
+
+        <!-- Verified emoji -->
+        <ImageView
+            android:src="@drawable/verified"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="20dp" />
+
+        <!-- Download emoji -->
+        <ImageView
+            android:src="@drawable/download"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="20dp" />
+
+        <!-- 3 Dots emoji -->
+        <ImageView
+            android:src="@drawable/dots"
+            android:layout_width="24dp"
+            android:layout_height="24dp" />
+
+    </LinearLayout>
+
+    <!-- Right Side Icons: Shuffle, Play -->
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="end">
+
+        <!-- Shuffle emoji -->
+        <ImageView
+            android:src="@drawable/shuffle"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"/>
+
+        <!-- Play emoji -->
+        <ImageView
+            android:src="@drawable/play"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="8dp" />
+
+    </LinearLayout>
+
+</LinearLayout>
+
+    <!-- RecyclerView for playlist items, positioned below the icons row -->
+<androidx.recyclerview.widget.RecyclerView
+android:id="@+id/playlist_recycler_view"
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:layout_below="@id/options_row" />  <!-- Position it below the image and icons -->
+
+    </RelativeLayout>

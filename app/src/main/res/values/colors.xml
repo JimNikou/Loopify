@@ -8,5 +8,14 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="transparent">#00000000</color>
-    <color name="darker_gray">#141414</color>
+    <color name="darker_gray">#26141414</color>
+    <!-- Primary Colors -->
+    <color name="black_">#212121</color> <!-- Dark gray for text -->
+
+    <!-- Secondary Colors -->
+    <color name="gray">#757575</color> <!-- Medium gray for secondary text -->
+    <color name="blue">#1E88E5</color> <!-- Blue for links (artist website) -->
+
+    <!-- Background Color -->
+    <color name="background_color">#F5F5F5</color>
 </resources>

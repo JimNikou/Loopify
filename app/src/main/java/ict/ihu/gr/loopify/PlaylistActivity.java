@@ -1,30 +1,28 @@
-package ict.ihu.gr.loopify.ui;
+package ict.ihu.gr.loopify;
 
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import ict.ihu.gr.loopify.R;
-import androidx.appcompat.widget.Toolbar;  // Import Toolbar
+import ict.ihu.gr.loopify.TrackManager;
+import ict.ihu.gr.loopify.Track;
+import ict.ihu.gr.loopify.ui.PlaylistAdapter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PlaylistActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_playlist); // Use the layout for PlaylistActivity
-
-        // Find the toolbar and set it as the support action bar
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-
+        setContentView(R.layout.activity_playlist);
 
         // Views for buttons and recycler view
         Button backButton = findViewById(R.id.back_button);
-//        Button openMediaPlayerButton = findViewById(R.id.open_media_player_button);
         ImageView selectedImage = findViewById(R.id.selected_image);
         RecyclerView recyclerView = findViewById(R.id.playlist_recycler_view);
 
@@ -32,15 +30,42 @@ public class PlaylistActivity extends AppCompatActivity {
         int imageResource = getIntent().getIntExtra("imageResource", R.drawable.background);
         selectedImage.setImageResource(imageResource);
 
-        // Set up RecyclerView for playlist
-        String[] songNames = {"Song 1", "Song 2", "Song 3"};
-        String[] artistNames = {"Artist 1", "Artist 2", "Artist 3"};
-        int[] imageResources = {R.drawable.background, R.drawable.background, R.drawable.background}; // Example image resources
+        // Initialize TrackManager
+        TrackManager trackManager = new TrackManager();
 
-        ict.ihu.gr.loopify.ui.PlaylistAdapter playlistAdapter = new ict.ihu.gr.loopify.ui.PlaylistAdapter(songNames, artistNames, imageResources);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(playlistAdapter);
+        // Get the genre passed from the intent
+        String genre = getIntent().getStringExtra("genre");
 
+        // Fetch data for the genre
+        trackManager.fetchTracksForAllGenres(new ict.ihu.gr.loopify.ApiManager(), (fetchedGenre, tracks) -> {
+            if (genre.equals(fetchedGenre)) {
+                // Prepare data for the adapter
+                List<String> songNames = new ArrayList<>();
+                List<String> artistNames = new ArrayList<>();
+                List<String> imageResources = new ArrayList<>();  // Keep as Strings for URLs
+
+                for (Track track : tracks) {
+                    songNames.add(track.getName());
+                    artistNames.add(track.getArtist().getName());
+
+                    // If track.getImage() contains image URLs (Strings)
+                    if (!track.getImage().isEmpty()) {
+                        imageResources.add(track.getImage().get(0).getText());  // Add image URL
+                    }
+                }
+
+                // Set up adapter with fetched data
+                runOnUiThread(() -> {
+                    PlaylistAdapter playlistAdapter = new PlaylistAdapter(
+                            songNames.toArray(new String[0]),
+                            artistNames.toArray(new String[0]),
+                            imageResources.toArray(new String[0])  // Pass image URLs as String[]
+                    );
+                    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                    recyclerView.setAdapter(playlistAdapter);
+                });
+            }
+        });
 
         // Back button functionality
         backButton.setOnClickListener(v -> finish());

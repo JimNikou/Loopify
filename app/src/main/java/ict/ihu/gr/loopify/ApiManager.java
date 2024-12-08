@@ -343,18 +343,95 @@ public class ApiManager {
             StringBuilder result = new StringBuilder();
             result.append("Similar Tracks:\n");
 
-            // Loop through the tracks and append track names and artist names to the result
+            // Loop through the tracks and append track names, artist names, and image URLs to the result
             for (int i = 0; i < tracksArray.length(); i++) {
                 JSONObject trackObject = tracksArray.getJSONObject(i);
                 String trackName = trackObject.getString("name");
 
-                // Get the artist of the similar track
+                // Get the artist name of the similar track
                 String artistName = trackObject.getJSONObject("artist").getString("name");
 
-                result.append(i + 1).append(". ").append(trackName).append(" by ").append(artistName).append("\n");
+                // Get the first available image URL (assuming first image object is the required size)
+                JSONArray imagesArray = trackObject.getJSONArray("image");
+                String imageUrl = "";
+                if (imagesArray.length() > 0) {
+                    imageUrl = imagesArray.getJSONObject(0).getString("#text");
+                }
+
+                // Append the details to the result
+                result.append(i + 1).append(". ")
+                        .append(trackName).append(" by ").append(artistName)
+                        .append(" (Image: ").append(imageUrl).append(")\n");
             }
 
-            return result.toString();  // Return formatted similar tracks and artist names
+            return result.toString();  // Return formatted similar tracks with artist names and image URLs
+
+        } catch (JSONException e) {
+            e.printStackTrace();  // Print error for debugging
+        }
+
+        return null;  // Return null if an error occurred
+    }
+
+    public void fetchSimilarTracksRAW(String artist, String track, ApiResponseListener listener) {
+        // Construct the URL for the track.getsimilar API call
+        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=track.getsimilar&artist=" + artist +
+                "&track=" + track + "&api_key=" + lastFMapiKey + "&format=json";
+
+        // Use GetJsonTask to fetch the similar tracks info
+        new GetJsonTask(new ApiResponseListener() {
+            @Override
+            public void onResponseReceived(String jsonResponse) {
+                // Parse the response to get the similar tracks and artists
+                JSONArray similarTracksInfo = getSimilarTracksFromJsonRAW(jsonResponse);
+                if (similarTracksInfo != null) {
+                    Log.d(TAG, "Similar Tracks Info: " + similarTracksInfo);
+                    listener.onResponseReceived(String.valueOf(similarTracksInfo));
+                } else {
+                    Log.d(TAG, "No similar tracks found!");
+                    listener.onResponseReceived(null);
+                }
+            }
+        }).execute(jsonUrl);
+    }
+
+    @Nullable
+    private JSONArray getSimilarTracksFromJsonRAW(String jsonResponse) {
+        try {
+            // Parse the JSON object
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            JSONObject similarTracksObject = jsonObject.getJSONObject("similartracks");
+
+            // Extract the similar tracks array
+            JSONArray tracksArray = similarTracksObject.getJSONArray("track");
+//
+//            // Build the result string to return
+//            StringBuilder result = new StringBuilder();
+//            result.append("Similar Tracks:\n");
+//
+//            // Loop through the tracks and append track names, artist names, and image URLs to the result
+//            for (int i = 0; i < tracksArray.length(); i++) {
+//                JSONObject trackObject = tracksArray.getJSONObject(i);
+//                String trackName = trackObject.getString("name");
+//
+//                // Get the artist name of the similar track
+//                String artistName = trackObject.getJSONObject("artist").getString("name");
+//
+//                // Get the first available image URL (assuming first image object is the required size)
+//                JSONArray imagesArray = trackObject.getJSONArray("image");
+//                String imageUrl = "";
+//                if (imagesArray.length() > 0) {
+//                    imageUrl = imagesArray.getJSONObject(0).getString("#text");
+//                }
+//
+//                // Append the details to the result
+//                result.append(i + 1).append(". ")
+//                        .append(trackName).append(" by ").append(artistName)
+//                        .append(" (Image: ").append(imageUrl).append(")\n");
+//            }
+//
+//            return result.toString();  // Return formatted similar tracks with artist names and image URLs
+            return tracksArray;
 
         } catch (JSONException e) {
             e.printStackTrace();  // Print error for debugging
@@ -385,6 +462,14 @@ public class ApiManager {
         new GetJsonTask(listener).execute(jsonUrl);
     }
 
+    public void fetchTrackInfo(String track, String artist, ApiResponseListener listener) {
+        // Construct the URL for the track info
+        String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=track.getInfo&api_key=" + lastFMapiKey
+                + "&artist=" + artist + "&track=" + track + "&format=json";
+        // Execute the task to fetch JSON
+        new GetJsonTask(listener).execute(jsonUrl);
+    }
+
     //top chart functions
     public void fetchTopArtistCharts(ApiResponseListener listener) {
         String jsonUrl = "http://ws.audioscrobbler.com/2.0/?method=chart.gettopartists&api_key=" + lastFMapiKey + "&format=json";
@@ -395,6 +480,44 @@ public class ApiManager {
         new GetJsonTask(listener).execute(jsonUrl);
     }
 
+
+    public static String parseTrackDetails(String jsonResponse) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            JSONObject trackObject = jsonObject.getJSONObject("track");
+
+            String trackName = trackObject.getString("name");
+            String artistName = trackObject.getJSONObject("artist").getString("name");
+            String albumName = trackObject.getJSONObject("album").getString("title");
+            int listeners = trackObject.getInt("listeners");
+            int playcount = trackObject.getInt("playcount");
+            String trackUrl = trackObject.getString("url");
+
+            // Extracting album image
+            JSONArray imageArray = trackObject.getJSONObject("album").getJSONArray("image");
+            String albumImage = imageArray.getJSONObject(imageArray.length() - 1).getString("#text");
+
+            // Extracting tags
+            JSONArray tagsArray = trackObject.getJSONObject("toptags").getJSONArray("tag");
+            StringBuilder tags = new StringBuilder();
+            for (int i = 0; i < tagsArray.length(); i++) {
+                tags.append(tagsArray.getJSONObject(i).getString("name"));
+                if (i < tagsArray.length() - 1) tags.append(", ");
+            }
+
+            return "Track: " + trackName + "\n"
+                    + "Artist: " + artistName + "\n"
+                    + "Album: " + albumName + "\n"
+                    + "Listeners: " + listeners + "\n"
+                    + "Play Count: " + playcount + "\n"
+                    + "Tags: " + tags + "\n"
+                    + "Track URL: " + trackUrl + "\n"
+                    + "Album Image: " + albumImage;
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "Error parsing track details.";
+        }
+    }
 
     /**
      * This method sends a POST request to retrieve an MP3 file URL from a specified YouTube video URL.
@@ -708,5 +831,67 @@ public class ApiManager {
     }
 
 
+    /**
+     * Parses a JSON response to extract detailed information about an artist.
+     * The method navigates through the "artists" array to retrieve attributes like the artist's name,
+     * genre, biography, website, and more.
+     *
+     * @param jsonResponse The JSON response containing artist details.
+     * @return A formatted string containing the artist's details, or null if no artist is found or an error occurs.
+     */
+    @Nullable
+    public static String getArtistDetailsFromJson(String jsonResponse) {
+        try {
+            JSONObject jsonObject = new JSONObject(jsonResponse);
+            JSONArray artistsArray = jsonObject.getJSONArray("artists");
+
+            if (artistsArray.length() > 0) {
+                // Get the first artist object
+                JSONObject artistObject = artistsArray.getJSONObject(0);
+
+                // Extract artist details
+                String artistName = artistObject.optString("strArtist", "N/A");
+                String label = artistObject.optString("strLabel", "N/A");
+                String formedYear = artistObject.optString("intFormedYear", "N/A");
+                String bornYear = artistObject.optString("intBornYear", "N/A");
+                String style = artistObject.optString("strStyle", "N/A");
+                String genre = artistObject.optString("strGenre", "N/A");
+                String mood = artistObject.optString("strMood", "N/A");
+                String website = artistObject.optString("strWebsite", "N/A");
+                String biography = artistObject.optString("strBiographyEN", "Biography not available.");
+
+                // Format the artist details into a readable string
+                return "Artist Name: " + artistName + "\n"
+                        + "Label: " + label + "\n"
+                        + "Formed Year: " + formedYear + "\n"
+                        + "Born Year: " + bornYear + "\n"
+                        + "Style: " + style + "\n"
+                        + "Genre: " + genre + "\n"
+                        + "Mood: " + mood + "\n"
+                        + "Website: " + website + "\n\n"
+                        + "Biography:\n" + biography;
+            }
+        } catch (JSONException e) {
+            Log.e(TAG, "Error parsing artist JSON: " + e.getMessage());
+        }
+
+        return null; // Return null if no artist was found or an error occurred
+    }
+
+    /**
+     * Logs detailed artist information retrieved from a JSON response.
+     * This method calls getArtistDetailsFromJson to parse the response and logs the result.
+     *
+     * @param jsonResponse The JSON response containing artist details.
+     */
+    public static void logArtistDetails(String jsonResponse) {
+        String artistDetails = getArtistDetailsFromJson(jsonResponse);
+
+        if (artistDetails != null) {
+            Log.d(TAG, "Artist Details:\n" + artistDetails);
+        } else {
+            Log.d(TAG, "No artist details found or an error occurred.");
+        }
+    }
 
 }

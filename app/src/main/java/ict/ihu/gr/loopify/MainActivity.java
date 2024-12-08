@@ -1,20 +1,31 @@
 package ict.ihu.gr.loopify;
 
-import static java.security.AccessController.getContext;
-
 import android.app.AlertDialog;
+
 import android.content.SharedPreferences;
+
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Intent;
+
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+
 import android.os.Looper;
 import android.provider.Settings;
+
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
-import java.util.List;
+import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
@@ -29,17 +40,15 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
@@ -47,10 +56,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 
-import android.content.Intent;
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import org.json.JSONObject;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -61,16 +72,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.core.app.NotificationManagerCompat;
-import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
-import ict.ihu.gr.loopify.ui.home.HomeFragment;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.lang.reflect.Type;
+import java.util.List;
+
+import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -79,7 +85,22 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 //TEST TEST TEST TEST TEST TEST TEST TEST TEST
-public class MainActivity extends AppCompatActivity implements ApiManager.ApiResponseListener {
+
+// Custom deserializer to handle the `#text` field
+class ImageDeserializer implements JsonDeserializer<Image> {
+    @Override
+    public Image deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+        JsonObject imageObject = json.getAsJsonObject();
+        Image image = new Image();
+        // Handle the #text field by mapping it to the text property in Image
+        if (imageObject.has("#text")) {
+            image.setText(imageObject.get("#text").getAsString());
+        }
+        return image;
+    }
+}
+
+public class MainActivity extends AppCompatActivity implements ApiManager.ApiResponseListener, TrackManager.OnTracksFetchedListener  {
     private MediaPlayerManager mediaPlayerManager;
     private ExoPlayerManager exoPlayerManager;
     private AppBarConfiguration mAppBarConfiguration;
@@ -94,6 +115,8 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
     private EditText emailField, passwordField, displayNameField;
     private Button loginButton, signupButton;
+
+    private TrackManager trackManager;
 
     // Declare a FirebaseUser to handle the current user
     private FirebaseUser currentUser;
@@ -225,6 +248,9 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavView);
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
 
+        // Initialize TrackManager
+        trackManager = new TrackManager();
+
         mediaPlayerManager = new MediaPlayerManager();
 
         Button openMediaPlayerButton = findViewById(R.id.open_media_player_button);
@@ -288,6 +314,10 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         String track = "heartless";
 
         ApiManager apiManager = new ApiManager();
+
+        // Fetch tracks for all genres
+        trackManager.fetchTracksForAllGenres(apiManager, this);
+
         exoPlayerManager = new ExoPlayerManager(this);
 //        new ApiManager().fetchArtistFromTrack(track,this); //get back the artist from a selected track
 //        new ApiManager().fetchTADB_Artist_ID(track, artist,this); //get the artist id for track search
@@ -349,6 +379,50 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 //            public void onResponseReceived(String jsonResponse) {
 //                if (jsonResponse != null){
 //                    Log.d("SimilarTracks", jsonResponse);
+//                }else {
+//                    Log.d("SimilarTracks", "No similar tracks found");
+//                }
+//            }
+//        });
+
+//                apiManager.fetchSimilarTracksRAW("Dr. Dre", "Nuthin' but a \"G\" Thang", new ApiManager.ApiResponseListener() {
+//            @Override
+//            public void onResponseReceived(String jsonResponse) {
+//                if (jsonResponse != null){
+//// Initialize Gson
+//                    // Initialize Gson with custom deserializer
+//                    Gson gson = new GsonBuilder()
+//                            .registerTypeAdapter(Image.class, new ImageDeserializer())  // Register custom deserializer for Image class
+//                            .create();
+//
+//                    try {
+//                        // Use TypeToken to specify the exact type (List<Track>) for Gson to parse
+//                        TypeToken<List<Track>> typeToken = new TypeToken<List<Track>>() {};
+//                        List<Track> tracks = gson.fromJson(jsonResponse, typeToken.getType());
+//
+//                        // Process the tracks if the response is valid
+//                        if (tracks != null && !tracks.isEmpty()) {
+//                            for (Track track : tracks) {
+//                                // Extract the required details (Name, Artist Name, Image URL)
+//                                System.out.println("Track Name: " + track.getName());
+//                                System.out.println("Artist Name: " + track.getArtist().getName());
+//
+//                                // Check if image URLs are available and print them
+//                                if (track.getImage() != null && !track.getImage().isEmpty()) {
+//                                    // Accessing the first image URL
+//                                    String imageUrl = track.getImage().get(0).getText();  // Get the first image's text (URL)
+//                                    System.out.println("Image URL: " + imageUrl);
+//                                } else {
+//                                    System.out.println("No image available.");
+//                                }
+//                            }
+//                        } else {
+//                            System.out.println("No tracks found.");
+//                        }
+//                    } catch (Exception e) {
+//                        // Handle parsing errors
+//                        System.out.println("Error while parsing JSON: " + e.getMessage());
+//                    }
 //                }else {
 //                    Log.d("SimilarTracks", "No similar tracks found");
 //                }
@@ -478,13 +552,45 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     }
 
 
+    // Method to load the MediaPlayerManager fragment as a full-screen overlay
     private void loadFragment(Fragment fragment) {
+        FrameLayout fragmentContainer = findViewById(R.id.fragment_MediaPlayerFragment);
+        fragmentContainer.setVisibility(View.VISIBLE);
+        fragmentContainer.setBackgroundColor(getResources().getColor(android.R.color.black));
+
+        // Hide other views to simulate full-screen effect
+        findViewById(R.id.nav_host_fragment_content_main).setVisibility(View.GONE);
+        findViewById(R.id.bottomNavView).setVisibility(View.GONE);
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
+//        transaction.setCustomAnimations(
+//                R.anim.slide_in_up,  // Enter animation
+//                R.anim.fade_out,     // Exit animation
+//                R.anim.fade_in,      // Pop enter animation
+//                R.anim.slide_out_down // Pop exit animation
+//        );
+        transaction.replace(R.id.fragment_MediaPlayerFragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
     }
 
+    // Handle back press to close the media player fragment and restore layout
+    @Override
+    public void onBackPressed() {
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
+
+            // Restore visibility of main content and bottom navigation
+            findViewById(R.id.nav_host_fragment_content_main).setVisibility(View.VISIBLE);
+            findViewById(R.id.bottomNavView).setVisibility(View.VISIBLE);
+
+            // Hide the fragment container to avoid overlaying the restored content
+            findViewById(R.id.fragment_MediaPlayerFragment).setVisibility(View.GONE);
+            findViewById(R.id.fragment_MediaPlayerFragment).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        } else {
+            super.onBackPressed();
+        }
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main, menu);
@@ -506,6 +612,28 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         super.onDestroy();
         startMusicService("STOP");
         exoPlayerManager.release(); // Release MediaPlayer resources
+    }
+//
+    @Override
+    public void onTracksFetched(String genre, List<Track> tracks) {
+        // Handle the fetched tracks for each genre here
+        Log.d("MainActivity", "Tracks fetched for genre: " + genre);
+        if (tracks != null && !tracks.isEmpty()) {
+            for (Track track : tracks) {
+                // You can log track details or update the UI with the fetched tracks
+                Log.d("MainActivity", "Track Name: " + track.getName());
+                Log.d("MainActivity", "Artist: " + track.getArtist().getName());
+                if (track.getImage() != null && !track.getImage().isEmpty()) {
+                    // Accessing the first image URL
+                    String imageUrl = track.getImage().get(0).getText();  // Get the first image's text (URL)
+                    Log.d("MainActivity", "Image URL: " + imageUrl);
+                } else {
+                    Log.d("MainActivity", "No image available.");
+                }
+            }
+        } else {
+            Log.d("MainActivity", "No tracks found for genre: " + genre);
+        }
     }
 
     private void requestNotificationPermission() {

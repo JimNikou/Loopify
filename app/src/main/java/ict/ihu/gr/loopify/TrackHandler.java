@@ -27,7 +27,6 @@ public class TrackHandler {
     public void TrackHandler(){}
 
     public void addSongToLiked(String track) {
-        // Get the current liked songs document to find the highest sn key
         DocumentReference docRef = db.collection(user.getUid()).document("LikedSongs");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -36,25 +35,27 @@ public class TrackHandler {
                     DocumentSnapshot document = task.getResult();
                     Map<String, Object> data = document.getData();
 
-                    // Find the next sn key (incremental counter)
                     int nextSn = 1; // Default to sn1 if no songs exist
                     if (data != null) {
                         for (String key : data.keySet()) {
                             if (key.startsWith("sn")) {
-                                int snNumber = Integer.parseInt(key.substring(2)); // Extract the number after "sn"
-                                if (snNumber >= nextSn) {
-                                    nextSn = snNumber + 1; // Increment the highest sn number
+                                try {
+                                    // Safely parse the number part of the key
+                                    int snNumber = Integer.parseInt(key.substring(2));
+                                    if (snNumber >= nextSn) {
+                                        nextSn = snNumber + 1; // Increment the highest sn number
+                                    }
+                                } catch (NumberFormatException e) {
+                                    Log.w(TAG, "Invalid sn key: " + key, e);
                                 }
                             }
                         }
                     }
 
-                    // Create the new sn key for the song
                     String snKey = "sn" + nextSn;
                     Map<String, Object> newSong = new HashMap<>();
                     newSong.put(snKey, track);
 
-                    // Add the new song to Firestore
                     db.collection(user.getUid()).document("LikedSongs")
                             .set(newSong, SetOptions.merge())
                             .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -75,6 +76,7 @@ public class TrackHandler {
             }
         });
     }
+
 
 
     public void removeSongFromLiked(String track) {
