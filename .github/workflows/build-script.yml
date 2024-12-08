@@ -68,13 +68,27 @@ jobs:
           echo "New version: $new_version"
           echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
 
-      # Create changelog file
-      - name: Create changelog
+      # Create changelog file (CHANGELOG.mb)
+      - name: Create changelog (CHANGELOG.mb)
         run: |
-          echo "## Changelog" > changelog.txt
-          echo "### Version ${{ env.NEW_VERSION }}" >> changelog.txt
-          echo "" >> changelog.txt
-          echo "This is the changelog for version ${{ env.NEW_VERSION }}" >> changelog.txt
+          echo "## Changelog" > CHANGELOG.mb
+          echo "### Version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
+          echo "" >> CHANGELOG.mb
+          echo "This is the changelog for version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
+
+      # Commit and create a new version tag
+      - name: Commit version.txt and create new tag
+        run: |
+          git config --global user.name 'GitHub Actions'
+          git config --global user.email 'actions@github.com'
+
+          # Commit the updated version.txt file
+          git add version.txt
+          git commit -m "Bump version to ${{ env.NEW_VERSION }}"
+
+          # Create a new tag for the release
+          git tag -a "v${{ env.NEW_VERSION }}" -m "Release version ${{ env.NEW_VERSION }}"
+          git push origin "v${{ env.NEW_VERSION }}"
 
       # Create GitHub release and upload APK + changelog
       - name: Create GitHub release
@@ -82,7 +96,7 @@ jobs:
         with:
           files: |
             app/build/outputs/apk/release/app-release-unsigned.apk
-            changelog.txt
+            CHANGELOG.mb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
