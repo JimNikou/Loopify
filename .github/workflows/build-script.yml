@@ -76,8 +76,10 @@ jobs:
           echo "" >> CHANGELOG.mb
           echo "This is the changelog for version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
 
-      # Commit and create a new version tag
+      # Commit version.txt and create new tag
       - name: Commit version.txt and create new tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
@@ -88,6 +90,9 @@ jobs:
 
           # Create a new tag for the release
           git tag -a "v${{ env.NEW_VERSION }}" -m "Release version ${{ env.NEW_VERSION }}"
+
+          # Push the commit and tag to the repository
+          git push origin main
           git push origin "v${{ env.NEW_VERSION }}"
 
       # Create GitHub release and upload APK + changelog
