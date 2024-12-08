@@ -1,53 +1,94 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI / APK Build
 
-# Controls when the workflow will run
+# Triggers the workflow on push to the "main" branch
 on:
-  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "main" ]
+    branches:
+      - main  # Trigger on merge to main branch
+  workflow_dispatch: # Allows you to manually trigger this workflow if needed
 
-
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      # Checkout repository
       - uses: actions/checkout@v4
 
+      # Set up JDK 17
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: 'zulu'
           java-version: '17'
 
-      # Step 3: Set up Android SDK
+      # Set up Android SDK
       - name: Set up Android SDK
         uses: android-actions/setup-android@v2
         with:
-          api-level: 34   # Specify the Android API level you need
-          build-tools-version: 34.0.0  # Specify the build tools version
+          api-level: 34
+          build-tools-version: 34.0.0
 
-      # Step 4: Grant execute permission for Gradle Wrapper
+      # Grant execute permission for Gradle Wrapper
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      # Step 5: Build the APK
+      # Build APK
       - name: Build APK
         run: ./gradlew assembleRelease
 
-      # Step 6: Upload the APK as an artifact
-      - name: Upload APK
+      # Get current version from version.txt
+      - name: Get current version
+        id: get_version
+        run: |
+          VERSION=$(cat version.txt)
+          echo "Current version: $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      # Increment version number
+      - name: Increment version
+        id: increment_version
+        run: |
+          # Get the current version number from the version.txt file
+          VERSION=$(cat version.txt)
+          
+          # Extract the major, minor, and patch version numbers
+          IFS='.' read -r major minor patch <<< "$VERSION"
+          
+          # Increment the patch number
+          patch=$((patch + 1))
+
+          # Create the new version string
+          new_version="$major.$minor.$patch"
+          
+          # Update the version.txt file with the new version
+          echo $new_version > version.txt
+          
+          # Output the new version
+          echo "New version: $new_version"
+          echo "NEW_VERSION=$new_version" >> $GITHUB_ENV
+
+      # Create changelog file
+      - name: Create changelog
+        run: |
+          echo "## Changelog" > changelog.txt
+          echo "### Version ${{ env.NEW_VERSION }}" >> changelog.txt
+          echo "" >> changelog.txt
+          echo "This is the changelog for version ${{ env.NEW_VERSION }}" >> changelog.txt
+
+      # Create GitHub release and upload APK + changelog
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            app/build/outputs/apk/release/app-release-unsigned.apk
+            changelog.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Upload the version.txt as an artifact (optional)
+      - name: Upload version.txt
         uses: actions/upload-artifact@v4
         with:
-          name: loopify-release.apk
-          path: app/build/outputs/apk/release/app-release-unsigned.apk
+          name: version-file
+          path: version.txt
