@@ -1,11 +1,11 @@
 name: CI / APK Build
 
-# Triggers the workflow on push to the "main" branch
+# Trigger the workflow on pushes to the "main" branch or manually
 on:
   push:
     branches:
-      - main  # Trigger on merge to main branch
-  workflow_dispatch: # Allows you to manually trigger this workflow if needed
+      - main
+  workflow_dispatch:
 
 jobs:
   build:
@@ -42,50 +42,32 @@ jobs:
         id: get_version
         run: |
           VERSION=$(cat version.txt)
-          echo "Current version: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
-      # Increment version number dynamically
-      - name: Increment version and handle existing tags
+      # Increment version if tag already exists
+      - name: Increment version if needed
         id: increment_version
         run: |
-          # Fetch tags
           git fetch --tags
 
-          # Read the current version
           VERSION=$(cat version.txt)
           IFS='.' read -r major minor patch <<< "$VERSION"
 
-          # Increment version if necessary
           while git ls-remote --tags origin | grep -q "refs/tags/v$major.$minor.$patch"; do
-            patch=$((patch + 1))  # Increment patch number
+            patch=$((patch + 1))
           done
 
-          # New version
           NEW_VERSION="$major.$minor.$patch"
-
-          # Update version.txt
           echo "$NEW_VERSION" > version.txt
-
-          # Output the new version
-          echo "New version: $NEW_VERSION"
           echo "NEW_VERSION=$NEW_VERSION" >> $GITHUB_ENV
 
-      # Create changelog file (CHANGELOG.mb)
-      - name: Create changelog (CHANGELOG.mb)
-        run: |
-          echo "## Changelog" > CHANGELOG.mb
-          echo "### Version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
-          echo "" >> CHANGELOG.mb
-          echo "This is the changelog for version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
-
-      # Commit updated version.txt and create a new tag
-      - name: Commit version.txt and create new tag
+      # Commit version.txt and create a tag
+      - name: Commit and create new tag
         run: |
           git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
 
-          # Commit the updated version.txt file
+          # Commit the updated version.txt
           git add version.txt
           git commit -m "Bump version to ${{ env.NEW_VERSION }}"
 
@@ -94,15 +76,24 @@ jobs:
           git push origin main
           git push origin "v${{ env.NEW_VERSION }}"
 
-      # Create GitHub release and upload APK + changelog
-      - name: Create GitHub release
+      # Create GitHub release
+      - name: Release
         uses: softprops/action-gh-release@v1
         with:
+          name: v${{ env.NEW_VERSION }}
           files: |
             app/build/outputs/apk/release/app-release-unsigned.apk
             CHANGELOG.mb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Create changelog (CHANGELOG.mb)
+      - name: Create changelog
+        run: |
+          echo "## Changelog" > CHANGELOG.mb
+          echo "### Version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
+          echo "" >> CHANGELOG.mb
+          echo "This is the changelog for version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
 
       # Upload version.txt as an artifact
       - name: Upload version.txt
