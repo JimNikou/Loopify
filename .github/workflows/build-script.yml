@@ -75,8 +75,6 @@ jobs:
           git push origin main
           git push origin "v${{ env.NEW_VERSION }}"
 
-      # Create changelog (CHANGELOG.mb)
-      # Create detailed changelog (CHANGELOG.mb)
       # Create detailed changelog (CHANGELOG.mb)
       - name: Create detailed changelog
         run: |
@@ -85,7 +83,7 @@ jobs:
           echo "" >> CHANGELOG.mb
       
           # Get all commit logs (including merged commits, and formatting with "feat:", "fix:", etc.)
-          git log --oneline --no-merges --pretty=format:"- %s" --reverse >> CHANGELOG.mb
+          git log --pretty=format:"- %s" >> CHANGELOG.mb
           echo "" >> CHANGELOG.mb
           echo "End of Changelog for version ${{ env.NEW_VERSION }}" >> CHANGELOG.mb
 
