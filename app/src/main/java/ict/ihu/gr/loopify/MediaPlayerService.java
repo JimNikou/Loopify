@@ -10,11 +10,10 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.ImageButton;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
-
-import ict.ihu.gr.loopify.ui.home.HomeFragment;
 
 public class MediaPlayerService extends Service {
     public ExoPlayerManager exoPlayerManager;
@@ -22,6 +21,7 @@ public class MediaPlayerService extends Service {
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
     private boolean isTrackServing = false;
     private String currentTrack = ""; // To keep track of the currently requested track
+    public ImageButton playPauseButton;
 
     @Override
     public void onCreate() {
@@ -43,6 +43,9 @@ public class MediaPlayerService extends Service {
                         currentTrack = trackName;
                         stopCurrentTrack();  // Stop any currently playing track
                         runStartTrackServe(currentTrack, exoPlayerManager);
+                        // Broadcast an intent to show the MediaPlayer fragment
+                        Intent broadcastIntent = new Intent("SHOW_MEDIA_PLAYER");
+                        sendBroadcast(broadcastIntent);
                     }else{
                         exoPlayerManager.continuePlaying();
                     }
