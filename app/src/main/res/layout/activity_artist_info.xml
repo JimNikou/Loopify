@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/background_card"
+        android:elevation="4dp"
+        android:clipToPadding="false">
+
+        <!-- Loopify Title (Centered and with the correct font) -->
+        <TextView
+            android:id="@+id/loopifyTitleTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Loopify"
+            android:textStyle="bold"
+            android:textSize="32sp"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:letterSpacing="0.1"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:paddingBottom="5dp"/>
+        <TextView
+            android:id="@+id/loopifydescTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Artist &amp; Track Description"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:letterSpacing="0.1"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:paddingBottom="16dp"/>
+
+        <!-- Artist Name -->
+        <TextView
+            android:id="@+id/artistNameTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="24sp"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:letterSpacing="0.1"
+            android:textColor="@color/black_"
+            android:paddingBottom="8dp" />
+
+        <!-- Artist Label -->
+        <TextView
+            android:id="@+id/artistLabelTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:letterSpacing="0.05"
+            android:textColor="@color/gray"
+            android:paddingBottom="4dp" />
+
+        <!-- Artist Genre -->
+        <TextView
+            android:id="@+id/artistGenreTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:letterSpacing="0.05"
+            android:textColor="@color/gray"
+            android:paddingBottom="4dp" />
+
+        <!-- Artist Mood -->
+        <TextView
+            android:id="@+id/artistMoodTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="14sp"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:letterSpacing="0.05"
+            android:textColor="@color/gray"
+            android:paddingBottom="4dp" />
+
+        <!-- Artist Website -->
+        <TextView
+            android:id="@+id/artistWebsiteTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoLink="web"
+            android:textSize="14sp"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:letterSpacing="0.05"
+            android:textColor="@color/blue"
+            android:paddingBottom="4dp" />
+
+        <!-- Artist Biography -->
+        <TextView
+            android:id="@+id/artistBiographyTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:letterSpacing="0.1"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="4dp"
+            android:paddingTop="16dp" />
+
+        <!-- Track Info -->
+        <TextView
+            android:id="@+id/trackInfoTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:fontFamily="@font/pptelegraf_regular"
+            android:letterSpacing="0.1"
+            android:textColor="@color/black"
+            android:lineSpacingExtra="4dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp" />
+
+    </LinearLayout>
+</ScrollView>

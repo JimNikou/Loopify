@@ -43,6 +43,8 @@
             android:theme="@style/Theme.Loopify.NoActionBar"/>
 
         <service android:name=".MediaPlayerService" />
+        <activity android:name=".ArtistInfoActivity"
+            android:theme="@style/Theme.Loopify.NoActionBar"/>
     </application>
 
 </manifest>
