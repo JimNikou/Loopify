@@ -20,6 +20,7 @@ public class MediaPlayerManager extends Fragment {
     private MediaPlayer mediaPlayer;
     private static final String TAG = "MediaPlayerManager";
     private boolean isPlaying = false;
+    private ImageButton playPauseButton;
 
     @Nullable
     @Override
@@ -28,11 +29,12 @@ public class MediaPlayerManager extends Fragment {
         View view = inflater.inflate(R.layout.media_player_fragment, container, false);
 
         // ImageButton for play/pause functionality
-        ImageButton playPauseButton = view.findViewById(R.id.playPauseButton);
+        playPauseButton = view.findViewById(R.id.playPauseButton);
 
         playPauseButton.setOnClickListener(v -> {
             if (isPlaying) {
                 pauseSong();
+                playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_play_button); // Change to play icon
                 Toast.makeText(getContext(), "Song paused.", Toast.LENGTH_SHORT).show();
             } else {
                 // Example local file in raw folder, or replace with your URL
@@ -46,8 +48,10 @@ public class MediaPlayerManager extends Fragment {
         ImageButton stopButton = view.findViewById(R.id.stopButton);
         stopButton.setOnClickListener(v -> {
             stopSong();
+            playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_play_button); // Ensure the play icon is shown when stopped
             Toast.makeText(getContext(), "Song stopped.", Toast.LENGTH_SHORT).show();
         });
+
         view.bringToFront();
         view.setElevation(10);  // Set a high elevation for layering on top (adjust as needed)
         return view;
@@ -67,9 +71,13 @@ public class MediaPlayerManager extends Fragment {
             mediaPlayer.setOnPreparedListener(mp -> {
                 mediaPlayer.start(); // Start playback when the player is ready
                 isPlaying = true; // Update the state
+                playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_pause_button); // Change to pause icon
             });
 
-            mediaPlayer.setOnCompletionListener(mp -> release()); // Release resources when the song is complete
+            mediaPlayer.setOnCompletionListener(mp -> {
+                release();
+                playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_play_button); // Reset to play icon when playback completes
+            });
         } catch (IOException e) {
             Log.e(TAG, "Error playing song: " + e.getMessage());
         }
