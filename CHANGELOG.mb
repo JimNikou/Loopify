@@ -1,6 +1,6 @@
 ## Changelog
-### Version 0.0.9
+### Version 0.0.10
 
-- Merge pull request #67 from JimNikou/59-ui-bug-media-player-icon-change-from-pause-to-play
-- Bump version to 0.0.9
-End of Changelog for version 0.0.9
+- Bump version to 0.0.10
+- Update build-script.yml
+End of Changelog for version 0.0.10
