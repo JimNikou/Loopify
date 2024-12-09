@@ -1,26 +1,26 @@
 package ict.ihu.gr.loopify;
 
+import android.Manifest;
 import android.app.AlertDialog;
-
-import android.content.SharedPreferences;
-
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-
-import android.os.Looper;
 import android.provider.Settings;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -33,6 +33,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
@@ -63,26 +65,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
 import org.json.JSONObject;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.os.Build;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
 
 import java.lang.reflect.Type;
 import java.util.List;
 
 import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
-
-import android.Manifest;
-import android.content.pm.PackageManager;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 //TEST TEST TEST TEST TEST TEST TEST TEST TEST
 
@@ -198,11 +185,23 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         }
     });
 
+    final BroadcastReceiver mediaPlayerReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if ("SHOW_MEDIA_PLAYER".equals(intent.getAction())) {
+                Log.d("MainActivity", "Received broadcast to show MediaPlayerManager.");
+                loadFragment(new MediaPlayerManager());
+            }
+        }
+    };
     private Button playButton, stopButton, pauseButton, resetButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+        // Register the broadcast receiver
+        IntentFilter filter = new IntentFilter("SHOW_MEDIA_PLAYER");
+        registerReceiver(mediaPlayerReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
             ActivityResultLauncher<String> requestPermissionLauncher =
@@ -262,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
                 Log.d("MainActivity", "MediaPlayerManager fragment should now be visible.");
             }
         });
+
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         email = findViewById(R.id.emailTextView);
@@ -525,7 +525,6 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         }
     }
 
-
     public void startMusicService(String action) {
         Intent serviceIntent = new Intent(this, MediaPlayerService.class);
         serviceIntent.setAction(action);
@@ -537,7 +536,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         // Extract the song URL and start playing it
         String songUrl = extractSongUrlFromJson(jsonResponse);
         if (songUrl != null) {
-            mediaPlayerManager.playSong(Uri.parse(songUrl));
+           return;
         }
     }
 
@@ -612,6 +611,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         super.onDestroy();
         startMusicService("STOP");
         exoPlayerManager.release(); // Release MediaPlayer resources
+        unregisterReceiver(mediaPlayerReceiver);
     }
 //
     @Override
