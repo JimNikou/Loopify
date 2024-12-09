@@ -1,6 +1,6 @@
 ## Changelog
-### Version 0.0.11
+### Version 0.0.12
 
-- Bump version to 0.0.11
-- Merge remote-tracking branch 'origin/main'
-End of Changelog for version 0.0.11
+- Bump version to 0.0.12
+- Merge pull request #69 from JimNikou/68-integrate-media-player-overlay-in-search-functionality
+End of Changelog for version 0.0.12
