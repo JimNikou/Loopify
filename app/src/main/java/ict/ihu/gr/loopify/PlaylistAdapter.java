@@ -1,5 +1,8 @@
 package ict.ihu.gr.loopify.ui;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +12,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+
+import ict.ihu.gr.loopify.ApiManager;
+import ict.ihu.gr.loopify.ArtistInfoActivity;
 import ict.ihu.gr.loopify.R;
 
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder> {
@@ -31,9 +37,10 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlaylistViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PlaylistViewHolder holder, @SuppressLint("RecyclerView") int position) {
         holder.songNameTextView.setText(songNames[position]);
         holder.artistNameTextView.setText(artistNames[position]);
+        ApiManager apiManager = new ApiManager();
 
         // Use Glide to load the image from URL into the ImageView
         Glide.with(holder.songImageView.getContext())
@@ -44,11 +51,28 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
         holder.songOptionsTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Show options when clicked
-                Toast.makeText(v.getContext(), "Options clicked", Toast.LENGTH_SHORT).show();
+                apiManager.fetchArtistInfo(artistNames[position], new ApiManager.ApiResponseListener() {
+                    @Override
+                    public void onResponseReceived(String artistJsonResponse) {
+                        if (artistJsonResponse != null) {
+                            apiManager.fetchTrackInfo(songNames[position], artistNames[position], new ApiManager.ApiResponseListener() {
+                                @Override
+                                public void onResponseReceived(String trackJsonResponse) {
+                                    Intent intent = new Intent(v.getContext(), ArtistInfoActivity.class);
+                                    intent.putExtra("artistJson", artistJsonResponse);
+                                    intent.putExtra("trackJson", trackJsonResponse);
+                                    v.getContext().startActivity(intent);
+                                }
+                            });
+                        } else {
+                            Log.d("mp3song", "No artist found");
+                        }
+                    }
+                });
             }
         });
     }
+
 
     @Override
     public int getItemCount() {
