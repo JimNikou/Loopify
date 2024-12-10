@@ -1,18 +1,26 @@
 package ict.ihu.gr.loopify;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -25,6 +33,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
@@ -88,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     private LinearLayout linearLayout;
     FirebaseAuth auth;
     GoogleSignInClient googleSignInClient;
+    private static final int NOTIFICATION_PERMISSION_CODE = 1001;
 
     private EditText emailField, passwordField, displayNameField;
     private Button loginButton, signupButton;
@@ -174,11 +185,41 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         }
     });
 
+    final BroadcastReceiver mediaPlayerReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if ("SHOW_MEDIA_PLAYER".equals(intent.getAction())) {
+                Log.d("MainActivity", "Received broadcast to show MediaPlayerManager.");
+                loadFragment(new MediaPlayerManager());
+            }
+        }
+    };
     private Button playButton, stopButton, pauseButton, resetButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
+        // Register the broadcast receiver
+        IntentFilter filter = new IntentFilter("SHOW_MEDIA_PLAYER");
+        registerReceiver(mediaPlayerReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
+            ActivityResultLauncher<String> requestPermissionLauncher =
+                    registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
+                        if (isGranted) {
+                            // Permission granted
+//                            Toast.makeText(this, "Notification permission granted", Toast.LENGTH_SHORT).show();
+                        } else {
+                            // Permission denied
+                            Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+//            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+            requestNotificationPermission();
+        }
+
+
         setContentView(binding.getRoot());
 
         setSupportActionBar(binding.appBarMain.toolbar);
@@ -220,6 +261,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
                 Log.d("MainActivity", "MediaPlayerManager fragment should now be visible.");
             }
         });
+
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         email = findViewById(R.id.emailTextView);
@@ -389,7 +431,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
 //        new ApiManager().fetchTrackMBID(track, artist, this); // When this is finished it sends the jsonResponse to the onResponseReceived func
                                                                      // The listener is here because the MainActivity is the one listening
-      
+
 
         //uncomment if you want to test the functionalities
 //        playButton.setOnClickListener(v -> {
@@ -410,7 +452,6 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 //            logOut();
 //        });
 //        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
-
 
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
@@ -484,7 +525,6 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         }
     }
 
-
     public void startMusicService(String action) {
         Intent serviceIntent = new Intent(this, MediaPlayerService.class);
         serviceIntent.setAction(action);
@@ -496,7 +536,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         // Extract the song URL and start playing it
         String songUrl = extractSongUrlFromJson(jsonResponse);
         if (songUrl != null) {
-            mediaPlayerManager.playSong(Uri.parse(songUrl));
+           return;
         }
     }
 
@@ -571,6 +611,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         super.onDestroy();
         startMusicService("STOP");
         exoPlayerManager.release(); // Release MediaPlayer resources
+        unregisterReceiver(mediaPlayerReceiver);
     }
 //
     @Override
@@ -594,5 +635,137 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
             Log.d("MainActivity", "No tracks found for genre: " + genre);
         }
     }
+
+    private void requestNotificationPermission() {
+        Log.e("NOTIFICATIONSSTATUS", "INITIAL");
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Check if permission is already granted
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                // Show the custom rationale dialog first
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
+                    Log.e("NOTIFICATIONSSTATUS", "IF STATEMENT");
+
+                    // Custom rationale dialog
+                    new AlertDialog.Builder(this)
+                            .setTitle("Notification Permission")
+                            .setMessage("To allow media playback controls in your notifications, we need permission to send you notifications. Please grant this permission for the best experience.")
+                            .setPositiveButton("OK", (dialog, which) -> {
+                                // Request the permission directly after the rationale dialog is accepted
+                                requestPermissionsFromDialog();
+                            })
+//                            .setNegativeButton("Deny", (dialog, which) -> {
+//                                // Handle denial gracefully
+//                                Toast.makeText(this, "Permission denied. Notifications will be disabled.", Toast.LENGTH_SHORT).show();
+//                            })
+                            .create()
+                            .show();
+                } else {
+                    // If no rationale is needed, directly request permission
+                    Log.e("NOTIFICATIONSSTATUS", "ELSE STATEMENT");
+                    requestPermissionsFromDialog();
+                }
+            } else {
+                Log.e("NOTIFICATIONSSTATUS", "Permission already granted");
+                // Permission is already granted, you can proceed with notifications
+                enableNotifications();
+            }
+        } else {
+            Log.w("NOTIFICATIONSSTATUS", "Notification permission not required on this Android version.");
+        }
+    }
+
+    // This method handles the actual request to trigger the permission
+    private void requestPermissionsFromDialog() {
+        // Only now request the permission, this will trigger the system's standard permission dialog
+        ActivityCompat.requestPermissions(
+                this,
+                new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                NOTIFICATION_PERMISSION_CODE
+        );
+    }
+
+
+
+    // Handle the result of the permission request
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == NOTIFICATION_PERMISSION_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Log.e("NOTIFICATIONSSTATUS", "Permission granted");
+                Toast.makeText(this, "Notification permission granted!", Toast.LENGTH_SHORT).show();
+                enableNotifications();
+            } else {
+                Log.e("NOTIFICATIONSSTATUS", "Permission denied");
+
+                // Check if user has denied permanently
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
+                    Log.e("NOTIFICATIONSSTATUS", "Permission denied permanently");
+
+                    checkIfShowSettingsDialog();
+                } else {
+                    Toast.makeText(this, "Permission denied. Notifications will be disabled.", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+
+    // Show a dialog directing the user to app settings
+    private void showSettingsDialog() {
+        // Create a SharedPreferences editor to store the "Don't Show Again" flag
+        SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+
+        // Inflate the custom dialog layout
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_permission_denied, null);
+        CheckBox dontShowAgainCheckbox = dialogView.findViewById(R.id.dontShowAgainCheckbox);
+
+        // Create the dialog
+        new AlertDialog.Builder(this)
+                .setTitle("Permission Denied")
+                .setView(dialogView)  // Set the custom layout
+                .setPositiveButton("Open Settings", (dialog, which) -> {
+                    // Open app settings
+                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                    Uri uri = Uri.fromParts("package", getPackageName(), null);
+                    intent.setData(uri);
+                    startActivity(intent);
+                })
+                .setNegativeButton("Cancel", (dialog, which) -> {
+                    // If the user presses Cancel, show a toast
+                    Toast.makeText(this, "Permission not granted. Notifications remain disabled.", Toast.LENGTH_SHORT).show();
+                })
+                .setOnDismissListener(dialog -> {
+                    // If "Don't show again" is checked, save the preference
+                    if (dontShowAgainCheckbox.isChecked()) {
+                        editor.putBoolean("DontShowSettingsDialog", true);
+                        editor.apply();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    private void checkIfShowSettingsDialog() {
+        SharedPreferences sharedPreferences = getSharedPreferences("AppPreferences", MODE_PRIVATE);
+        boolean shouldShowDialog = !sharedPreferences.getBoolean("DontShowSettingsDialog", false);
+
+        if (shouldShowDialog) {
+            showSettingsDialog();
+        }
+    }
+
+
+    // Enable notifications after permission is granted
+    private void enableNotifications() {
+        // Add logic to enable notifications here
+        Log.i("NOTIFICATIONSSTATUS", "Notifications enabled successfully");
+    }
+
 
 }

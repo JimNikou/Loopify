@@ -1,17 +1,19 @@
 package ict.ihu.gr.loopify;
 
 import android.content.Context;
+import android.widget.ImageButton;
+
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
-import android.util.Log;
-import com.google.android.exoplayer2.C;
 
 public class ExoPlayerManager {
     private ExoPlayer exoPlayer;
     private boolean isMediaLoaded = false; // To check if the media has been loaded
     private DurationListener durationListener;
     private long storedDuration = C.TIME_UNSET;
+    public ImageButton playPauseButton;
 
     // Initialize ExoPlayer with the application context
     public ExoPlayerManager(Context context) {
@@ -84,6 +86,7 @@ public class ExoPlayerManager {
     public void playSong(String url) {
         if (exoPlayer.isPlaying()) {
             // If already playing, do nothing or continue
+
             return;
         }
 
@@ -118,6 +121,7 @@ public class ExoPlayerManager {
     public void pauseSong() {
         if (exoPlayer.isPlaying()) {
             exoPlayer.pause();
+
         }
     }
 
@@ -133,6 +137,7 @@ public class ExoPlayerManager {
         if (exoPlayer != null) {
             exoPlayer.stop();
             isMediaLoaded = false; // Mark that the media has been unloaded
+
         }
     }
 

@@ -44,10 +44,12 @@
         <activity android:name=".PlaylistActivity"
             android:theme="@style/Theme.Loopify.NoActionBar"/>
 
+
         <service
             android:name=".MediaPlayerService"
             android:exported="false"
             android:foregroundServiceType="mediaPlayback" />
+
 
     </application>
 
