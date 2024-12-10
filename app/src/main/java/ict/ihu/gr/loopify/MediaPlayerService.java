@@ -158,14 +158,18 @@ public class MediaPlayerService extends Service {
     }
 
     private Notification getNotification() {
+        // Create the Play Intent with the current track details
         Intent playIntent = new Intent(this, MediaPlayerService.class);
         playIntent.setAction("PLAY");
+        playIntent.putExtra("TRACK_NAME", currentTrack); // Add the track name
         PendingIntent playPendingIntent = PendingIntent.getService(this, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
+        // Create the Pause Intent
         Intent pauseIntent = new Intent(this, MediaPlayerService.class);
         pauseIntent.setAction("PAUSE");
         PendingIntent pausePendingIntent = PendingIntent.getService(this, 1, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
+        // Determine the action based on the playback state
         NotificationCompat.Action action;
         if (isPlaying) {
             action = new NotificationCompat.Action(R.drawable.pause_svgrepo_com, "Pause", pausePendingIntent);
@@ -173,6 +177,7 @@ public class MediaPlayerService extends Service {
             action = new NotificationCompat.Action(R.drawable.play_svgrepo_com, "Play", playPendingIntent);
         }
 
+        // Build the notification
         return new NotificationCompat.Builder(this, "MEDIA_CHANNEL_ID")
                 .setSmallIcon(R.drawable.music_note)
                 .setContentTitle(currentTrack)
@@ -182,6 +187,7 @@ public class MediaPlayerService extends Service {
                 .addAction(action)
                 .build();
     }
+
 
     @Nullable
     @Override
