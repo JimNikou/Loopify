@@ -58,33 +58,6 @@ public class SearchFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View root = inflater.inflate(R.layout.fragment_search, container, false);
-
-        // Load the saved theme
-        SharedPreferences preferences = requireContext().getSharedPreferences("app_settings", Context.MODE_PRIVATE);
-        String theme = preferences.getString("app_theme", "default");
-
-        // Set the background based on the theme
-        int backgroundResource;
-        switch (theme) {
-            case "aquamarine":
-                backgroundResource = R.drawable.background_aquamarine;
-                break;
-            case "beige":
-                backgroundResource = R.drawable.background_beige;
-                break;
-            case "gold":
-                backgroundResource = R.drawable.background_gold;
-                break;
-            case "ink":
-                backgroundResource = R.drawable.background_ink;
-                break;
-            default:
-                backgroundResource = R.drawable.background;
-        }
-
-        // Set the background resource to the root view
-        root.setBackgroundResource(backgroundResource);
-
         return root;
     }
 }

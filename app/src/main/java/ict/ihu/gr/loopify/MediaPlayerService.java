@@ -11,7 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 public class MediaPlayerService extends Service {
-// temp
+
     private ExoPlayerManager exoPlayerManager;
     private boolean isPlaying = false; // Track the state of playback
 

@@ -41,32 +41,6 @@ public class HomeFragment extends Fragment {
         binding = FragmentHomeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();  // Get the root view for this fragment
 
-        // Load the saved theme
-        SharedPreferences preferences = requireContext().getSharedPreferences("app_settings", Context.MODE_PRIVATE);
-        String theme = preferences.getString("app_theme", "default");
-
-        // Set the background based on the theme
-        int backgroundResource;
-        switch (theme) {
-            case "aquamarine":
-                backgroundResource = R.drawable.background_aquamarine;
-                break;
-            case "beige":
-                backgroundResource = R.drawable.background_beige;
-                break;
-            case "gold":
-                backgroundResource = R.drawable.background_gold;
-                break;
-            case "ink":
-                backgroundResource = R.drawable.background_ink;
-                break;
-            default:
-                backgroundResource = R.drawable.background;
-        }
-
-        // Set the background resource to the root view or any specific view you want
-        root.setBackgroundResource(backgroundResource);  // Use root view here
-
 
 
 
@@ -80,7 +54,6 @@ public class HomeFragment extends Fragment {
         }
 
         // Call the setGreetingText method to update the greeting
-        setGreetingText();
 //        exoPlayerManager = new ExoPlayerManager(requireContext());
 //        playButton = root.findViewById(R.id.playButton); //uncomment if you want to test the functionalities
 //        stopButton = root.findViewById(R.id.stopButton);
@@ -98,36 +71,6 @@ public class HomeFragment extends Fragment {
         return root;
     }
 
-    @SuppressLint("SetTextI18n")
-    private void setGreetingText() {
-        // Get the TextView inside the black bar (greeting_text)
-        TextView greetingText = binding.greetingText;
-        Typeface customFont = ResourcesCompat.getFont(getContext(), R.font.pptelegraf_ultrabold);
-
-        // Get the current time in hours
-        SimpleDateFormat sdf = new SimpleDateFormat("HH", Locale.getDefault());
-        int currentHour = Integer.parseInt(sdf.format(new Date()));
-
-        // Get the user's name (replace "Giannis" with dynamic data if available)
-        String userName = "Giannis";
-
-        // Determine the appropriate greeting message
-        String greeting;
-        if (currentHour >= 5 && currentHour < 12) {
-            greeting = getString(R.string.greeting_morning, userName);
-        } else if (currentHour >= 12 && currentHour < 18) {
-            greeting = getString(R.string.greeting_afternoon, userName);
-        } else if (currentHour >= 18 && currentHour <= 23) {
-            greeting = getString(R.string.greeting_evening, userName);
-        } else {
-            greeting = getString(R.string.greeting_night, userName);
-        }
-
-        // Apply the greeting message
-        greetingText.setText(greeting);
-        greetingText.setTextSize(20);
-        greetingText.setTypeface(customFont);
-    }
 
 
 
