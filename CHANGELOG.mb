@@ -1,6 +1,6 @@
 ## Changelog
-### Version 0.0.12
+### Version 0.0.13
 
-- Bump version to 0.0.12
-- Merge pull request #69 from JimNikou/68-integrate-media-player-overlay-in-search-functionality
-End of Changelog for version 0.0.12
+- Bump version to 0.0.13
+- Merge pull request #70 from JimNikou/63-implement-song-search
+End of Changelog for version 0.0.13
