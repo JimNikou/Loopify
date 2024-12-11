@@ -1,6 +1,6 @@
 ## Changelog
-### Version 0.0.13
+### Version 0.0.14
 
-- Bump version to 0.0.13
-- Merge pull request #70 from JimNikou/63-implement-song-search
-End of Changelog for version 0.0.13
+- Bump version to 0.0.14
+- Merge pull request #72 from JimNikou/71-remove-open-media-player-button-from-ui
+End of Changelog for version 0.0.14
