@@ -32,13 +32,23 @@ public class MediaPlayerService extends Service {
     @SuppressLint("ForegroundServiceType")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        String action = intent.getAction();
+        // Validate intent and action
+        if (intent == null || intent.getAction() == null) {
+            stopSelf();
+            return START_NOT_STICKY;
+        }
 
-        if (action != null) {
-            switch (action) {
-                case "PLAY":
-                    String trackName = SearchFragment.getInstance().getData();
-                    // Check if a different song is requested to avoid re-triggering the same one
+        // Create and display the notification
+        startForeground(1, getNotification());
+
+        // Handle actions like PLAY, PAUSE, STOP
+        String action = intent.getAction();
+        switch (action) {
+            case "PLAY":
+                String trackName = intent.getStringExtra("TRACK_NAME");
+                if (trackName != null) {
+                    Log.d("MediaPlayerService", "PLAY action received for track: " + trackName);
+
                     if (!trackName.equals(currentTrack)) {
                         currentTrack = trackName;
                         stopCurrentTrack();  // Stop any currently playing track
@@ -47,25 +57,34 @@ public class MediaPlayerService extends Service {
                         Intent broadcastIntent = new Intent("SHOW_MEDIA_PLAYER");
                         sendBroadcast(broadcastIntent);
                     }else{
+
                         exoPlayerManager.continuePlaying();
+                        Log.d("MediaPlayerService", "Resumed playing: " + currentTrack);
                     }
                     isPlaying = true;
-                    updateNotification();
-                    break;
-                case "PAUSE":
-                    exoPlayerManager.pauseSong();
-                    isPlaying = false;
-                    updateNotification();
-                    break;
-                case "STOP":
-                    stopSelf();
-                    return START_NOT_STICKY;
-            }
+                } else {
+                    Log.e("MediaPlayerService", "TRACK_NAME extra is missing in the PLAY action");
+                }
+                updateNotification();
+                break;
+
+            case "PAUSE":
+                exoPlayerManager.pauseSong();
+                isPlaying = false;
+                Log.d("MediaPlayerService", "Playback paused");
+                updateNotification();
+                break;
+
+            case "STOP":
+                Log.d("MediaPlayerService", "Stopping service");
+                stopSelf();
+                return START_NOT_STICKY;
         }
 
-        startForeground(1, getNotification());
         return START_STICKY;
     }
+
+
 
     private void stopCurrentTrack() {
         if (exoPlayerManager != null && isPlaying) {
@@ -143,14 +162,18 @@ public class MediaPlayerService extends Service {
     }
 
     private Notification getNotification() {
+        // Create the Play Intent with the current track details
         Intent playIntent = new Intent(this, MediaPlayerService.class);
         playIntent.setAction("PLAY");
+        playIntent.putExtra("TRACK_NAME", currentTrack); // Add the track name
         PendingIntent playPendingIntent = PendingIntent.getService(this, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
+        // Create the Pause Intent
         Intent pauseIntent = new Intent(this, MediaPlayerService.class);
         pauseIntent.setAction("PAUSE");
         PendingIntent pausePendingIntent = PendingIntent.getService(this, 1, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
+        // Determine the action based on the playback state
         NotificationCompat.Action action;
         if (isPlaying) {
             action = new NotificationCompat.Action(R.drawable.pause_svgrepo_com, "Pause", pausePendingIntent);
@@ -158,6 +181,7 @@ public class MediaPlayerService extends Service {
             action = new NotificationCompat.Action(R.drawable.play_svgrepo_com, "Play", playPendingIntent);
         }
 
+        // Build the notification
         return new NotificationCompat.Builder(this, "MEDIA_CHANNEL_ID")
                 .setSmallIcon(R.drawable.music_note)
                 .setContentTitle(currentTrack)
@@ -167,6 +191,7 @@ public class MediaPlayerService extends Service {
                 .addAction(action)
                 .build();
     }
+
 
     @Nullable
     @Override

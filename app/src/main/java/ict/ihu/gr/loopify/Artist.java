@@ -4,6 +4,10 @@ package ict.ihu.gr.loopify;
 public class Artist {
     private String name;  // Artist name
 
+    public Artist(String name) {
+        this.name = name;
+    }
+
     // Getter
     public String getName() {
         return name;

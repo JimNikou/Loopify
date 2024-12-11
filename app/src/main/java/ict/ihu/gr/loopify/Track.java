@@ -9,17 +9,26 @@ public class Track {
     private ict.ihu.gr.loopify.Artist artist;  // Artist object
     private List<ict.ihu.gr.loopify.Image> image;  // List of image objects
 
-    // Getters
+
     public String getName() {
         return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public Artist getArtist() {
         return artist;
     }
 
+    public void setArtist(Artist artist) {
+        this.artist = artist;
+    }
+
     public List<Image> getImage() {
         return image;
     }
+
 }
 
