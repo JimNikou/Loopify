@@ -58,19 +58,26 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
                             apiManager.fetchTrackInfo(songNames[position], artistNames[position], new ApiManager.ApiResponseListener() {
                                 @Override
                                 public void onResponseReceived(String trackJsonResponse) {
-                                    Intent intent = new Intent(v.getContext(), ArtistInfoActivity.class);
-                                    intent.putExtra("artistJson", artistJsonResponse);
-                                    intent.putExtra("trackJson", trackJsonResponse);
-                                    v.getContext().startActivity(intent);
+                                    if (trackJsonResponse != null) {
+                                        Intent intent = new Intent(v.getContext(), ArtistInfoActivity.class);
+                                        intent.putExtra("artistJson", artistJsonResponse);
+                                        intent.putExtra("trackJson", trackJsonResponse);
+                                        v.getContext().startActivity(intent);
+                                    } else {
+                                        Log.e("ApiError", "Track response is null");
+                                        Toast.makeText(v.getContext(), "Failed to fetch track info", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             });
                         } else {
-                            Log.d("mp3song", "No artist found");
+                            Log.e("ApiError", "Artist response is null");
+                            Toast.makeText(v.getContext(), "Failed to fetch artist info", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
             }
         });
+
     }
 
 
