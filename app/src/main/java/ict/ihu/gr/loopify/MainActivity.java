@@ -250,18 +250,6 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         // Initialize TrackManager
         trackManager = new TrackManager();
 
-        mediaPlayerManager = new MediaPlayerManager();
-
-        Button openMediaPlayerButton = findViewById(R.id.open_media_player_button);
-        openMediaPlayerButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("MainActivity", "Button clicked, trying to load MediaPlayerManager");
-                loadFragment(new MediaPlayerManager());
-                Log.d("MainActivity", "MediaPlayerManager fragment should now be visible.");
-            }
-        });
-
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         email = findViewById(R.id.emailTextView);
