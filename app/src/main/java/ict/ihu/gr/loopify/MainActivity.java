@@ -26,12 +26,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-import com.google.android.material.navigation.NavigationView;
-import androidx.appcompat.app.ActionBarDrawerToggle;
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -112,6 +107,8 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
     // Declare a FirebaseUser to handle the current user
     private FirebaseUser currentUser;
+    private MiniPlayerManager miniPlayerManager;
+
     // After email/password login, if displayName is null, show a dialog
     private void updateDisplayName(String displayName) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -219,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         IntentFilter filter = new IntentFilter("SHOW_MEDIA_PLAYER");
         registerReceiver(mediaPlayerReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
 
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
             ActivityResultLauncher<String> requestPermissionLauncher =
                     registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -237,6 +235,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
 
         setContentView(binding.getRoot());
+        miniPlayerManager = new MiniPlayerManager(this);
 
         boolean isTestMode = getIntent().getBooleanExtra("TEST_MODE", false);
         if (isTestMode) {
@@ -625,6 +624,9 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         startMusicService("STOP");
         exoPlayerManager.release(); // Release MediaPlayer resources
         unregisterReceiver(mediaPlayerReceiver);
+        if (miniPlayerManager != null) {
+            miniPlayerManager.onDestroy();
+        }
     }
 //
     @Override
