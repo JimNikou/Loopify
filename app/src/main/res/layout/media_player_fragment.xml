@@ -163,6 +163,16 @@
                 android:background="?android:selectableItemBackground"
                 app:tint="#FFFFFF"
                 android:contentDescription="Repeat" />
+            <ImageButton
+                android:id="@+id/likeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:src="@drawable/heartlikedsongsemptyicon"
+                android:background="?android:selectableItemBackground"
+                android:contentDescription="Like/Unlike track"
+                app:tint="#FFFFFF" />
+
         </LinearLayout>
     </LinearLayout>
 
