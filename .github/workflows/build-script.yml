@@ -33,8 +33,11 @@ jobs:
         run: chmod +x ./gradlew
 
       # Run Instrumented Tests
-      - name: Run Instrumented Tests
-        run: ./gradlew connectedAndroidTest --stacktrace
+      - name: Instrumented Tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          script: ./gradlew connectedAndroidTest --stacktrace
         
       # Build APK
       - name: Build APK
