@@ -32,6 +32,21 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
+      - name: Start Emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 29
+          target: default
+          arch: x86_64
+          profile: Nexus_5X
+          emulator-options: -no-snapshot -noaudio -no-window
+          script: |
+            adb wait-for-device
+            adb shell svc wifi enable # Enable Wi-Fi
+            adb shell am start -n com.android.settings/.wifi.WifiSettings
+            adb shell input keyevent 4 # Go back from Wi-Fi settings if needed
+
+
       # Run Instrumented Tests
       - name: Instrumented Tests
         uses: reactivecircus/android-emulator-runner@v2
