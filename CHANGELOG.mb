@@ -1,6 +1,6 @@
 ## Changelog
-### Version 0.0.15
+### Version 0.0.16
 
-- Bump version to 0.0.15
-- fix: fixed the artist layout from crashing the application
-End of Changelog for version 0.0.15
+- Bump version to 0.0.16
+- Update build-script.yml
+End of Changelog for version 0.0.16
