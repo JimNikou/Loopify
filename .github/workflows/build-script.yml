@@ -33,19 +33,11 @@ jobs:
         run: chmod +x ./gradlew
 
       #=-=-=-=-=-=-=-=-=-=-=-
-      # # Set up Emulator
-      # - name: Start Emulator
-      #   uses: reactivecircus/android-emulator-runner@v2
-      #   with:
-      #     api-level: 30 # API level for emulator
-      #     target: default
-      #     arch: x86_64
-      #     profile: Nexus 6
-      #     emulator-options: "-no-window -gpu off"
-      #     script: adb shell input keyevent 82 # Unlock the emulator screen
-          
-      # - name: Run Android Tests
-      #   run: ./gradlew connectedDebugAndroidTest
+      - name: Instrumented Tests
+        uses: ReactiveCircus/android-emulator-runner@v2.33.0
+        with:
+          api-level: 29
+          script: ./gradlew connectedDebugAndroidTest
       #=-=-=-=-=-=-=-=-=-=-=-
         
       # Build APK
