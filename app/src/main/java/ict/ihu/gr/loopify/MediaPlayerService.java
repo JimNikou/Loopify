@@ -2,7 +2,6 @@ package ict.ihu.gr.loopify;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -11,6 +10,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
 import android.widget.ImageButton;
+import android.widget.RemoteViews;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
@@ -27,6 +27,7 @@ public class MediaPlayerService extends Service {
     private long cachedDuration = -1;
     private String cachedTitle = null;
     private String cachedArtist = null;
+    private boolean metadataNotified = false; // Ensure we only notify once after we have metadata
 
     // Handler and Runnable to update track position periodically
     private Handler positionHandler = new Handler(Looper.getMainLooper());
@@ -36,6 +37,10 @@ public class MediaPlayerService extends Service {
             if (exoPlayerManager != null && isPlaying) {
                 long currentPosition = exoPlayerManager.getCurrentPosition();
                 notifyPlaybackPosition(currentPosition);
+                // Also update the notification with current playback position
+                if (metadataNotified && cachedTitle != null && cachedArtist != null && cachedDuration > 0) {
+                    updateNotification(cachedTitle, cachedArtist, cachedDuration, currentPosition, isPlaying);
+                }
             }
             positionHandler.postDelayed(this, 1000); // Update every 1 second
         }
@@ -62,7 +67,6 @@ public class MediaPlayerService extends Service {
             return START_NOT_STICKY;
         }
 
-        startForeground(1, getNotification());
         String action = intent.getAction();
 
         switch (action) {
@@ -89,16 +93,22 @@ public class MediaPlayerService extends Service {
                     Log.d("MediaPlayerService", "Resumed playing: " + currentTrack);
                 }
                 isPlaying = true;
-                updateNotification();
                 notifyCurrentTrack();
+                // If we already have metadata, update notification now
+                if (metadataNotified && cachedTitle != null && cachedArtist != null && cachedDuration > 0) {
+                    updateNotification(cachedTitle, cachedArtist, cachedDuration, exoPlayerManager.getCurrentPosition(), isPlaying);
+                }
                 break;
 
             case "PAUSE":
                 exoPlayerManager.pauseSong();
                 isPlaying = false;
                 Log.d("MediaPlayerService", "Playback paused");
-                updateNotification();
                 notifyCurrentTrack();
+                // Update notification to reflect paused state
+                if (metadataNotified && cachedTitle != null && cachedArtist != null && cachedDuration > 0) {
+                    updateNotification(cachedTitle, cachedArtist, cachedDuration, exoPlayerManager.getCurrentPosition(), isPlaying);
+                }
                 break;
 
             case "SEEK":
@@ -129,6 +139,12 @@ public class MediaPlayerService extends Service {
         metadataIntent.putExtra("TITLE", title);
         metadataIntent.putExtra("ARTIST", artist);
         sendBroadcast(metadataIntent);
+
+        // Also start/refresh the notification as soon as we have metadata
+        updateNotification(title, artist, duration, exoPlayerManager.getCurrentPosition(), isPlaying);
+        // Start foreground now that we have a meaningful notification
+        // Make sure you have created the notification channel "MEDIA_CHANNEL_ID" beforehand
+        startForeground(1, createNotification(title, artist, duration, exoPlayerManager.getCurrentPosition(), isPlaying));
     }
 
     private void notifyPlaybackPosition(long position) {
@@ -194,8 +210,6 @@ public class MediaPlayerService extends Service {
         });
     }
 
-    private boolean metadataNotified = false; // Added flag to ensure single metadata notification
-
     private void playTrack(String matchedTitle, ExoPlayerManager exo) {
         String completeUrl = "http://loopify.ddnsgeek.com:20080/downloads/" + matchedTitle.trim() + ".mp3";
         Log.d("ApiManager", "Playing track: " + completeUrl);
@@ -225,8 +239,7 @@ public class MediaPlayerService extends Service {
                     apiManager.fetchTrackInfo(trackName, derivedArtistName, trackInfoJson -> {
                         if (metadataNotified) return;
 
-                        String finalArtist = derivedArtistName; // This can be reassigned here because finalArtist is a new variable inside this lambda
-
+                        String finalArtist = derivedArtistName;
                         if (trackInfoJson != null && trackInfoJson.contains("\"track\"")) {
                             try {
                                 org.json.JSONObject jsonObject = new org.json.JSONObject(trackInfoJson);
@@ -241,7 +254,6 @@ public class MediaPlayerService extends Service {
                                 e.printStackTrace();
                                 // fallback if parsing fails
                                 if (!isArtistNameValid(derivedArtistName)) {
-                                    // Since derivedArtistName is final, we can't reassign it, but we can reassign finalArtist
                                     finalArtist = "Unknown Artist";
                                 } else {
                                     finalArtist = derivedArtistName;
@@ -264,19 +276,14 @@ public class MediaPlayerService extends Service {
                 }
             });
 
-
             startPositionUpdates();
         });
     }
 
     private boolean isArtistNameValid(String artistName) {
-        // If it looks like a URL or JSON, consider it invalid
         if (artistName == null) return false;
         String lower = artistName.toLowerCase();
-        if (lower.contains("http") || lower.contains("{\"message\"")) {
-            return false;
-        }
-        return true;
+        return !(lower.contains("http") || lower.contains("{\"message\""));
     }
 
     private void tryNotifyMetadata() {
@@ -287,43 +294,72 @@ public class MediaPlayerService extends Service {
         }
     }
 
-
     private void startPositionUpdates() {
         positionHandler.post(positionUpdateRunnable);
     }
 
-    private void updateNotification() {
-        Notification notification = getNotification();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notificationManager.notify(1, notification);
+    private RemoteViews createNotificationViews(String title, String artist, long duration, long currentPosition, boolean isPlaying) {
+        RemoteViews views = new RemoteViews(getPackageName(), R.layout.custom_notification_media_player);
+
+        views.setTextViewText(R.id.notif_track_title, title);
+        views.setTextViewText(R.id.notif_artist_name, artist);
+        views.setTextViewText(R.id.notif_current_time, formatTime(currentPosition));
+        views.setTextViewText(R.id.notif_total_duration, formatTime(duration));
+
+        int max = (int)(duration/1000);
+        int progress = (int)(currentPosition/1000);
+
+        // Update progress bar
+        views.setInt(R.id.notif_progress_bar, "setMax", max);
+        views.setInt(R.id.notif_progress_bar, "setProgress", progress);
+
+        // Play/Pause icon
+        views.setImageViewResource(R.id.notif_play_pause_button,
+                isPlaying ? R.drawable.ic_fullscreen_media_player_pause_button
+                        : R.drawable.ic_fullscreen_media_player_play_button);
+
+        // PendingIntents for buttons
+        PendingIntent playPauseIntent = createPendingIntent(isPlaying ? "PAUSE" : "PLAY");
+        views.setOnClickPendingIntent(R.id.notif_play_pause_button, playPauseIntent);
+
+        PendingIntent nextIntent = createPendingIntent("NEXT");
+        views.setOnClickPendingIntent(R.id.notif_next_button, nextIntent);
+
+        PendingIntent previousIntent = createPendingIntent("PREVIOUS");
+        views.setOnClickPendingIntent(R.id.notif_previous_button, previousIntent);
+
+        return views;
     }
 
-    private Notification getNotification() {
-        Intent playIntent = new Intent(this, MediaPlayerService.class);
-        playIntent.setAction("PLAY");
-        if (currentTrack == null || currentTrack.isEmpty()) {
-            currentTrack = "Default Track Name";
-        }
-        playIntent.putExtra("TRACK_NAME", currentTrack);
+    private PendingIntent createPendingIntent(String action) {
+        Intent intent = new Intent(this, MediaPlayerService.class);
+        intent.setAction(action);
+        return PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+    }
 
-        PendingIntent playPendingIntent = PendingIntent.getService(this, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
+    private String formatTime(long milliseconds) {
+        int totalSeconds = (int) (milliseconds / 1000);
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+        return String.format("%d:%02d", minutes, seconds);
+    }
 
-        Intent pauseIntent = new Intent(this, MediaPlayerService.class);
-        pauseIntent.setAction("PAUSE");
-        PendingIntent pausePendingIntent = PendingIntent.getService(this, 1, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
-
-        NotificationCompat.Action action = isPlaying ?
-                new NotificationCompat.Action(R.drawable.pause_svgrepo_com, "Pause", pausePendingIntent) :
-                new NotificationCompat.Action(R.drawable.play_svgrepo_com, "Play", playPendingIntent);
+    private Notification createNotification(String title, String artist, long duration, long currentPosition, boolean isPlaying) {
+        RemoteViews views = createNotificationViews(title, artist, duration, currentPosition, isPlaying);
 
         return new NotificationCompat.Builder(this, "MEDIA_CHANNEL_ID")
                 .setSmallIcon(R.drawable.music_note)
-                .setContentTitle(currentTrack)
-                .setContentText(isPlaying ? "Playing music..." : "Music paused")
+                .setCustomContentView(views)
+                .setCustomBigContentView(views) // expanded look same as collapsed
+                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle())
                 .setPriority(NotificationCompat.PRIORITY_LOW)
-                .setStyle(new androidx.media.app.NotificationCompat.MediaStyle().setShowActionsInCompactView(0))
-                .addAction(action)
+                .setOngoing(true)
                 .build();
+    }
+
+    private void updateNotification(String title, String artist, long duration, long currentPosition, boolean isPlaying) {
+        Notification notification = createNotification(title, artist, duration, currentPosition, isPlaying);
+        startForeground(1, notification);
     }
 
     @Nullable
