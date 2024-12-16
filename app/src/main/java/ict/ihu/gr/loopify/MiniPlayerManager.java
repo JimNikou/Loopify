@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.fragment.app.FragmentActivity;
@@ -16,11 +17,15 @@ public class MiniPlayerManager {
     private final ImageView albumArt;
     private final TextView trackTitle;
     private final TextView artistName;
+    private final TextView miniPlayerCurrentTime;
+    private final TextView miniPlayerTotalDuration;
     private final ImageButton playPauseButton, nextButton, previousButton, stopButton;
+    private final SeekBar miniPlayerSeekBar;
 
     private boolean isPlaying = false;
     private String currentTrack = "";
     private String currentArtist = "";
+    private long totalDurationMs = -1; // Store total duration to help with progress updates
 
     private final Context context;
 
@@ -30,13 +35,41 @@ public class MiniPlayerManager {
         albumArt = activity.findViewById(R.id.miniPlayerAlbumArt);
         trackTitle = activity.findViewById(R.id.miniPlayerTrackTitle);
         artistName = activity.findViewById(R.id.miniPlayerArtistName);
+        miniPlayerCurrentTime = activity.findViewById(R.id.miniPlayerCurrentTime);
+        miniPlayerTotalDuration = activity.findViewById(R.id.miniPlayerTotalDuration);
         previousButton = activity.findViewById(R.id.miniPlayerPreviousButton);
         playPauseButton = activity.findViewById(R.id.miniPlayerPlayPauseButton);
         nextButton = activity.findViewById(R.id.miniPlayerNextButton);
         stopButton = activity.findViewById(R.id.miniPlayerStopButton);
+        miniPlayerSeekBar = activity.findViewById(R.id.miniPlayerSeekBar);
 
         setupListeners();
         registerReceivers();
+
+        miniPlayerSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            boolean userIsSeeking = false;
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // If user is dragging the seekbar, you could update the miniPlayerCurrentTime here
+                // But only if fromUser is true and you want live feedback
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                userIsSeeking = true;
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                userIsSeeking = false;
+                int newPositionMs = seekBar.getProgress() * 1000; // Convert seconds to ms
+                Intent seekIntent = new Intent(context, MediaPlayerService.class);
+                seekIntent.setAction("SEEK");
+                seekIntent.putExtra("NEW_POSITION", newPositionMs);
+                context.startService(seekIntent);
+            }
+        });
     }
 
     private void setupListeners() {
@@ -55,19 +88,17 @@ public class MiniPlayerManager {
             context.startService(stopIntent);
         });
 
-        // Previous and Next actions (if implemented in your service)
+        // Implement PREVIOUS and NEXT if your service supports these actions
         previousButton.setOnClickListener(v -> {
-            // Implement PREVIOUS action logic, if available
+            // Example: send a PREVIOUS action to the service if implemented
         });
 
         nextButton.setOnClickListener(v -> {
-            // Implement NEXT action logic, if available
+            // Example: send a NEXT action to the service if implemented
         });
 
         // Tapping on mini player container could reopen full player
         miniPlayerContainer.setOnClickListener(v -> {
-            // Reopen the full MediaPlayerManager fragment if desired
-            // Example:
             // ((MainActivity)context).loadFragment(new MediaPlayerManager());
         });
     }
@@ -79,12 +110,11 @@ public class MiniPlayerManager {
         // Metadata receiver
         context.registerReceiver(metadataReceiver, new IntentFilter("CURRENT_TRACK_METADATA"), Context.RECEIVER_NOT_EXPORTED);
 
-        // Position updates (optional if you want to show current time on mini player)
-        // If you want to display current progress, add a TextView and listen to this broadcast as well.
+        // Position updates
         context.registerReceiver(positionReceiver, new IntentFilter("CURRENT_TRACK_POSITION"), Context.RECEIVER_NOT_EXPORTED);
     }
 
-    // Receivers
+    // Track Info Receiver
     private final BroadcastReceiver trackInfoReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -101,6 +131,7 @@ public class MiniPlayerManager {
         }
     };
 
+    // Metadata Receiver
     private final BroadcastReceiver metadataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -113,22 +144,29 @@ public class MiniPlayerManager {
                 artistName.setText(artist);
                 currentArtist = artist;
 
-                // If you have album art URL or resource, update albumArt here
+                totalDurationMs = duration;
+                miniPlayerTotalDuration.setText(formatTime(duration));
+                miniPlayerSeekBar.setMax((int)(duration / 1000)); // Set SeekBar max in seconds
 
                 showMiniPlayerIfNeeded();
             }
         }
     };
 
+    // Position Receiver
     private final BroadcastReceiver positionReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            // If you add a TextView for current time in the mini player, you can update it here.
+            if (intent.hasExtra("POSITION")) {
+                long position = intent.getLongExtra("POSITION", 0);
+                miniPlayerCurrentTime.setText(formatTime(position));
+                // Update SeekBar progress based on position (in seconds)
+                miniPlayerSeekBar.setProgress((int) (position / 1000));
+            }
         }
     };
 
     private void showMiniPlayerIfNeeded() {
-        // Show the mini player if there's a current track playing or paused
         if ((currentTrack != null && !currentTrack.isEmpty())) {
             miniPlayerContainer.setVisibility(View.VISIBLE);
         }
@@ -138,5 +176,12 @@ public class MiniPlayerManager {
         context.unregisterReceiver(trackInfoReceiver);
         context.unregisterReceiver(metadataReceiver);
         context.unregisterReceiver(positionReceiver);
+    }
+
+    private String formatTime(long milliseconds) {
+        int totalSeconds = (int) (milliseconds / 1000);
+        int minutes = totalSeconds / 60;
+        int seconds = totalSeconds % 60;
+        return String.format("%d:%02d", minutes, seconds);
     }
 }
