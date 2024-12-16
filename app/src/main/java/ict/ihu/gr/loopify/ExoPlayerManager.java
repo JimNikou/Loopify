@@ -26,12 +26,9 @@ public class ExoPlayerManager {
                 if (playbackState == Player.STATE_READY) {
                     isMediaLoaded = true;
                     storedDuration = exoPlayer.getDuration();
-
-                    // Trigger listener if set, and log the duration
                     if (durationListener != null) {
                         durationListener.onDurationReady(formatDuration(storedDuration));
                     }
-//                    Log.d("ExoPlayerManager", "Song Duration: " + formatDuration(storedDuration));
                 }
             }
         });
@@ -41,11 +38,23 @@ public class ExoPlayerManager {
     public interface DurationListener {
         void onDurationReady(String duration);
     }
+    public void seekTo(long positionMs) {
+        if (exoPlayer != null && isMediaLoaded && positionMs >= 0) {
+            exoPlayer.seekTo(positionMs);
+        }
+    }
+
+    public void setDurationListener(DurationListener listener) {
+        this.durationListener = listener;
+    }
+
     public String getStoredDuration() {
         return formatDuration(storedDuration);
     }
+
+    // Convert a duration in milliseconds to a "m:ss" format string
     private String formatDuration(long durationMs) {
-        if (durationMs == C.TIME_UNSET) {
+        if (durationMs == C.TIME_UNSET || durationMs < 0) {
             return "Duration not available";
         } else {
             long minutes = (durationMs / 1000) / 60;
@@ -54,74 +63,57 @@ public class ExoPlayerManager {
         }
     }
 
-    public void setDurationListener(DurationListener listener) {
-        this.durationListener = listener;
-    }
-    // Method to get the duration of the currently loaded song
-    public String getSongDuration() {
-        if (isMediaLoaded) {
+    // Method to get the duration of the currently loaded song in milliseconds.
+    // Returns -1 if no media is loaded or duration is unset.
+    public long getSongDuration() {
+        if (isMediaLoaded && exoPlayer != null) {
             long durationMs = exoPlayer.getDuration();
-            if (durationMs == C.TIME_UNSET) {  // Corrected here
-                return "Duration not available";
+            if (durationMs == C.TIME_UNSET) {
+                return -1; // Duration not available
             } else {
-                // Convert milliseconds to minutes and seconds
-                long minutes = (durationMs / 1000) / 60;
-                long seconds = (durationMs / 1000) % 60;
-                return String.format("%d:%02d", minutes, seconds); // Format as "minutes:seconds"
+                return durationMs;
             }
         } else {
-            return "No media loaded";
+            return -1; // No media loaded
         }
     }
 
     // Check if the player is actively playing
     public boolean isPlaying() {
-        return exoPlayer.isPlaying();
+        return exoPlayer != null && exoPlayer.isPlaying();
     }
 
-    public void continuePlaying(){
-        exoPlayer.play();
-    }
-    // Prepare and play the song, or resume if already loaded
-    public void playSong(String url) {
-        if (exoPlayer.isPlaying()) {
-            // If already playing, do nothing or continue
-
-            return;
+    public void continuePlaying() {
+        if (exoPlayer != null) {
+            exoPlayer.play();
         }
+    }
+
+    public long getCurrentPosition() {
+        if (exoPlayer != null) {
+            return exoPlayer.getCurrentPosition();
+        }
+        return 0;
+    }
+
+    public void playSong(String url) {
+        if (exoPlayer == null) return;
 
         if (!isMediaLoaded) {
-            // Only load the media if it hasn't been loaded yet
             MediaItem mediaItem = MediaItem.fromUri(url);
             exoPlayer.setMediaItem(mediaItem);
-            exoPlayer.prepare(); // Prepare the player (loads and buffers the media)
-
-            exoPlayer.addListener(new Player.Listener() {
-                @Override
-                public void onPlaybackStateChanged(int playbackState) {
-                    if (playbackState == Player.STATE_READY) {  // Media is ready to play
-                        isMediaLoaded = true; // Update loaded state
-                        if (durationListener != null) {
-                            String duration = getSongDuration();
-                            durationListener.onDurationReady(duration);
-                        }
-                    }
-                }
-            });
-            isMediaLoaded = true;
+            exoPlayer.prepare();
+            // Do not add another listener here; rely on the one added in the constructor
+            // isMediaLoaded will be set to true once STATE_READY is reached by the existing listener
         }
 
-        exoPlayer.play(); // Start or resume the playback
+        exoPlayer.play();
     }
-
-
-
 
     // Pause the song
     public void pauseSong() {
-        if (exoPlayer.isPlaying()) {
+        if (exoPlayer != null && exoPlayer.isPlaying()) {
             exoPlayer.pause();
-
         }
     }
 
@@ -137,7 +129,6 @@ public class ExoPlayerManager {
         if (exoPlayer != null) {
             exoPlayer.stop();
             isMediaLoaded = false; // Mark that the media has been unloaded
-
         }
     }
 
