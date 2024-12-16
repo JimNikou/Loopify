@@ -28,6 +28,9 @@ public class MiniPlayerManager {
     private long totalDurationMs = -1; // Store total duration to help with progress updates
 
     private final Context context;
+    private ImageButton miniPlayerLikeButton;
+    private boolean isTrackLiked = false; // track the liked state locally
+    private TrackHandler trackHandler = new TrackHandler();
 
     public MiniPlayerManager(FragmentActivity activity) {
         context = activity;
@@ -45,7 +48,20 @@ public class MiniPlayerManager {
 
         setupListeners();
         registerReceivers();
-
+        miniPlayerLikeButton = activity.findViewById(R.id.miniPlayerLikeButton);
+        miniPlayerLikeButton.setOnClickListener(v -> {
+            if (currentTrack != null && !currentTrack.isEmpty()) {
+                if (isTrackLiked) {
+                    trackHandler.removeSongFromLiked(currentTrack);
+                    isTrackLiked = false;
+                    miniPlayerLikeButton.setImageResource(R.drawable.heartlikedsongsemptyicon);
+                } else {
+                    trackHandler.addSongToLiked(currentTrack);
+                    isTrackLiked = true;
+                    miniPlayerLikeButton.setImageResource(R.drawable.heartlikedsongsfullicon);
+                }
+            }
+        });
         miniPlayerSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             boolean userIsSeeking = false;
 

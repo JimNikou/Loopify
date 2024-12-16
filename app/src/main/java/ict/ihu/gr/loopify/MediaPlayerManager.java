@@ -27,6 +27,9 @@ public class MediaPlayerManager extends Fragment {
     private String currentPlayingTrack;
     private TextView songTitleTextView, artistTextView, currentTimeTextView, totalDurationTextView;
     private SeekBar seekBar;
+    private ImageButton likeButton;
+    private boolean isTrackLiked = false; // track the liked state locally
+    private TrackHandler trackHandler = new TrackHandler();
 
     @Nullable
     @Override
@@ -55,7 +58,22 @@ public class MediaPlayerManager extends Fragment {
             }
             getContext().startService(serviceIntent);
         });
-
+        likeButton = view.findViewById(R.id.likeButton);
+        likeButton.setOnClickListener(v -> {
+                    if (currentPlayingTrack != null && !currentPlayingTrack.isEmpty()) {
+                        if (isTrackLiked) {
+                            // Remove from liked
+                            trackHandler.removeSongFromLiked(currentPlayingTrack);
+                            isTrackLiked = false;
+                            likeButton.setImageResource(R.drawable.heartlikedsongsemptyicon);
+                        } else {
+                            // Add to liked
+                            trackHandler.addSongToLiked(currentPlayingTrack);
+                            isTrackLiked = true;
+                            likeButton.setImageResource(R.drawable.heartlikedsongsfullicon);
+                        }
+                    }
+        });
         stopButton.setOnClickListener(v -> {
             // Send a STOP action to the service
             Intent stopIntent = new Intent(getContext(), MediaPlayerService.class);

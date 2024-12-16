@@ -132,6 +132,17 @@
                 android:layout_marginStart="8dp"
                 app:tint="#FFFFFF" />
 
+
+            <ImageButton
+                android:id="@+id/miniPlayerLikeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/heartlikedsongsemptyicon"
+                android:background="?android:selectableItemBackground"
+                android:layout_marginStart="8dp"
+                android:contentDescription="Like/Unlike track"
+                app:tint="#FFFFFF" />
+
         </LinearLayout>
 
     </LinearLayout>
