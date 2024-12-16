@@ -5,6 +5,8 @@
     android:id="@+id/miniPlayerContainer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
     android:background="#222"
     android:orientation="horizontal"
     android:gravity="center_vertical"
@@ -141,6 +143,17 @@
                 android:background="?android:selectableItemBackground"
                 android:layout_marginStart="8dp"
                 android:contentDescription="Like/Unlike track"
+                app:tint="#FFFFFF" />
+
+            <!-- New button to expand full player -->
+            <ImageButton
+                android:id="@+id/miniPlayerExpandButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/expand_icon"
+                android:background="?android:selectableItemBackground"
+                android:layout_marginStart="8dp"
+                android:contentDescription="Expand full player"
                 app:tint="#FFFFFF" />
 
         </LinearLayout>
