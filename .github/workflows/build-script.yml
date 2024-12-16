@@ -32,9 +32,10 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      # Run Instrumented Tests
-      - name: Run Instrumented Tests
-        run: ./gradlew connectedAndroidTest --stacktrace
+      #=-=-=-=-=-=-=-=-=-=-=-
+      - name: Run Android Tests
+        run: ./gradlew connectedDebugAndroidTest --info --stacktrace
+      #=-=-=-=-=-=-=-=-=-=-=-
         
       # Build APK
       - name: Build APK
