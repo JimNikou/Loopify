@@ -51,7 +51,7 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
         searchBar = view.findViewById(R.id.searchBar);
-        testButton = view.findViewById(R.id.testbutton);
+        testButton = view.findViewById(R.id.searchbutton);
         songListRecyclerView = view.findViewById(R.id.song_list);
 
         // Setup RecyclerView
