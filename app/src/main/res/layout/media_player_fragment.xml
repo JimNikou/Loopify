@@ -129,7 +129,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="12dp"
-                android:src="@drawable/ic_fullscreen_media_player_play_button"
+                android:src="@drawable/ic_fullscreen_media_player_pause_button"
                 android:background="?android:selectableItemBackground"
                 app:tint="#FFFFFF"
                 android:contentDescription="Play song" />

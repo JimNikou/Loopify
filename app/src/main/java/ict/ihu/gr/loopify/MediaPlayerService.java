@@ -41,8 +41,18 @@ public class MediaPlayerService extends Service {
         // Create and display the notification
         startForeground(1, getNotification());
 
+
         // Handle actions like PLAY, PAUSE, STOP
         String action = intent.getAction();
+//        playPauseButton.setOnClickListener(v -> {
+//            if (isPlaying){
+//                intent.setAction("PAUSE");
+//            }else{
+//                intent.setAction("PLAY");
+//            }
+////            playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_play_button); // Ensure the play icon is shown when stopped
+////            Toast.makeText(getContext(), "Song stopped.", Toast.LENGTH_SHORT).show();
+//        });
         switch (action) {
             case "PLAY":
                 String trackName = intent.getStringExtra("TRACK_NAME");
@@ -57,7 +67,6 @@ public class MediaPlayerService extends Service {
                         Intent broadcastIntent = new Intent("SHOW_MEDIA_PLAYER");
                         sendBroadcast(broadcastIntent);
                     }else{
-
                         exoPlayerManager.continuePlaying();
                         Log.d("MediaPlayerService", "Resumed playing: " + currentTrack);
                     }
@@ -66,6 +75,9 @@ public class MediaPlayerService extends Service {
                     Log.e("MediaPlayerService", "TRACK_NAME extra is missing in the PLAY action");
                 }
                 updateNotification();
+                if (isPlaying) {
+                    notifyCurrentTrack();
+                }
                 break;
 
             case "PAUSE":
@@ -73,18 +85,35 @@ public class MediaPlayerService extends Service {
                 isPlaying = false;
                 Log.d("MediaPlayerService", "Playback paused");
                 updateNotification();
+
+                notifyCurrentTrack();
                 break;
 
             case "STOP":
                 Log.d("MediaPlayerService", "Stopping service");
                 stopSelf();
+                notifyCurrentTrack();
                 return START_NOT_STICKY;
         }
 
         return START_STICKY;
     }
 
+    private void notifyCurrentTrack() {
+        Intent trackInfoIntent = new Intent("CURRENT_TRACK_INFO");
+        trackInfoIntent.putExtra("CURRENT_TRACK_NAME", currentTrack);
+        trackInfoIntent.putExtra("IS_PLAYING", isPlaying);
+        sendBroadcast(trackInfoIntent);
+    }
 
+    @Nullable
+    public void changeIconOnPlayPause(){
+        if (isPlaying){
+            playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_pause_button); // Ensure the play icon is shown when stopped
+        }else{
+            playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_play_button); // Ensure the play icon is shown when stopped
+        }
+    }
 
     private void stopCurrentTrack() {
         if (exoPlayerManager != null && isPlaying) {

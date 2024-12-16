@@ -1,7 +1,10 @@
 package ict.ihu.gr.loopify;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +21,8 @@ public class MediaPlayerManager extends Fragment {
     private static final String TAG = "MediaPlayerManager";
     public boolean isPlaying = false;
     public ImageButton playPauseButton;
+    public  ExoPlayerManager exoPlayerManager;
+    private String currentPlayingTrack;
 
     @Nullable
     @Override
@@ -29,15 +34,21 @@ public class MediaPlayerManager extends Fragment {
         playPauseButton = view.findViewById(R.id.playPauseButton);
 
         playPauseButton.setOnClickListener(v -> {
+            Intent serviceIntent = new Intent(getContext(), MediaPlayerService.class);
             if (isPlaying) {
-                playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_play_button); // Change to play icon
-                Toast.makeText(getContext(), "Song paused.", Toast.LENGTH_SHORT).show();
+                // Pause action
+                serviceIntent.setAction("PAUSE");
             } else {
-                // Example local file in raw folder, or replace with your URL
-                Uri songUri = Uri.parse("android.resource://" + getContext().getPackageName() + "/" + R.raw.sample_audio);
-                Toast.makeText(getContext(), "Playing song...", Toast.LENGTH_SHORT).show();
+                // Play action with the dynamic track name
+                serviceIntent.setAction("PLAY");
+                // Use the stored currentPlayingTrack instead of a hard-coded name
+                if (currentPlayingTrack != null && !currentPlayingTrack.isEmpty()) {
+                    serviceIntent.putExtra("TRACK_NAME", currentPlayingTrack);
+                }
             }
+            getContext().startService(serviceIntent);
         });
+
 
         // ImageButton for stopping the song
         ImageButton stopButton = view.findViewById(R.id.stopButton);
@@ -50,6 +61,39 @@ public class MediaPlayerManager extends Fragment {
         view.setElevation(10);  // Set a high elevation for layering on top (adjust as needed)
         return view;
     }
+
+    private BroadcastReceiver trackInfoReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.hasExtra("CURRENT_TRACK_NAME")) {
+                currentPlayingTrack = intent.getStringExtra("CURRENT_TRACK_NAME");
+            }
+            if (intent.hasExtra("IS_PLAYING")) {
+                isPlaying = intent.getBooleanExtra("IS_PLAYING", false);
+                // Update the UI button icon based on isPlaying
+                if (isPlaying) {
+                    playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_pause_button);
+                } else {
+                    playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_play_button);
+                }
+            }
+        }
+    };
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter filter = new IntentFilter("CURRENT_TRACK_INFO");
+        getContext().registerReceiver(trackInfoReceiver, filter, android.content.Context.RECEIVER_NOT_EXPORTED);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getContext().unregisterReceiver(trackInfoReceiver);
+    }
+
 
 
 
