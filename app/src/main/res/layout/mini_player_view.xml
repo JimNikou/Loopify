@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/miniPlayerContainer"
+    android:layout_width="match_parent"
+    android:layout_height="64dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:background="#222"
+    android:padding="8dp"
+    android:visibility="gone"> <!-- Hidden by default -->
+
+    <ImageView
+        android:id="@+id/miniPlayerAlbumArt"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@drawable/ic_fullscreen_media_player_album_image_button"
+        android:scaleType="centerCrop" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="8dp">
+
+        <TextView
+            android:id="@+id/miniPlayerTrackTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Track Title"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <TextView
+            android:id="@+id/miniPlayerArtistName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Artist Name"
+            android:textColor="#AAAAAA"
+            android:textSize="12sp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/miniPlayerPreviousButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_fullscreen_media_player_previous_song_button"
+        android:background="?android:selectableItemBackground"
+        app:tint="#FFFFFF" />
+
+    <ImageButton
+        android:id="@+id/miniPlayerPlayPauseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_fullscreen_media_player_play_button"
+        android:background="?android:selectableItemBackground"
+        app:tint="#FFFFFF" />
+
+    <ImageButton
+        android:id="@+id/miniPlayerNextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_fullscreen_media_player_next_song_button"
+        android:background="?android:selectableItemBackground"
+        app:tint="#FFFFFF" />
+
+    <ImageButton
+        android:id="@+id/miniPlayerStopButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_fullscreen_media_player_stop_song_button"
+        android:background="?android:selectableItemBackground"
+        app:tint="#FFFFFF" />
+
+</LinearLayout>
