@@ -87,6 +87,10 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.firebase.inappmessaging)
     testImplementation(libs.junit)
+//    testImplementation(libs.mockito.core.v521)
+    implementation(libs.protobuf.javalite)
+//    androidTestImplementation("androidx.test.espresso:espresso-contrib:3.4.0")
+
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }

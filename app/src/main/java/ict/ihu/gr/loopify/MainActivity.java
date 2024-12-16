@@ -26,7 +26,12 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import com.google.android.material.navigation.NavigationView;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
@@ -159,31 +164,42 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         }
     }
 
-    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getResultCode() == RESULT_OK){
-                Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                try {
-                    GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
-                    AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
-                    auth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                signInButton.setVisibility(View.GONE);
-                                auth = FirebaseAuth.getInstance();
-                                linearLayout.setVisibility(View.GONE);
-//                                recreate();
-                            }
+    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        boolean isTestMode = getIntent().getBooleanExtra("TEST_MODE", false);
+                        if (isTestMode) {
+                            // Simulate successful sign-in for test mode
+                            signInButton.setVisibility(View.GONE);
+                            linearLayout.setVisibility(View.GONE);
+                            return;
                         }
-                    });
-                } catch (ApiException e) {
-                    throw new RuntimeException(e);
+
+                        // Normal flow: Process Google Sign-In
+                        Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                        try {
+                            GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
+                            AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
+                            auth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        signInButton.setVisibility(View.GONE);
+                                        auth = FirebaseAuth.getInstance();
+                                        linearLayout.setVisibility(View.GONE);
+                                    }
+                                }
+                            });
+                        } catch (ApiException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
-            }
-        }
-    });
+            });
+
 
     final BroadcastReceiver mediaPlayerReceiver = new BroadcastReceiver() {
         @Override
@@ -221,6 +237,13 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
 
         setContentView(binding.getRoot());
+
+        boolean isTestMode = getIntent().getBooleanExtra("TEST_MODE", false);
+        if (isTestMode) {
+            // Simulate user being logged in by hiding the login layout
+            linearLayout = findViewById(R.id.linLayout);
+            linearLayout.setVisibility(View.GONE);
+        }
 
         setSupportActionBar(binding.appBarMain.toolbar);
 
@@ -440,7 +463,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 //            logOut();
 //        });
 //        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
-
+        errorMessage = findViewById(R.id.errorMessage);
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
         loginButton = findViewById(R.id.loginButton);
@@ -450,7 +473,8 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
             String password = passwordField.getText().toString();
 
             if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-                Toast.makeText(MainActivity.this, "Please enter email and password", Toast.LENGTH_SHORT).show();
+                errorMessage.setVisibility(View.VISIBLE);
+                errorMessage.setText("Please enter email and password");
                 return;
             }
 
@@ -475,7 +499,8 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
             String password = passwordField.getText().toString();
 
             if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-                Toast.makeText(MainActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                errorMessage.setVisibility(View.VISIBLE);
+                errorMessage.setText("Please enter email and password");
                 return;
             }
 
@@ -495,7 +520,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
         createNotificationChannel();
     }
-
+    private TextView errorMessage;
     private void logOut() {
         FirebaseAuth.getInstance().signOut();
         linearLayout.setVisibility(View.VISIBLE);
