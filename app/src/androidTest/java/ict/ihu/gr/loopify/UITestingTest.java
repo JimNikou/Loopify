@@ -16,6 +16,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import android.view.Gravity;
 import android.view.View;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.espresso.UiController;
+import androidx.test.espresso.ViewAction;
 import androidx.test.espresso.ViewInteraction;
 import androidx.test.espresso.matcher.BoundedMatcher;
 import androidx.test.espresso.Espresso;
@@ -46,6 +48,7 @@ public class UITestingTest {
         onView(withId(R.id.emailField)).perform(typeText("zedkairengar@gmail.com"), closeSoftKeyboard());
         onView(withId(R.id.passwordField)).perform(typeText("this_is_a_test_password123"), closeSoftKeyboard());
         onView(withId(R.id.signupButton))
+                .perform(waitForView())
                 .check(matches(isDisplayed()))  // Check that the button is visible
                 .perform(click());  // Then perform the click action
 
@@ -56,6 +59,7 @@ public class UITestingTest {
         onView(withId(R.id.emailField)).perform(typeText("zedkairengar@gmail.com"), closeSoftKeyboard());
         onView(withId(R.id.passwordField)).perform(typeText("this_is_a_test_password123"), closeSoftKeyboard());
         onView(withId(R.id.loginButton))
+                .perform(waitForView())
                 .check(matches(isDisplayed()))  // Check that the button is visible
                 .perform(click());  // Then perform the click action
 
@@ -65,6 +69,7 @@ public class UITestingTest {
     public void SignUpWithEmptyEmail() {
         onView(withId(R.id.passwordField)).perform(typeText("this_is_a_test_password123"), closeSoftKeyboard());
         onView(withId(R.id.signupButton))
+                .perform(waitForView())
                 .check(matches(isDisplayed()))  // Check that the button is visible
                 .perform(click());  // Then perform the click action
 
@@ -76,6 +81,7 @@ public class UITestingTest {
     public void SignUpWithEmptyPassword() {
         onView(withId(R.id.emailField)).perform(typeText("zedkairengar@gmail.com"), closeSoftKeyboard());
         onView(withId(R.id.signupButton))
+                .perform(waitForView())
                 .check(matches(isDisplayed()))  // Check that the button is visible
                 .perform(click());  // Then perform the click action
 
@@ -127,6 +133,26 @@ public class UITestingTest {
         //dependency conflicts
 //        onView(withId(R.id.recycler_view))
 //                .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+    }
+
+
+    public static ViewAction waitForView() {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isDisplayed();
+            }
+
+            @Override
+            public String getDescription() {
+                return "wait for the view to be visible";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                uiController.loopMainThreadUntilIdle();
+            }
+        };
     }
 
 
