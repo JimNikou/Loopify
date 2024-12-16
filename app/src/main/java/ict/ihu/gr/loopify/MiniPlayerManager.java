@@ -31,6 +31,7 @@ public class MiniPlayerManager {
     private ImageButton miniPlayerLikeButton;
     private boolean isTrackLiked = false; // track the liked state locally
     private TrackHandler trackHandler = new TrackHandler();
+    private ImageButton miniPlayerExpandButton;
 
     public MiniPlayerManager(FragmentActivity activity) {
         context = activity;
@@ -45,6 +46,8 @@ public class MiniPlayerManager {
         nextButton = activity.findViewById(R.id.miniPlayerNextButton);
         stopButton = activity.findViewById(R.id.miniPlayerStopButton);
         miniPlayerSeekBar = activity.findViewById(R.id.miniPlayerSeekBar);
+        miniPlayerExpandButton = activity.findViewById(R.id.miniPlayerExpandButton);
+
 
         setupListeners();
         registerReceivers();
@@ -89,6 +92,17 @@ public class MiniPlayerManager {
     }
 
     private void setupListeners() {
+        miniPlayerContainer.setOnClickListener(v -> {
+            // Check that we are not clicking on controls - this won't be needed as controls have their own listeners.
+            // This onClick will only fire if user taps empty space.
+
+            // Load the full media player fragment.
+            // For example, if MainActivity has a method loadFragment(Fragment fragment):
+            ((MainActivity) context).loadFragment(new MediaPlayerManager());
+
+            // Hide the mini player after opening full player
+            miniPlayerContainer.setVisibility(View.GONE);
+        });
         playPauseButton.setOnClickListener(v -> {
             Intent serviceIntent = new Intent(context, MediaPlayerService.class);
             serviceIntent.setAction(isPlaying ? "PAUSE" : "PLAY");
@@ -104,6 +118,13 @@ public class MiniPlayerManager {
             context.startService(stopIntent);
         });
 
+        miniPlayerExpandButton.setOnClickListener(v -> {
+            // Load the full media player fragment
+            ((MainActivity) context).loadFragment(new MediaPlayerManager());
+
+            // Hide the mini player
+            miniPlayerContainer.setVisibility(View.GONE);
+        });
         // Implement PREVIOUS and NEXT if your service supports these actions
         previousButton.setOnClickListener(v -> {
             // Example: send a PREVIOUS action to the service if implemented

@@ -564,7 +564,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
 
     // Method to load the MediaPlayerManager fragment as a full-screen overlay
-    private void loadFragment(Fragment fragment) {
+    public void loadFragment(Fragment fragment) {
         FrameLayout fragmentContainer = findViewById(R.id.fragment_MediaPlayerFragment);
         fragmentContainer.setVisibility(View.VISIBLE);
         fragmentContainer.setBackgroundColor(getResources().getColor(android.R.color.black));
@@ -583,6 +583,8 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         transaction.replace(R.id.fragment_MediaPlayerFragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+        // Also, ensure fragment_MediaPlayerFragment is visible again if it was hidden.
+        findViewById(R.id.fragment_MediaPlayerFragment).setVisibility(View.VISIBLE);
     }
 
     // Handle back press to close the media player fragment and restore layout
