@@ -45,20 +45,29 @@ public class UITestingTest {
     public void SignUpAfterMainActivityIsCalled() {
         onView(withId(R.id.emailField)).perform(typeText("zedkairengar@gmail.com"), closeSoftKeyboard());
         onView(withId(R.id.passwordField)).perform(typeText("this_is_a_test_password123"), closeSoftKeyboard());
-        onView(withId(R.id.signupButton)).perform(click());
+        onView(withId(R.id.signupButton))
+                .check(matches(isDisplayed()))  // Check that the button is visible
+                .perform(click());  // Then perform the click action
+
     }
 
     @Test
     public void LogInAfterMainActivityIsCalled() {
         onView(withId(R.id.emailField)).perform(typeText("zedkairengar@gmail.com"), closeSoftKeyboard());
         onView(withId(R.id.passwordField)).perform(typeText("this_is_a_test_password123"), closeSoftKeyboard());
-        onView(withId(R.id.loginButton)).perform(click());
+        onView(withId(R.id.loginButton))
+                .check(matches(isDisplayed()))  // Check that the button is visible
+                .perform(click());  // Then perform the click action
+
     }
 
     @Test
     public void SignUpWithEmptyEmail() {
         onView(withId(R.id.passwordField)).perform(typeText("this_is_a_test_password123"), closeSoftKeyboard());
-        onView(withId(R.id.signupButton)).perform(click());
+        onView(withId(R.id.signupButton))
+                .check(matches(isDisplayed()))  // Check that the button is visible
+                .perform(click());  // Then perform the click action
+
         onView(withId(R.id.errorMessage)).check(matches(isDisplayed()));
         onView(withId(R.id.errorMessage)).check(matches(withText("Please enter email and password")));
     }
@@ -66,7 +75,10 @@ public class UITestingTest {
     @Test
     public void SignUpWithEmptyPassword() {
         onView(withId(R.id.emailField)).perform(typeText("zedkairengar@gmail.com"), closeSoftKeyboard());
-        onView(withId(R.id.signupButton)).perform(click());
+        onView(withId(R.id.signupButton))
+                .check(matches(isDisplayed()))  // Check that the button is visible
+                .perform(click());  // Then perform the click action
+
         onView(withId(R.id.errorMessage)).check(matches(isDisplayed()));
         onView(withId(R.id.errorMessage)).check(matches(withText("Please enter email and password")));
     }
