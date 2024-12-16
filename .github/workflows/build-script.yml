@@ -34,7 +34,7 @@ jobs:
 
       #=-=-=-=-=-=-=-=-=-=-=-
       - name: Run Android Tests
-        run: ./gradlew connectedDebugAndroidTest --info --stacktrace
+        run: ./gradlew connectedAndroidTest --no-quit --continue -Pandroid.testInstrumentationRunnerArguments.timeout=300000
       #=-=-=-=-=-=-=-=-=-=-=-
         
       # Build APK
