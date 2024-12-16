@@ -32,13 +32,20 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
-      # Run Instrumented Tests
-      - name: Instrumented Tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 29
-          script: ./gradlew connectedDebugAndroidTest -Pandroid.testInstrumentationRunnerArguments.deviceName=emulator-5554
+      #=-=-=-=-=-=-=-=-=-=-=-
+      - name: Start Emulator
+        run: |
+          echo "Starting emulator"
+          nohup emulator -avd Pixel_3_API_30 -no-snapshot &
 
+      - name: Wait for Emulator to Boot
+        run: |
+          adb wait-for-device
+          adb shell input keyevent 82  # Unlock the device
+
+      - name: Run Android Tests
+        run: ./gradlew connectedDebugAndroidTest --info --stacktrace
+      #=-=-=-=-=-=-=-=-=-=-=-
         
       # Build APK
       - name: Build APK
