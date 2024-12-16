@@ -23,61 +23,74 @@ public class MediaPlayerService extends Service {
     private String currentTrack = ""; // To keep track of the currently requested track
     public ImageButton playPauseButton;
 
+    // Variables to store metadata until both duration and track info are known
+    private long cachedDuration = -1;
+    private String cachedTitle = null;
+    private String cachedArtist = null;
+
+    // Handler and Runnable to update track position periodically
+    private Handler positionHandler = new Handler(Looper.getMainLooper());
+    private Runnable positionUpdateRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (exoPlayerManager != null && isPlaying) {
+                long currentPosition = exoPlayerManager.getCurrentPosition();
+                notifyPlaybackPosition(currentPosition);
+            }
+            positionHandler.postDelayed(this, 1000); // Update every 1 second
+        }
+    };
+
     @Override
     public void onCreate() {
         super.onCreate();
         exoPlayerManager = new ExoPlayerManager(this);
+
+        // Set a DurationListener so we know when the player is ready and duration is available
+        exoPlayerManager.setDurationListener(durationStr -> {
+            long durationMs = exoPlayerManager.getSongDuration();
+            cachedDuration = durationMs;
+            tryNotifyMetadata();
+        });
     }
 
     @SuppressLint("ForegroundServiceType")
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        // Validate intent and action
         if (intent == null || intent.getAction() == null) {
             stopSelf();
             return START_NOT_STICKY;
         }
 
-        // Create and display the notification
         startForeground(1, getNotification());
-
-
-        // Handle actions like PLAY, PAUSE, STOP
         String action = intent.getAction();
-//        playPauseButton.setOnClickListener(v -> {
-//            if (isPlaying){
-//                intent.setAction("PAUSE");
-//            }else{
-//                intent.setAction("PLAY");
-//            }
-////            playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_play_button); // Ensure the play icon is shown when stopped
-////            Toast.makeText(getContext(), "Song stopped.", Toast.LENGTH_SHORT).show();
-//        });
+
         switch (action) {
             case "PLAY":
                 String trackName = intent.getStringExtra("TRACK_NAME");
-                if (trackName != null) {
-                    Log.d("MediaPlayerService", "PLAY action received for track: " + trackName);
-
-                    if (!trackName.equals(currentTrack)) {
-                        currentTrack = trackName;
-                        stopCurrentTrack();  // Stop any currently playing track
-                        runStartTrackServe(currentTrack, exoPlayerManager);
-                        // Broadcast an intent to show the MediaPlayer fragment
-                        Intent broadcastIntent = new Intent("SHOW_MEDIA_PLAYER");
-                        sendBroadcast(broadcastIntent);
-                    }else{
-                        exoPlayerManager.continuePlaying();
-                        Log.d("MediaPlayerService", "Resumed playing: " + currentTrack);
+                if (trackName == null || trackName.isEmpty()) {
+                    if (currentTrack != null && !currentTrack.isEmpty()) {
+                        trackName = currentTrack;
+                    } else {
+                        Log.e("MediaPlayerService", "TRACK_NAME extra is missing and currentTrack is empty. Cannot play.");
+                        break;
                     }
-                    isPlaying = true;
+                }
+                Log.d("MediaPlayerService", "PLAY action received for track: " + trackName);
+
+                if (!trackName.equals(currentTrack)) {
+                    currentTrack = trackName;
+                    stopCurrentTrack();
+                    runStartTrackServe(currentTrack, exoPlayerManager);
+                    Intent broadcastIntent = new Intent("SHOW_MEDIA_PLAYER");
+                    sendBroadcast(broadcastIntent);
                 } else {
-                    Log.e("MediaPlayerService", "TRACK_NAME extra is missing in the PLAY action");
+                    exoPlayerManager.continuePlaying();
+                    Log.d("MediaPlayerService", "Resumed playing: " + currentTrack);
                 }
+                isPlaying = true;
                 updateNotification();
-                if (isPlaying) {
-                    notifyCurrentTrack();
-                }
+                notifyCurrentTrack();
                 break;
 
             case "PAUSE":
@@ -85,8 +98,12 @@ public class MediaPlayerService extends Service {
                 isPlaying = false;
                 Log.d("MediaPlayerService", "Playback paused");
                 updateNotification();
-
                 notifyCurrentTrack();
+                break;
+
+            case "SEEK":
+                int newPosition = intent.getIntExtra("NEW_POSITION", 0);
+                exoPlayerManager.seekTo(newPosition);
                 break;
 
             case "STOP":
@@ -106,18 +123,23 @@ public class MediaPlayerService extends Service {
         sendBroadcast(trackInfoIntent);
     }
 
-    @Nullable
-    public void changeIconOnPlayPause(){
-        if (isPlaying){
-            playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_pause_button); // Ensure the play icon is shown when stopped
-        }else{
-            playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_play_button); // Ensure the play icon is shown when stopped
-        }
+    private void notifyMetadata(long duration, String title, String artist) {
+        Intent metadataIntent = new Intent("CURRENT_TRACK_METADATA");
+        metadataIntent.putExtra("DURATION", duration);
+        metadataIntent.putExtra("TITLE", title);
+        metadataIntent.putExtra("ARTIST", artist);
+        sendBroadcast(metadataIntent);
+    }
+
+    private void notifyPlaybackPosition(long position) {
+        Intent positionIntent = new Intent("CURRENT_TRACK_POSITION");
+        positionIntent.putExtra("POSITION", position);
+        sendBroadcast(positionIntent);
     }
 
     private void stopCurrentTrack() {
         if (exoPlayerManager != null && isPlaying) {
-            exoPlayerManager.stopSong(); // Ensure current song stops
+            exoPlayerManager.stopSong();
             isPlaying = false;
         }
     }
@@ -163,7 +185,7 @@ public class MediaPlayerService extends Service {
                     } else {
                         Log.d("ApiManager", "Failed to fetch song titles after download.");
                     }
-                    isTrackServing = false; // Ensure flag is reset after completion
+                    isTrackServing = false;
                 });
             } else {
                 Log.d("ApiManager", "Download response was null.");
@@ -172,16 +194,102 @@ public class MediaPlayerService extends Service {
         });
     }
 
+    private boolean metadataNotified = false; // Added flag to ensure single metadata notification
+
     private void playTrack(String matchedTitle, ExoPlayerManager exo) {
         String completeUrl = "http://loopify.ddnsgeek.com:20080/downloads/" + matchedTitle.trim() + ".mp3";
         Log.d("ApiManager", "Playing track: " + completeUrl);
 
+        String trackName = currentTrack;
+
         mainHandler.post(() -> {
-            exo.stopSong();  // Stop any currently playing song
-            exo.playSong(completeUrl);  // Play the new song
+            exo.stopSong();
+            // Reset cached metadata variables and flag each time we start a new track
+            cachedDuration = -1;
+            cachedTitle = null;
+            cachedArtist = null;
+            metadataNotified = false;
+
+            exo.playSong(completeUrl); // start playback
             isPlaying = true;
-            isTrackServing = false; // Reset isTrackServing when playback starts
+            isTrackServing = false;
+
+            ApiManager apiManager = new ApiManager();
+
+            // First, get the artist from the track name
+            apiManager.fetchArtistFromTrack(trackName, artistJsonResponse -> {
+                if (artistJsonResponse != null && !artistJsonResponse.isEmpty()) {
+                    final String derivedArtistName = artistJsonResponse.trim(); // Make it final
+
+                    // Now fetch detailed track info
+                    apiManager.fetchTrackInfo(trackName, derivedArtistName, trackInfoJson -> {
+                        if (metadataNotified) return;
+
+                        String finalArtist = derivedArtistName; // This can be reassigned here because finalArtist is a new variable inside this lambda
+
+                        if (trackInfoJson != null && trackInfoJson.contains("\"track\"")) {
+                            try {
+                                org.json.JSONObject jsonObject = new org.json.JSONObject(trackInfoJson);
+                                org.json.JSONObject trackObj = jsonObject.getJSONObject("track");
+                                String artistNameFromJson = trackObj.getJSONObject("artist").getString("name");
+
+                                if (!isArtistNameValid(artistNameFromJson)) {
+                                    artistNameFromJson = derivedArtistName;
+                                }
+                                finalArtist = artistNameFromJson;
+                            } catch (org.json.JSONException e) {
+                                e.printStackTrace();
+                                // fallback if parsing fails
+                                if (!isArtistNameValid(derivedArtistName)) {
+                                    // Since derivedArtistName is final, we can't reassign it, but we can reassign finalArtist
+                                    finalArtist = "Unknown Artist";
+                                } else {
+                                    finalArtist = derivedArtistName;
+                                }
+                            }
+                        } else {
+                            if (!isArtistNameValid(derivedArtistName)) {
+                                finalArtist = "Unknown Artist";
+                            }
+                        }
+
+                        cachedTitle = trackName;
+                        cachedArtist = finalArtist;
+                        tryNotifyMetadata();
+                    });
+                } else {
+                    cachedTitle = trackName;
+                    cachedArtist = "Unknown Artist";
+                    tryNotifyMetadata();
+                }
+            });
+
+
+            startPositionUpdates();
         });
+    }
+
+    private boolean isArtistNameValid(String artistName) {
+        // If it looks like a URL or JSON, consider it invalid
+        if (artistName == null) return false;
+        String lower = artistName.toLowerCase();
+        if (lower.contains("http") || lower.contains("{\"message\"")) {
+            return false;
+        }
+        return true;
+    }
+
+    private void tryNotifyMetadata() {
+        if (metadataNotified) return; // Already notified once
+        if (cachedDuration > 0 && cachedTitle != null && cachedArtist != null) {
+            notifyMetadata(cachedDuration, cachedTitle, cachedArtist);
+            metadataNotified = true;
+        }
+    }
+
+
+    private void startPositionUpdates() {
+        positionHandler.post(positionUpdateRunnable);
     }
 
     private void updateNotification() {
@@ -191,26 +299,23 @@ public class MediaPlayerService extends Service {
     }
 
     private Notification getNotification() {
-        // Create the Play Intent with the current track details
         Intent playIntent = new Intent(this, MediaPlayerService.class);
         playIntent.setAction("PLAY");
-        playIntent.putExtra("TRACK_NAME", currentTrack); // Add the track name
+        if (currentTrack == null || currentTrack.isEmpty()) {
+            currentTrack = "Default Track Name";
+        }
+        playIntent.putExtra("TRACK_NAME", currentTrack);
+
         PendingIntent playPendingIntent = PendingIntent.getService(this, 0, playIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        // Create the Pause Intent
         Intent pauseIntent = new Intent(this, MediaPlayerService.class);
         pauseIntent.setAction("PAUSE");
         PendingIntent pausePendingIntent = PendingIntent.getService(this, 1, pauseIntent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
-        // Determine the action based on the playback state
-        NotificationCompat.Action action;
-        if (isPlaying) {
-            action = new NotificationCompat.Action(R.drawable.pause_svgrepo_com, "Pause", pausePendingIntent);
-        } else {
-            action = new NotificationCompat.Action(R.drawable.play_svgrepo_com, "Play", playPendingIntent);
-        }
+        NotificationCompat.Action action = isPlaying ?
+                new NotificationCompat.Action(R.drawable.pause_svgrepo_com, "Pause", pausePendingIntent) :
+                new NotificationCompat.Action(R.drawable.play_svgrepo_com, "Play", playPendingIntent);
 
-        // Build the notification
         return new NotificationCompat.Builder(this, "MEDIA_CHANNEL_ID")
                 .setSmallIcon(R.drawable.music_note)
                 .setContentTitle(currentTrack)
@@ -220,7 +325,6 @@ public class MediaPlayerService extends Service {
                 .addAction(action)
                 .build();
     }
-
 
     @Nullable
     @Override
@@ -234,5 +338,6 @@ public class MediaPlayerService extends Service {
         if (exoPlayerManager != null) {
             exoPlayerManager.release();
         }
+        positionHandler.removeCallbacks(positionUpdateRunnable);
     }
 }
