@@ -19,7 +19,7 @@ public class MiniPlayerManager {
     private final TextView artistName;
     private final TextView miniPlayerCurrentTime;
     private final TextView miniPlayerTotalDuration;
-    private final ImageButton playPauseButton, nextButton, previousButton, stopButton;
+    private final ImageButton playPauseButton, nextButton, previousButton;
     private final SeekBar miniPlayerSeekBar;
 
     private boolean isPlaying = false;
@@ -44,7 +44,6 @@ public class MiniPlayerManager {
         previousButton = activity.findViewById(R.id.miniPlayerPreviousButton);
         playPauseButton = activity.findViewById(R.id.miniPlayerPlayPauseButton);
         nextButton = activity.findViewById(R.id.miniPlayerNextButton);
-        stopButton = activity.findViewById(R.id.miniPlayerStopButton);
         miniPlayerSeekBar = activity.findViewById(R.id.miniPlayerSeekBar);
         miniPlayerExpandButton = activity.findViewById(R.id.miniPlayerExpandButton);
 
@@ -112,11 +111,6 @@ public class MiniPlayerManager {
             context.startService(serviceIntent);
         });
 
-        stopButton.setOnClickListener(v -> {
-            Intent stopIntent = new Intent(context, MediaPlayerService.class);
-            stopIntent.setAction("STOP");
-            context.startService(stopIntent);
-        });
 
         miniPlayerExpandButton.setOnClickListener(v -> {
             // Load the full media player fragment
