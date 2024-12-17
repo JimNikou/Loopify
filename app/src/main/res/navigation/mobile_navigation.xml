@@ -23,7 +23,7 @@
     <!-- Drawer Navigation Fragments (other sections) -->
     <fragment
         android:id="@+id/nav_notification"
-        android:name="ict.ihu.gr.loopify.ui.notifications.NotificationFragment"
+        android:name="ict.ihu.gr.loopify.ui.notification.NotificationFragment"
         android:label="Notifications"/>
 
     <fragment

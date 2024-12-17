@@ -13,7 +13,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import ict.ihu.gr.loopify.R;
 import ict.ihu.gr.loopify.databinding.FragmentNotificationBinding;
-import ict.ihu.gr.loopify.ui.notifications.NotificationViewModel;
 
 public class NotificationFragment extends Fragment {
 
