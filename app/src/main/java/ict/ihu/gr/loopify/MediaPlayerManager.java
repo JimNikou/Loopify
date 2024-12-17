@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -37,7 +36,7 @@ public class MediaPlayerManager extends Fragment {
         View view = inflater.inflate(R.layout.media_player_fragment, container, false);
 
         playPauseButton = view.findViewById(R.id.playPauseButton);
-        ImageButton stopButton = view.findViewById(R.id.stopButton);
+//        ImageButton stopButton = view.findViewById(R.id.stopButton);
         songTitleTextView = view.findViewById(R.id.songTitleTextView);
         artistTextView = view.findViewById(R.id.artistTextView);
         currentTimeTextView = view.findViewById(R.id.currentTimeTextView);
@@ -74,15 +73,15 @@ public class MediaPlayerManager extends Fragment {
                         }
                     }
         });
-        stopButton.setOnClickListener(v -> {
-            // Send a STOP action to the service
-            Intent stopIntent = new Intent(getContext(), MediaPlayerService.class);
-            stopIntent.setAction("STOP");
-            getContext().startService(stopIntent);
-
-            playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_play_button);
-            Toast.makeText(getContext(), "Song stopped.", Toast.LENGTH_SHORT).show();
-        });
+//        stopButton.setOnClickListener(v -> {
+//            // Send a STOP action to the service
+//            Intent stopIntent = new Intent(getContext(), MediaPlayerService.class);
+//            stopIntent.setAction("STOP");
+//            getContext().startService(stopIntent);
+//
+//            playPauseButton.setImageResource(R.drawable.ic_fullscreen_media_player_play_button);
+//            Toast.makeText(getContext(), "Song stopped.", Toast.LENGTH_SHORT).show();
+//        });
 
         // Set a listener for the SeekBar to allow user seeking
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
