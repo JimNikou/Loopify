@@ -23,12 +23,12 @@
     <!-- Drawer Navigation Fragments (other sections) -->
     <fragment
         android:id="@+id/nav_notification"
-        android:name="ict.ihu.gr.loopify.ui.gallery.NotificationFragment"
+        android:name="ict.ihu.gr.loopify.ui.notifications.NotificationFragment"
         android:label="Notifications"/>
 
     <fragment
         android:id="@+id/nav_settings"
-        android:name="ict.ihu.gr.loopify.ui.slideshow.SettingsFragment"
+        android:name="ict.ihu.gr.loopify.ui.settings.SettingsFragment"
         android:label="Settings"/>
     <fragment
         android:id="@+id/nav_account"

@@ -1,7 +1,10 @@
 package ict.ihu.gr.loopify;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
@@ -56,9 +59,39 @@ public class AboutFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_about, container, false);
+        View view = inflater.inflate(R.layout.fragment_about, container, false);
+
+        // Load the saved theme
+        SharedPreferences preferences = requireContext().getSharedPreferences("app_settings", Context.MODE_PRIVATE);
+        String theme = preferences.getString("app_theme", "default");
+
+        // Set the background based on the theme
+        int backgroundResource;
+        switch (theme) {
+            case "aquamarine":
+                backgroundResource = R.drawable.background_aquamarine;
+                break;
+            case "beige":
+                backgroundResource = R.drawable.background_beige;
+                break;
+            case "gold":
+                backgroundResource = R.drawable.background_gold;
+                break;
+            case "ink":
+                backgroundResource = R.drawable.background_ink;
+                break;
+            default:
+                backgroundResource = R.drawable.background;
+        }
+
+        // Set the background resource to the view
+        view.setBackgroundResource(backgroundResource);
+
+
+
+        return view;
     }
 }

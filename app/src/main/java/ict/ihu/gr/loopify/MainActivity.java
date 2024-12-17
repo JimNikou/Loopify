@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -68,6 +69,7 @@ import org.json.JSONObject;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Locale;
 
 import ict.ihu.gr.loopify.databinding.ActivityMainBinding;
 
@@ -104,6 +106,9 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     private Button loginButton, signupButton;
 
     private TrackManager trackManager;
+
+    private static final String APP_SETTINGS = "AppSettings";
+    private static final String APP_LANGUAGE_KEY = "App_Language";
 
     // Declare a FirebaseUser to handle the current user
     private FirebaseUser currentUser;
@@ -198,6 +203,10 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Apply the saved language
+        applySavedLanguage();
+
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         // Register the broadcast receiver
         IntentFilter filter = new IntentFilter("SHOW_MEDIA_PLAYER");
@@ -754,6 +763,20 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         // Add logic to enable notifications here
         Log.i("NOTIFICATIONSSTATUS", "Notifications enabled successfully");
     }
+
+    private void applySavedLanguage() {
+        SharedPreferences preferences = getSharedPreferences(APP_SETTINGS, MODE_PRIVATE);
+        String languageCode = preferences.getString(APP_LANGUAGE_KEY, "en"); // Default to English
+        Locale locale = new Locale(languageCode);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.setLocale(locale);
+        getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+
+
+    } //Language Changing Method
+
+
 
 
 }
