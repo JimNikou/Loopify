@@ -31,7 +31,7 @@
             android:id="@+id/loopifydescTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Artist &amp; Track Description"
+            android:text="@string/artist_amp_track_description"
             android:textStyle="bold"
             android:textSize="18sp"
             android:fontFamily="@font/pptelegraf_regular"

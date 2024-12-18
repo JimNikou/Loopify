@@ -139,4 +139,21 @@
     <string name="percentage_format" translatable="false">%d%%</string>
     <string name="gain_format" translatable="false">%+d dB</string>
     <string name="select_preset">Seleccionar Preajuste</string>
-    </resources>
+    <string name="artist_amp_track_description">Descripción del artista &amp; la canción</string>
+    <string name="display_name">Nombre para mostrar</string>
+    <string name="password">Contraseña</string>
+    <string name="login">Acceso</string>
+    <string name="notif_denied">El permiso de notificación está denegado permanentemente. Vaya a la configuración para habilitarlo.</string>
+    <string name="dont_show_again">No mostrar de nuevo</string>
+    <string name="search_for_song">Buscar una canción</string>
+    <string name="song_title">Título de la canción</string>
+    <string name="liked_songs">Canciones que te gustan:</string>
+    <string name="add_data">Agregar datos</string>
+    <string name="artist_name">Nombre del artista</string>
+    <string name="shuffle">Modo Aleatorio</string>
+    <string name="previous">Previo</string>
+    <string name="play_song">Reproducir</string>
+    <string name="stop_song">Detener</string>
+    <string name="next_song">Próxima</string>
+    <string name="repeat">Repetir</string>
+</resources>

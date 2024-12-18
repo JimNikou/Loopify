@@ -157,5 +157,22 @@ SOFTWARE.</string>
 
     <string name="default_web_client_id">651998808661-vl8r1capbo3k80ujqeq6692gtrcp2ba7.apps.googleusercontent.com</string>
     <string name="client_id" translatable="false">651998808661-uj3qfrb4ueul2n04v34a28e00gq6n3nl.apps.googleusercontent.com</string>
+    <string name="artist_amp_track_description"><![CDATA[Artist & Track Description]]></string>
+    <string name="display_name">Display Name</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="notif_denied">Notification permission is permanently denied. Please go to settings to enable it.</string>
+    <string name="dont_show_again">Don\'t show again</string>
+    <string name="search_for_song">Search for a song</string>
+    <string name="song_title">Song Title</string>
+    <string name="liked_songs">Liked Songs</string>
+    <string name="add_data">Add Data</string>
+    <string name="artist_name">Artist Name</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="previous">Previous</string>
+    <string name="play_song">Play song</string>
+    <string name="stop_song">Stop song</string>
+    <string name="next_song">Next song</string>
+    <string name="repeat">Repeat</string>
 
 </resources>

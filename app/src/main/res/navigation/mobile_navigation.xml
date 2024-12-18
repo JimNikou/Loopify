@@ -8,34 +8,34 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="ict.ihu.gr.loopify.ui.home.HomeFragment"
-        android:label="Home"/>
+        android:label="@string/menu_home"/>
 
     <fragment
         android:id="@+id/nav_search"
         android:name="ict.ihu.gr.loopify.SearchFragment"
-        android:label="Search"/>
+        android:label="@string/search"/>
 
     <fragment
         android:id="@+id/nav_library"
         android:name="ict.ihu.gr.loopify.YourLibraryFragment"
-        android:label="Your Library"/>
+        android:label="@string/your_library"/>
 
     <!-- Drawer Navigation Fragments (other sections) -->
     <fragment
         android:id="@+id/nav_notification"
         android:name="ict.ihu.gr.loopify.ui.notification.NotificationFragment"
-        android:label="Notifications"/>
+        android:label="@string/notifications"/>
 
     <fragment
         android:id="@+id/nav_settings"
         android:name="ict.ihu.gr.loopify.ui.settings.SettingsFragment"
-        android:label="Settings"/>
+        android:label="@string/settings"/>
     <fragment
         android:id="@+id/nav_account"
         android:name="ict.ihu.gr.loopify.AccountFragment"
-        android:label="Account"/>
+        android:label="@string/account"/>
     <fragment
         android:id="@+id/nav_about"
         android:name="ict.ihu.gr.loopify.AboutFragment"
-        android:label="About"/>
+        android:label="@string/about"/>
 </navigation>
