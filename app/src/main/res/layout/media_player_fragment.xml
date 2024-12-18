@@ -129,20 +129,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="12dp"
-                android:src="@drawable/ic_fullscreen_media_player_play_button"
+                android:src="@drawable/ic_fullscreen_media_player_pause_button"
                 android:background="?android:selectableItemBackground"
                 app:tint="#FFFFFF"
                 android:contentDescription="@string/play_song" />
-
-            <ImageButton
-                android:id="@+id/stopButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="12dp"
-                android:src="@drawable/ic_fullscreen_media_player_stop_song_button"
-                android:background="?android:selectableItemBackground"
-                app:tint="#FFFFFF"
-                android:contentDescription="@string/stop_song" />
 
             <ImageButton
                 android:id="@+id/nextButton"
@@ -162,7 +152,17 @@
                 android:src="@drawable/ic_fullscreen_media_player_repeat_song_button"
                 android:background="?android:selectableItemBackground"
                 app:tint="#FFFFFF"
-                android:contentDescription="@string/repeat" />
+                android:contentDescription="Repeat" />
+            <ImageButton
+                android:id="@+id/likeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="12dp"
+                android:src="@drawable/heartlikedsongsemptyicon"
+                android:background="?android:selectableItemBackground"
+                android:contentDescription="Like/Unlike track"
+                app:tint="#FFFFFF" />
+
         </LinearLayout>
     </LinearLayout>
 

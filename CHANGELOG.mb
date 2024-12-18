@@ -1,6 +1,6 @@
 ## Changelog
-### Version 0.0.15
+### Version 0.0.20
 
-- Bump version to 0.0.15
-- fix: fixed the artist layout from crashing the application
-End of Changelog for version 0.0.15
+- Bump version to 0.0.20
+- Merge pull request #89 from JimNikou/88-notification-bar-media-player-integration
+End of Changelog for version 0.0.20

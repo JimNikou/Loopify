@@ -9,6 +9,8 @@
     android:fitsSystemWindows="true"
     tools:openDrawer="start">
 
+
+
     <!-- Main content in CoordinatorLayout -->
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -48,7 +50,9 @@
 
 
         <!-- Bottom Navigation Bar -->
+
         <com.google.android.material.bottomnavigation.BottomNavigationView
+
             android:id="@+id/bottomNavView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -57,10 +61,20 @@
             app:itemTextAppearanceActive="@style/regular_font_12"
             app:itemTextAppearanceInactive="@style/regular_font_12"/>
 
+        <!-- Mini player view -->
+        <include
+            layout="@layout/mini_player_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="60dp" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
+
     <!-- Navigation Drawer -->
+
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
         android:layout_width="wrap_content"
@@ -73,7 +87,7 @@
 
 
 
-
+    <include layout="@layout/mini_player_view" />
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:id="@+id/linLayout"
@@ -82,6 +96,17 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="24dp">
+
+        <TextView
+            android:id="@+id/errorMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            android:textAlignment="center"
+            android:text="Please enter email and password"
+            android:textColor="@android:color/holo_red_dark"
+            android:textSize="16sp" />
 
         <!-- Logo ImageView at the top center -->
         <ImageView

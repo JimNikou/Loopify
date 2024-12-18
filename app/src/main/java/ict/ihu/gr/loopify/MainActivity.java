@@ -112,6 +112,8 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
     // Declare a FirebaseUser to handle the current user
     private FirebaseUser currentUser;
+    private MiniPlayerManager miniPlayerManager;
+
     // After email/password login, if displayName is null, show a dialog
     private void updateDisplayName(String displayName) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -164,31 +166,42 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         }
     }
 
-    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getResultCode() == RESULT_OK){
-                Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                try {
-                    GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
-                    AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
-                    auth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                signInButton.setVisibility(View.GONE);
-                                auth = FirebaseAuth.getInstance();
-                                linearLayout.setVisibility(View.GONE);
-//                                recreate();
-                            }
+    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == RESULT_OK) {
+                        boolean isTestMode = getIntent().getBooleanExtra("TEST_MODE", false);
+                        if (isTestMode) {
+                            // Simulate successful sign-in for test mode
+                            signInButton.setVisibility(View.GONE);
+                            linearLayout.setVisibility(View.GONE);
+                            return;
                         }
-                    });
-                } catch (ApiException e) {
-                    throw new RuntimeException(e);
+
+                        // Normal flow: Process Google Sign-In
+                        Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                        try {
+                            GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
+                            AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
+                            auth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        signInButton.setVisibility(View.GONE);
+                                        auth = FirebaseAuth.getInstance();
+                                        linearLayout.setVisibility(View.GONE);
+                                    }
+                                }
+                            });
+                        } catch (ApiException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
                 }
-            }
-        }
-    });
+            });
+
 
     final BroadcastReceiver mediaPlayerReceiver = new BroadcastReceiver() {
         @Override
@@ -212,6 +225,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         IntentFilter filter = new IntentFilter("SHOW_MEDIA_PLAYER");
         registerReceiver(mediaPlayerReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
 
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) { // Android 13+
             ActivityResultLauncher<String> requestPermissionLauncher =
                     registerForActivityResult(new ActivityResultContracts.RequestPermission(), isGranted -> {
@@ -230,6 +244,14 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
 
         setContentView(binding.getRoot());
+        miniPlayerManager = new MiniPlayerManager(this);
+
+        boolean isTestMode = getIntent().getBooleanExtra("TEST_MODE", false);
+        if (isTestMode) {
+            // Simulate user being logged in by hiding the login layout
+            linearLayout = findViewById(R.id.linLayout);
+            linearLayout.setVisibility(View.GONE);
+        }
 
         setSupportActionBar(binding.appBarMain.toolbar);
 
@@ -449,7 +471,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 //            logOut();
 //        });
 //        resetButton.setOnClickListener(v -> { if (exoPlayerManager != null) {exoPlayerManager.resetSong();}});
-
+        errorMessage = findViewById(R.id.errorMessage);
         emailField = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
         loginButton = findViewById(R.id.loginButton);
@@ -459,7 +481,8 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
             String password = passwordField.getText().toString();
 
             if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-                Toast.makeText(MainActivity.this, "Please enter email and password", Toast.LENGTH_SHORT).show();
+                errorMessage.setVisibility(View.VISIBLE);
+                errorMessage.setText("Please enter email and password");
                 return;
             }
 
@@ -484,7 +507,8 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
             String password = passwordField.getText().toString();
 
             if (TextUtils.isEmpty(email) || TextUtils.isEmpty(password)) {
-                Toast.makeText(MainActivity.this, "Please fill all fields", Toast.LENGTH_SHORT).show();
+                errorMessage.setVisibility(View.VISIBLE);
+                errorMessage.setText("Please enter email and password");
                 return;
             }
 
@@ -504,7 +528,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
         createNotificationChannel();
     }
-
+    private TextView errorMessage;
     private void logOut() {
         FirebaseAuth.getInstance().signOut();
         linearLayout.setVisibility(View.VISIBLE);
@@ -549,7 +573,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 
 
     // Method to load the MediaPlayerManager fragment as a full-screen overlay
-    private void loadFragment(Fragment fragment) {
+    public void loadFragment(Fragment fragment) {
         FrameLayout fragmentContainer = findViewById(R.id.fragment_MediaPlayerFragment);
         fragmentContainer.setVisibility(View.VISIBLE);
         fragmentContainer.setBackgroundColor(getResources().getColor(android.R.color.black));
@@ -568,6 +592,8 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         transaction.replace(R.id.fragment_MediaPlayerFragment, fragment);
         transaction.addToBackStack(null);
         transaction.commit();
+        // Also, ensure fragment_MediaPlayerFragment is visible again if it was hidden.
+        findViewById(R.id.fragment_MediaPlayerFragment).setVisibility(View.VISIBLE);
     }
 
     // Handle back press to close the media player fragment and restore layout
@@ -609,6 +635,9 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
         startMusicService("STOP");
         exoPlayerManager.release(); // Release MediaPlayer resources
         unregisterReceiver(mediaPlayerReceiver);
+        if (miniPlayerManager != null) {
+            miniPlayerManager.onDestroy();
+        }
     }
 //
     @Override

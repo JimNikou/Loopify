@@ -81,7 +81,7 @@ public class SearchFragment extends Fragment {
 
 
         searchBar = view.findViewById(R.id.searchBar);
-        testButton = view.findViewById(R.id.testbutton);
+        testButton = view.findViewById(R.id.searchbutton);
         songListRecyclerView = view.findViewById(R.id.song_list);
 
         // Setup RecyclerView
