@@ -9,7 +9,7 @@
         android:id="@+id/dialogMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Notification permission is permanently denied. Please go to settings to enable it."
+        android:text="@string/notif_denied"
         android:textSize="16sp"
         android:paddingBottom="16dp" />
 
@@ -17,6 +17,6 @@
         android:id="@+id/dontShowAgainCheckbox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Don't show again"
+        android:text="@string/dont_show_again"
         android:paddingBottom="16dp" />
 </LinearLayout>

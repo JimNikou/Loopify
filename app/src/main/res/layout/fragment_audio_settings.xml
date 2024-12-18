@@ -1,0 +1,8 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools" android:id="@+id/audio_settings_layout" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" tools:context=".AudioSettingsFragment">
+    <Button android:id="@+id/back_button_audio" android:layout_width="wrap_content" android:layout_height="48dp" android:layout_gravity="start|top" android:layout_margin="16dp" android:layoutDirection="inherit" android:text="@string/back" android:textAppearance="@style/regular_font_18" app:icon="@drawable/alt_arrow_left_svgrepo_com" app:iconGravity="textStart" app:iconSize="30dp"/>
+    <!--  Toggle visibility of equalizer  -->
+    <Switch android:id="@+id/equalizer_toggle_switch" android:layout_width="wrap_content" android:layout_height="48dp" android:text="@string/show_equalizer" tools:ignore="UseSwitchCompatOrMaterialXml"/>
+    <Button android:id="@+id/equalizer_preset_button" android:layout_width="wrap_content" android:layout_height="48dp" android:layout_marginBottom="16dp" android:background="@drawable/rounded_button" android:drawablePadding="8dp" android:gravity="center_vertical|start" android:paddingStart="16dp" android:text="@string/select_preset" android:textAppearance="@style/regular_font_16" android:textColor="@android:color/black" tools:ignore="RtlSymmetry"/>
+    <!--  Container for the Equalizer UI  -->
+    <LinearLayout android:id="@+id/equalizer_container" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp" android:visibility="gone"/>
+</LinearLayout>

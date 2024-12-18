@@ -10,7 +10,7 @@
         android:id="@+id/searchBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Search for a song"
+        android:hint="@string/search_for_song"
         android:padding="8dp"
         android:background="@android:color/darker_gray"
         android:textColor="@android:color/white"/>
@@ -19,7 +19,7 @@
         android:id="@+id/searchbutton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Search"
+        android:text="@string/search"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="8dp"/>
 

@@ -8,7 +8,8 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
-    <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="language_change_toast">Application Restart</string>
 
     <string name="about_overview">
         Loopify is a simplified music streaming application created as part of a university project. Inspired by popular platforms, it provides core music streaming functionalities, including browsing, searching, and detailed information on artists and albums.
@@ -19,12 +20,11 @@
 
     <string name="about_mission">Loopify aims to provide a seamless and accessible music streaming experience, combining educational and professional goals to enhance users\' enjoyment and engagement with music.</string>
 
-    <string name="default_web_client_id">651998808661-vl8r1capbo3k80ujqeq6692gtrcp2ba7.apps.googleusercontent.com</string>
 
     <string name="about_version">
             0.0.0
     </string>
-    <string name="client_id">651998808661-uj3qfrb4ueul2n04v34a28e00gq6n3nl.apps.googleusercontent.com</string>
+
     <string name="about_license">MIT License
 
 Copyright © 2024 Loopify
@@ -56,7 +56,123 @@ SOFTWARE.</string>
     <string name="licence_title">Licence</string>
 
     <string name="version_title">Version</string>
+    <string name="general">General</string>
+    <string name="audio">Audio</string>
+    <string name="notifications_and_alerts">Notifications &amp; Alerts</string>
+    <string name="library">Library</string>
+    <string name="account">Account</string>
+    <string name="appearance">Appearance</string>
+    <string name="storage_and_data">Storage &amp; Data</string>
+    <string name="content_preferences">Content Preferences</string>
+    <string name="logout">Logout</string>
+    <string name="change_user">Change User</string>
+    <string name="add_user">Add User</string>
+    <string name="remove_user">Remove User</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="back">Back</string>
+    <string name="theme_option_aquamarine">Aquamarine</string>
+    <string name="theme_option_beige">Beige</string>
+    <string name="theme_option_gold">Gold</string>
+    <string name="theme_option_ink">Ink</string>
+    <string name="theme_option_default">Default</string>
+    <string name="language">Language</string>
+    <string name="crossfade_songs">Crossfade Songs</string>
+    <string name="seconds_format">%d seconds</string>
+    <string name="mono_audio">Mono Audio</string>
 
 
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="reset_settings">Reset Settings</string>
+    <string name="help">Help</string>
+    <string name="privacy_settings">Privacy Settings</string>
+    <string name="account_name">Username</string>
+    <string name="account_email">Email</string>
+    <string name="share_listening_activity">Share Listening Activity</string>
+    <string name="subscription_information">Subscription Information</string>
+    <string name="renewal_date">Renewal Date</string>
+    <string name="explicit_content_filter">Explicit Content Filter</string>
+    <string name="allow_explicit_content">Allow Explicit Content</string>
+    <string name="duplicate_song_detection">Duplicate Song Detection</string>
+    <string name="enable_duplicate_detection">Enable Duplicate Detection</string>
+    <string name="favorite_songs">Favorite Songs</string>
+    <string name="highlight_favorites">Highlight Favorites</string>
+    <string name="recently_played_history">Recently Played History</string>
+    <string name="enable_recently_played">Enable Recently Played</string>
+    <string name="custom_sorting">Custom Sorting</string>
+    <string name="show_recently_added">Show Recently Added</string>
+    <string name="recently_added">Recently Added</string>
+    <string name="logout_confirmation">Logout</string>
+    <string name="playback_notifications">Playback Notifications</string>
+    <string name="new_releases">New Releases</string>
+    <string name="app_updates">App Updates</string>
+    <string name="profile_information">Profile Information</string>
+    <string name="subscription_status">Subscription Status</string>
+    <string name="show_equalizer">Show Equalizer</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="enter_name">Enter Username</string>
+    <string name="log_back_in_msg">Your storage data will be safe, but you will have to log back in again.</string>
+    <string name="play_music">Play Music</string>
+    <string name="stop_music">Stop Music</string>
+    <string name="pause">Pause</string>
+    <string name="reset">Reset</string>
+    <string name="open_media_player">Open Media Player</string>
+    <string name="select_language">Select Language</string>
+    <string name="english">🇬🇧English</string>
+    <string name="greek">🇬🇷Greek</string>
+    <string name="spanish">🇪🇸Spanish</string>
+    <string name="search">Search</string>
+    <string name="your_library">Your Library</string>
+    <string name="notifications">Notifications</string>
+    <string name="about">About</string>
+    <string name="settings">Settings</string>
+    <string name="enable_auto_download">Enable Auto Download</string>
+    <string name="auto_download">Auto Download</string>
+    <string name="storage_info_details">Storage Info Details</string>
+    <string name="storage_info">Storage Info</string>
+    <string name="data_usage_limit">Data Usage Limit</string>
+    <string name="data_usage">Data Usage</string>
+    <string name="backup_data_button">Backup Data</string>
+    <string name="backup">Backup</string>
+    <string name="manage_downloads_button">Manage Downoads</string>
+    <string name="clear_cache_button">Clear</string>
+    <string name="clear_cache">Clear Cache</string>
+    <string name="percentage_format" translatable="false">%d%%</string>
+    <string name="gain_format" translatable="false">%+d dB</string>
+    <string name="select_preset">Select Preset</string>
+
+
+    <string name="default_web_client_id">651998808661-vl8r1capbo3k80ujqeq6692gtrcp2ba7.apps.googleusercontent.com</string>
+    <string name="client_id" translatable="false">651998808661-uj3qfrb4ueul2n04v34a28e00gq6n3nl.apps.googleusercontent.com</string>
+    <string name="artist_amp_track_description"><![CDATA[Artist & Track Description]]></string>
+    <string name="display_name">Display Name</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="notif_denied">Notification permission is permanently denied. Please go to settings to enable it.</string>
+    <string name="dont_show_again">Don\'t show again</string>
+    <string name="search_for_song">Search for a song</string>
+    <string name="song_title">Song Title</string>
+    <string name="liked_songs">Liked Songs</string>
+    <string name="add_data">Add Data</string>
+    <string name="artist_name">Artist Name</string>
+    <string name="shuffle">Shuffle</string>
+    <string name="previous">Previous</string>
+    <string name="play_song">Play song</string>
+    <string name="stop_song">Stop song</string>
+    <string name="next_song">Next song</string>
+    <string name="repeat">Repeat</string>
 
 </resources>

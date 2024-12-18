@@ -22,14 +22,14 @@
         android:theme="@style/Theme.Loopify"
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
-<!--        <activity android:name=".GoogleSignInActivity"></activity>-->
-<!--        <activity android:name=".EmailPasswordActivity"-->
-<!--            android:exported="true">-->
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
-<!--        </activity>-->
+        <!--        <activity android:name=".GoogleSignInActivity"></activity>-->
+        <!--        <activity android:name=".EmailPasswordActivity"-->
+        <!--            android:exported="true">-->
+        <!--            <intent-filter>-->
+        <!--                <action android:name="android.intent.action.MAIN" />-->
+        <!--                <category android:name="android.intent.category.LAUNCHER" />-->
+        <!--            </intent-filter>-->
+        <!--        </activity>-->
         <activity android:name=".ArtistInfoActivity"
             android:theme="@style/Theme.Loopify.NoActionBar"/>
         <activity

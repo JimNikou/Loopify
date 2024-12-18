@@ -1,0 +1,34 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="reply_entries">
+        <item>Reply</item>
+        <item>Reply to all</item>
+    </string-array>
+
+    <string-array name="reply_values">
+        <item>reply</item>
+        <item>reply_all</item>
+    </string-array>
+
+    <string-array name="language_options">
+        <item>English</item>
+        <item>Greek</item>
+        <item>Spanish</item>
+    </string-array>
+
+    <string-array name="sorting_options">Sorting Options</string-array>
+
+
+    <string-array name="sort_options">
+        <item>By Time Added</item>
+        <item>By Title</item>
+        <item>By Artist</item>
+        <item>By Album</item>
+        <item>By Play Count</item>
+    </string-array>
+
+
+
+
+
+</resources>

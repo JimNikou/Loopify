@@ -73,4 +73,3 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "converte
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
-
