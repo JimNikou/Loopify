@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -53,17 +54,21 @@ public class MiniPlayerManager {
         miniPlayerLikeButton = activity.findViewById(R.id.miniPlayerLikeButton);
         miniPlayerLikeButton.setOnClickListener(v -> {
             if (currentTrack != null && !currentTrack.isEmpty()) {
+                String artistName = "Unknown Artist"; // Replace with actual artist name if available
                 if (isTrackLiked) {
+                    // Remove from liked
                     trackHandler.removeSongFromLiked(currentTrack);
                     isTrackLiked = false;
                     miniPlayerLikeButton.setImageResource(R.drawable.heartlikedsongsemptyicon);
                 } else {
-                    trackHandler.addSongToLiked(currentTrack);
+                    // Add to liked with artist name
+                    trackHandler.addSongToLiked(currentTrack, currentArtist);
                     isTrackLiked = true;
                     miniPlayerLikeButton.setImageResource(R.drawable.heartlikedsongsfullicon);
                 }
             }
         });
+
         miniPlayerSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             boolean userIsSeeking = false;
 
@@ -134,6 +139,7 @@ public class MiniPlayerManager {
         });
     }
 
+
     private void registerReceivers() {
         // Track info receiver
         context.registerReceiver(trackInfoReceiver, new IntentFilter("CURRENT_TRACK_INFO"), Context.RECEIVER_NOT_EXPORTED);
@@ -170,6 +176,7 @@ public class MiniPlayerManager {
                 long duration = intent.getLongExtra("DURATION", 0);
                 String title = intent.getStringExtra("TITLE");
                 String artist = intent.getStringExtra("ARTIST");
+                Log.d("MetadataReceiver", "Artist: " + artist);
 
                 trackTitle.setText(title);
                 artistName.setText(artist);

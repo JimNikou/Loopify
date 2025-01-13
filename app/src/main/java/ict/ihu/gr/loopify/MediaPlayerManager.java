@@ -59,20 +59,22 @@ public class MediaPlayerManager extends Fragment {
         });
         likeButton = view.findViewById(R.id.likeButton);
         likeButton.setOnClickListener(v -> {
-                    if (currentPlayingTrack != null && !currentPlayingTrack.isEmpty()) {
-                        if (isTrackLiked) {
-                            // Remove from liked
-                            trackHandler.removeSongFromLiked(currentPlayingTrack);
-                            isTrackLiked = false;
-                            likeButton.setImageResource(R.drawable.heartlikedsongsemptyicon);
-                        } else {
-                            // Add to liked
-                            trackHandler.addSongToLiked(currentPlayingTrack);
-                            isTrackLiked = true;
-                            likeButton.setImageResource(R.drawable.heartlikedsongsfullicon);
-                        }
-                    }
+            if (currentPlayingTrack != null && !currentPlayingTrack.isEmpty()) {
+                String artistName = "Unknown Artist"; // Replace with the actual artist name if available
+                if (isTrackLiked) {
+                    // Remove from liked
+                    trackHandler.removeSongFromLiked(currentPlayingTrack);
+                    isTrackLiked = false;
+                    likeButton.setImageResource(R.drawable.heartlikedsongsemptyicon);
+                } else {
+                    // Add to liked with artist name
+                    trackHandler.addSongToLiked(currentPlayingTrack, artistName);
+                    isTrackLiked = true;
+                    likeButton.setImageResource(R.drawable.heartlikedsongsfullicon);
+                }
+            }
         });
+
 //        stopButton.setOnClickListener(v -> {
 //            // Send a STOP action to the service
 //            Intent stopIntent = new Intent(getContext(), MediaPlayerService.class);

@@ -48,7 +48,7 @@ public class ArtistInfoActivity extends AppCompatActivity {
                 artistWebsiteTextView.setText("Website: " + artistObject.optString("strWebsite", "N/A"));
                 artistBiographyTextView.setText(artistObject.optString("strBiographyEN", "Biography not available."));
             } catch (JSONException e) {
-                e.printStackTrace();
+                e.printStackTrace(); //log file and inform user
             }
         }
     }

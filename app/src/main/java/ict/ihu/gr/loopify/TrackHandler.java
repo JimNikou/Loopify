@@ -26,56 +26,47 @@ public class TrackHandler {
 
     public void TrackHandler(){}
 
-    public void addSongToLiked(String track) {
+    public void addSongToLiked(String trackName, String artistName) {
         DocumentReference docRef = db.collection(user.getUid()).document("LikedSongs");
-        docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                if (task.isSuccessful() && task.getResult() != null) {
-                    DocumentSnapshot document = task.getResult();
-                    Map<String, Object> data = document.getData();
 
-                    int nextSn = 1; // Default to sn1 if no songs exist
-                    if (data != null) {
-                        for (String key : data.keySet()) {
-                            if (key.startsWith("sn")) {
-                                try {
-                                    // Safely parse the number part of the key
-                                    int snNumber = Integer.parseInt(key.substring(2));
-                                    if (snNumber >= nextSn) {
-                                        nextSn = snNumber + 1; // Increment the highest sn number
-                                    }
-                                } catch (NumberFormatException e) {
-                                    Log.w(TAG, "Invalid sn key: " + key, e);
+        docRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DocumentSnapshot document = task.getResult();
+                Map<String, Object> data = document.getData();
+
+                int nextSn = 1; // Default to sn1 if no songs exist
+                if (data != null) {
+                    for (String key : data.keySet()) {
+                        if (key.startsWith("sn")) {
+                            try {
+                                int snNumber = Integer.parseInt(key.substring(2));
+                                if (snNumber >= nextSn) {
+                                    nextSn = snNumber + 1;
                                 }
+                            } catch (NumberFormatException e) {
+                                Log.w(TAG, "Invalid sn key: " + key, e);
                             }
                         }
                     }
-
-                    String snKey = "sn" + nextSn;
-                    Map<String, Object> newSong = new HashMap<>();
-                    newSong.put(snKey, track);
-
-                    db.collection(user.getUid()).document("LikedSongs")
-                            .set(newSong, SetOptions.merge())
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Log.d(TAG, "Song successfully added with key: " + snKey);
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.w(TAG, "Error adding song", e);
-                                }
-                            });
-                } else {
-                    Log.w(TAG, "Error fetching liked songs", task.getException());
                 }
+
+                String snKey = "sn" + nextSn;
+                Map<String, String> songData = new HashMap<>();
+                songData.put("name", trackName);
+                songData.put("artist", artistName);
+
+                Map<String, Object> updatedData = new HashMap<>();
+                updatedData.put(snKey, songData);
+
+                docRef.set(updatedData, SetOptions.merge())
+                        .addOnSuccessListener(aVoid -> Log.d(TAG, "Song successfully added with key: " + snKey))
+                        .addOnFailureListener(e -> Log.w(TAG, "Error adding song", e));
+            } else {
+                Log.w(TAG, "Error fetching liked songs", task.getException());
             }
         });
     }
+
 
 
 
@@ -89,36 +80,26 @@ public class TrackHandler {
                     Map<String, Object> data = document.getData();
 
                     if (data != null) {
-                        // Use a single-element array to hold the sn key to remove, making it "effectively final"
-                        final String[] snKeyToRemove = {null};
-
+                        // Iterate through the fields to find the matching song
+                        String keyToRemove = null;
                         for (Map.Entry<String, Object> entry : data.entrySet()) {
-                            if (track.equals(entry.getValue())) {
-                                snKeyToRemove[0] = entry.getKey();
+                            Map<String, Object> songData = (Map<String, Object>) entry.getValue();
+                            if (songData != null && track.equals(songData.get("name"))) {
+                                keyToRemove = entry.getKey(); // Get the key (e.g., "sn1") to remove
                                 break;
                             }
                         }
 
-                        if (snKeyToRemove[0] != null) {
-                            // Delete the specific sn field from Firestore
-                            docRef.update(snKeyToRemove[0], FieldValue.delete())
-                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                        @Override
-                                        public void onSuccess(Void aVoid) {
-                                            Log.d(TAG, "Song successfully removed with key: " + snKeyToRemove[0]);
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.w(TAG, "Error removing song", e);
-                                        }
-                                    });
+                        if (keyToRemove != null) {
+                            // Delete the specific key from Firestore
+                            docRef.update(keyToRemove, FieldValue.delete())
+                                    .addOnSuccessListener(aVoid -> Log.d(TAG, "Song successfully removed: " + track))
+                                    .addOnFailureListener(e -> Log.w(TAG, "Error removing song", e));
                         } else {
-                            Log.d(TAG, "Song not found in liked songs.");
+                            Log.d(TAG, "Song not found in liked songs: " + track);
                         }
                     } else {
-                        Log.d(TAG, "No liked songs found to remove.");
+                        Log.d(TAG, "No liked songs found.");
                     }
                 } else {
                     Log.w(TAG, "Error fetching liked songs", task.getException());
@@ -126,6 +107,9 @@ public class TrackHandler {
             }
         });
     }
+
+
+
 
 
 
