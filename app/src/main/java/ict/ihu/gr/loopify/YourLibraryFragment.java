@@ -1,6 +1,7 @@
 package ict.ihu.gr.loopify;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -108,6 +109,14 @@ public class YourLibraryFragment extends Fragment {
             }
         });
 
+        totalLikedSongs.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Use Intent to open another Activity
+                Intent intent = new Intent(getActivity(), LikedSongsActivity.class);
+                startActivity(intent);
+            }
+        });
 
         return view;
     }
