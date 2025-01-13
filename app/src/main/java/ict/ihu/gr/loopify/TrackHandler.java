@@ -16,7 +16,9 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class TrackHandler {
@@ -109,12 +111,7 @@ public class TrackHandler {
     }
 
 
-
-
-
-
-
-    public void getAllLikedSongs(){
+    public void getAllLikedSongs() {
         DocumentReference docRef = db.collection(user.getUid()).document("LikedSongs");
         docRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -122,7 +119,21 @@ public class TrackHandler {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
-                        Log.d(TAG, "DocumentSnapshot data: " + document.getData());
+                        Map<String, Object> data = document.getData(); // Retrieve the document data as a Map
+                        if (data != null && !data.isEmpty()) {
+                            List<String> likedSongsList = new ArrayList<>();
+
+                            for (Map.Entry<String, Object> entry : data.entrySet()) {
+                                Map<String, String> songDetails = (Map<String, String>) entry.getValue(); // Cast to expected structure
+                                String songName = songDetails.getOrDefault("name", "Unknown");
+                                String artistName = songDetails.getOrDefault("artist", "Unknown");
+                                likedSongsList.add(songName + " - " + artistName);
+                            }
+
+                            Log.d(TAG, "Liked Songs: " + likedSongsList);
+                        } else {
+                            Log.d(TAG, "No songs found in LikedSongs.");
+                        }
                     } else {
                         Log.d(TAG, "No such document");
                     }
@@ -132,6 +143,7 @@ public class TrackHandler {
             }
         });
     }
+
 
     public interface LikedSongsCountCallback {
         void onCountRetrieved(int count);

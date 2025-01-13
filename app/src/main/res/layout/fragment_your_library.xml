@@ -46,6 +46,8 @@
                 android:fontFamily="@font/pptelegraf_regular"
                 android:paddingStart="45dp"
                 android:text="Liked Songs"
+                android:clickable="true"
+                android:focusable="true"
                 android:textAlignment="viewStart"
                 android:textColor="#000000"
                 android:textSize="20sp"
@@ -78,7 +80,7 @@
         android:layout_marginTop="32dp"
         android:backgroundTint="#1DB954"
         android:fontFamily="@font/pptelegraf_regular"
-        android:text="Add Data"
+        android:text="See Console Returned Data"
         android:textColor="#FFFFFF" />
 
 </RelativeLayout>

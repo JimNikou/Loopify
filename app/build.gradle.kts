@@ -68,6 +68,7 @@ dependencies {
 
     // Add Glide dependency
     implementation("com.github.bumptech.glide:glide:4.12.0")
+    implementation(libs.activity)
 
     // Add annotation processor for Glide
     annotationProcessor("com.github.bumptech.glide:compiler:4.12.0")
