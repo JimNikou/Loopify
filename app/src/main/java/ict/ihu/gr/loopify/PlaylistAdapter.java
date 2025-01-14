@@ -1,4 +1,4 @@
-package ict.ihu.gr.loopify.ui;
+package ict.ihu.gr.loopify;
 
 import android.content.Intent;
 import android.util.Log;
@@ -58,19 +58,21 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
 
         holder.itemView.setOnClickListener(v -> {
             if (listener != null) {
-                listener.onItemClick(songNames[position], artistNames[position]);
+                // Use holder.getAdapterPosition() instead of position
+                listener.onItemClick(songNames[holder.getAdapterPosition()], artistNames[holder.getAdapterPosition()]);
             }
         });
 
         // Set up click listener for the song options (⋮)
-        holder.songOptionsTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                apiManager.fetchArtistInfo(artistNames[position], new ApiManager.ApiResponseListener() {
+        holder.songOptionsTextView.setOnClickListener(v -> {
+            // Use holder.getAdapterPosition() to get the correct position
+            int adapterPosition = holder.getAdapterPosition();
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                apiManager.fetchArtistInfo(artistNames[adapterPosition], new ApiManager.ApiResponseListener() {
                     @Override
                     public void onResponseReceived(String artistJsonResponse) {
                         if (artistJsonResponse != null) {
-                            apiManager.fetchTrackInfo(songNames[position], artistNames[position], new ApiManager.ApiResponseListener() {
+                            apiManager.fetchTrackInfo(songNames[adapterPosition], artistNames[adapterPosition], new ApiManager.ApiResponseListener() {
                                 @Override
                                 public void onResponseReceived(String trackJsonResponse) {
                                     if (trackJsonResponse != null) {
@@ -93,6 +95,7 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
             }
         });
     }
+
 
     @Override
     public int getItemCount() {
