@@ -1,14 +1,14 @@
 package ict.ihu.gr.loopify;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import ict.ihu.gr.loopify.R;
-import ict.ihu.gr.loopify.TrackManager;
-import ict.ihu.gr.loopify.Track;
+
 import ict.ihu.gr.loopify.ui.PlaylistAdapter;
 
 import java.util.ArrayList;
@@ -21,7 +21,6 @@ public class PlaylistActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist);
 
-        // Views for buttons and recycler view
         Button backButton = findViewById(R.id.back_button);
         ImageView selectedImage = findViewById(R.id.selected_image);
         RecyclerView recyclerView = findViewById(R.id.playlist_recycler_view);
@@ -30,44 +29,47 @@ public class PlaylistActivity extends AppCompatActivity {
         int imageResource = getIntent().getIntExtra("imageResource", R.drawable.background);
         selectedImage.setImageResource(imageResource);
 
-        // Initialize TrackManager
         TrackManager trackManager = new TrackManager();
-
-        // Get the genre passed from the intent
         String genre = getIntent().getStringExtra("genre");
 
-        // Fetch data for the genre
-        trackManager.fetchTracksForAllGenres(new ict.ihu.gr.loopify.ApiManager(), (fetchedGenre, tracks) -> {
+        trackManager.fetchTracksForAllGenres(new ApiManager(), (fetchedGenre, tracks) -> {
             if (genre.equals(fetchedGenre)) {
-                // Prepare data for the adapter
                 List<String> songNames = new ArrayList<>();
                 List<String> artistNames = new ArrayList<>();
-                List<String> imageResources = new ArrayList<>();  // Keep as Strings for URLs
+                List<String> imageUrls = new ArrayList<>();
 
                 for (Track track : tracks) {
                     songNames.add(track.getName());
                     artistNames.add(track.getArtist().getName());
-
-                    // If track.getImage() contains image URLs (Strings)
                     if (!track.getImage().isEmpty()) {
-                        imageResources.add(track.getImage().get(0).getText());  // Add image URL
+                        imageUrls.add(track.getImage().get(0).getText());
                     }
                 }
 
-                // Set up adapter with fetched data
                 runOnUiThread(() -> {
-                    PlaylistAdapter playlistAdapter = new PlaylistAdapter(
+                    PlaylistAdapter adapter = new PlaylistAdapter(
                             songNames.toArray(new String[0]),
                             artistNames.toArray(new String[0]),
-                            imageResources.toArray(new String[0])  // Pass image URLs as String[]
+                            imageUrls.toArray(new String[0]),
+                            this::startMusicService // Pass the click listener
                     );
+
                     recyclerView.setLayoutManager(new LinearLayoutManager(this));
-                    recyclerView.setAdapter(playlistAdapter);
+                    recyclerView.setAdapter(adapter);
                 });
             }
         });
 
-        // Back button functionality
         backButton.setOnClickListener(v -> finish());
+    }
+
+    private void startMusicService(String songName, String artistName) {
+        Intent serviceIntent = new Intent(this, MediaPlayerService.class);
+        serviceIntent.setAction("PLAY");
+        serviceIntent.putExtra("TRACK_NAME", songName);
+        serviceIntent.putExtra("ARTIST_NAME", artistName);
+        startService(serviceIntent);
+
+        Log.d("PlaylistActivity", "Started music service with track: " + songName + " by " + artistName);
     }
 }
