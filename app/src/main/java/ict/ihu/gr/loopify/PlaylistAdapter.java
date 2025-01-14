@@ -1,6 +1,5 @@
-package ict.ihu.gr.loopify.ui;
+package ict.ihu.gr.loopify;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,8 +8,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 
 import ict.ihu.gr.loopify.ApiManager;
@@ -21,12 +22,18 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
 
     private final String[] songNames;
     private final String[] artistNames;
-    private final String[] imageUrls;  // Change to String[] for image URLs
+    private final String[] imageUrls;
+    private final OnItemClickListener listener;
 
-    public PlaylistAdapter(String[] songNames, String[] artistNames, String[] imageUrls) {
+    public interface OnItemClickListener {
+        void onItemClick(String songName, String artistName);
+    }
+
+    public PlaylistAdapter(String[] songNames, String[] artistNames, String[] imageUrls, OnItemClickListener listener) {
         this.songNames = songNames;
         this.artistNames = artistNames;
         this.imageUrls = imageUrls;
+        this.listener = listener;
     }
 
     @NonNull
@@ -37,25 +44,35 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlaylistViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull PlaylistViewHolder holder, int position) {
         holder.songNameTextView.setText(songNames[position]);
         holder.artistNameTextView.setText(artistNames[position]);
+
         ApiManager apiManager = new ApiManager();
 
-        // Use Glide to load the image from URL into the ImageView
         Glide.with(holder.songImageView.getContext())
-                .load(imageUrls[position])  // Load image from URL
-                .into(holder.songImageView);  // Set image into ImageView
+                .load(imageUrls[position])
+                .placeholder(R.drawable.background)
+                .error(R.drawable.background)
+                .into(holder.songImageView);
+
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                // Use holder.getAdapterPosition() instead of position
+                listener.onItemClick(songNames[holder.getAdapterPosition()], artistNames[holder.getAdapterPosition()]);
+            }
+        });
 
         // Set up click listener for the song options (⋮)
-        holder.songOptionsTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                apiManager.fetchArtistInfo(artistNames[position], new ApiManager.ApiResponseListener() {
+        holder.songOptionsTextView.setOnClickListener(v -> {
+            // Use holder.getAdapterPosition() to get the correct position
+            int adapterPosition = holder.getAdapterPosition();
+            if (adapterPosition != RecyclerView.NO_POSITION) {
+                apiManager.fetchArtistInfo(artistNames[adapterPosition], new ApiManager.ApiResponseListener() {
                     @Override
                     public void onResponseReceived(String artistJsonResponse) {
                         if (artistJsonResponse != null) {
-                            apiManager.fetchTrackInfo(songNames[position], artistNames[position], new ApiManager.ApiResponseListener() {
+                            apiManager.fetchTrackInfo(songNames[adapterPosition], artistNames[adapterPosition], new ApiManager.ApiResponseListener() {
                                 @Override
                                 public void onResponseReceived(String trackJsonResponse) {
                                     if (trackJsonResponse != null) {
@@ -77,7 +94,6 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
                 });
             }
         });
-
     }
 
 
@@ -89,15 +105,15 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
     public static class PlaylistViewHolder extends RecyclerView.ViewHolder {
         public final TextView songNameTextView;
         public final TextView artistNameTextView;
-        public final ImageView songImageView;  // ImageView for song image
-        public final TextView songOptionsTextView;  // Add reference to the song options (⋮) TextView
+        public final ImageView songImageView;
+        public final TextView songOptionsTextView; // Added field for song options (⋮)
 
         public PlaylistViewHolder(@NonNull View itemView) {
             super(itemView);
             songNameTextView = itemView.findViewById(R.id.song_name);
             artistNameTextView = itemView.findViewById(R.id.artist_name);
-            songImageView = itemView.findViewById(R.id.song_image);  // Initialize ImageView correctly
-            songOptionsTextView = itemView.findViewById(R.id.song_options);  // Initialize song options TextView
+            songImageView = itemView.findViewById(R.id.song_image);
+            songOptionsTextView = itemView.findViewById(R.id.song_options); // Initialize the options view
         }
     }
 }

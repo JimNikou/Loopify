@@ -582,7 +582,7 @@ public class MainActivity extends AppCompatActivity implements ApiManager.ApiRes
 //        );
         transaction.replace(R.id.fragment_MediaPlayerFragment, fragment);
         transaction.addToBackStack(null);
-        transaction.commit();
+        transaction.commitAllowingStateLoss();
         // Also, ensure fragment_MediaPlayerFragment is visible again if it was hidden.
         findViewById(R.id.fragment_MediaPlayerFragment).setVisibility(View.VISIBLE);
     }

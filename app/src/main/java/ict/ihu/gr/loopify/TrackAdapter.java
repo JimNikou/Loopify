@@ -1,6 +1,7 @@
 package ict.ihu.gr.loopify;
 
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import ict.ihu.gr.loopify.ApiManager;
+import ict.ihu.gr.loopify.ArtistInfoActivity;
 
 import java.util.List;
 
@@ -46,8 +50,36 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
             }
         });
 
-    }
+        // Set up the click listener for the song options (⋮)
+        holder.songOptionsTextView.setOnClickListener(v -> {
+            Log.d("TrackAdapter", "Song options clicked for: " + track.getName());
 
+            ApiManager apiManager = new ApiManager();
+            apiManager.fetchArtistInfo(track.getArtist().getName(), new ApiManager.ApiResponseListener() {
+                @Override
+                public void onResponseReceived(String artistJsonResponse) {
+                    if (artistJsonResponse != null) {
+                        apiManager.fetchTrackInfo(track.getName(), track.getArtist().getName(), new ApiManager.ApiResponseListener() {
+                            @Override
+                            public void onResponseReceived(String trackJsonResponse) {
+                                if (trackJsonResponse != null) {
+                                    // Start ArtistInfoActivity and pass the responses
+                                    Intent intent = new Intent(context, ArtistInfoActivity.class);
+                                    intent.putExtra("artistJson", artistJsonResponse);
+                                    intent.putExtra("trackJson", trackJsonResponse);
+                                    context.startActivity(intent);
+                                } else {
+                                    Log.e("ApiError", "Track response is null");
+                                }
+                            }
+                        });
+                    } else {
+                        Log.e("ApiError", "Artist response is null");
+                    }
+                }
+            });
+        });
+    }
 
     @Override
     public int getItemCount() {
@@ -57,11 +89,13 @@ public class TrackAdapter extends RecyclerView.Adapter<TrackAdapter.TrackViewHol
     static class TrackViewHolder extends RecyclerView.ViewHolder {
         TextView songName;
         TextView artistName;
+        TextView songOptionsTextView;  // This is for the ⋮ icon
 
         public TrackViewHolder(@NonNull View itemView) {
             super(itemView);
             songName = itemView.findViewById(R.id.song_name);
             artistName = itemView.findViewById(R.id.artist_name);
+            songOptionsTextView = itemView.findViewById(R.id.song_options); // Find the ⋮ view
         }
     }
 
