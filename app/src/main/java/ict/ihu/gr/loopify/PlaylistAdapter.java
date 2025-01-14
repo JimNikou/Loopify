@@ -1,32 +1,33 @@
 package ict.ihu.gr.loopify.ui;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.bumptech.glide.Glide;
 
-import ict.ihu.gr.loopify.ApiManager;
-import ict.ihu.gr.loopify.ArtistInfoActivity;
 import ict.ihu.gr.loopify.R;
 
 public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.PlaylistViewHolder> {
 
     private final String[] songNames;
     private final String[] artistNames;
-    private final String[] imageUrls;  // Change to String[] for image URLs
+    private final String[] imageUrls; // For image URLs
+    private final OnItemClickListener listener; // Listener for item clicks
 
-    public PlaylistAdapter(String[] songNames, String[] artistNames, String[] imageUrls) {
+    public interface OnItemClickListener {
+        void onItemClick(String songName, String artistName);
+    }
+
+    public PlaylistAdapter(String[] songNames, String[] artistNames, String[] imageUrls, OnItemClickListener listener) {
         this.songNames = songNames;
         this.artistNames = artistNames;
         this.imageUrls = imageUrls;
+        this.listener = listener;
     }
 
     @NonNull
@@ -37,49 +38,24 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PlaylistViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull PlaylistViewHolder holder, int position) {
         holder.songNameTextView.setText(songNames[position]);
         holder.artistNameTextView.setText(artistNames[position]);
-        ApiManager apiManager = new ApiManager();
 
         // Use Glide to load the image from URL into the ImageView
         Glide.with(holder.songImageView.getContext())
-                .load(imageUrls[position])  // Load image from URL
-                .into(holder.songImageView);  // Set image into ImageView
+                .load(imageUrls[position])
+                .placeholder(R.drawable.background)
+                .error(R.drawable.background)
+                .into(holder.songImageView);
 
-        // Set up click listener for the song options (⋮)
-        holder.songOptionsTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                apiManager.fetchArtistInfo(artistNames[position], new ApiManager.ApiResponseListener() {
-                    @Override
-                    public void onResponseReceived(String artistJsonResponse) {
-                        if (artistJsonResponse != null) {
-                            apiManager.fetchTrackInfo(songNames[position], artistNames[position], new ApiManager.ApiResponseListener() {
-                                @Override
-                                public void onResponseReceived(String trackJsonResponse) {
-                                    if (trackJsonResponse != null) {
-                                        Intent intent = new Intent(v.getContext(), ArtistInfoActivity.class);
-                                        intent.putExtra("artistJson", artistJsonResponse);
-                                        intent.putExtra("trackJson", trackJsonResponse);
-                                        v.getContext().startActivity(intent);
-                                    } else {
-                                        Log.e("ApiError", "Track response is null");
-                                        Toast.makeText(v.getContext(), "Failed to fetch track info", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                        } else {
-                            Log.e("ApiError", "Artist response is null");
-                            Toast.makeText(v.getContext(), "Failed to fetch artist info", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+        // Set click listener for the item
+        holder.itemView.setOnClickListener(v -> {
+            if (listener != null) {
+                listener.onItemClick(songNames[position], artistNames[position]); // Notify listener
             }
         });
-
     }
-
 
     @Override
     public int getItemCount() {
@@ -89,15 +65,13 @@ public class PlaylistAdapter extends RecyclerView.Adapter<PlaylistAdapter.Playli
     public static class PlaylistViewHolder extends RecyclerView.ViewHolder {
         public final TextView songNameTextView;
         public final TextView artistNameTextView;
-        public final ImageView songImageView;  // ImageView for song image
-        public final TextView songOptionsTextView;  // Add reference to the song options (⋮) TextView
+        public final ImageView songImageView;
 
         public PlaylistViewHolder(@NonNull View itemView) {
             super(itemView);
             songNameTextView = itemView.findViewById(R.id.song_name);
             artistNameTextView = itemView.findViewById(R.id.artist_name);
-            songImageView = itemView.findViewById(R.id.song_image);  // Initialize ImageView correctly
-            songOptionsTextView = itemView.findViewById(R.id.song_options);  // Initialize song options TextView
+            songImageView = itemView.findViewById(R.id.song_image);
         }
     }
 }
